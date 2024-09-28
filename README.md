@@ -1,0 +1,1 @@
+The Assignment Manager Client is a desktop application developed using JavaFX and MaterialFX. This application allows students and professors to manage university courses, assignments, and grades efficiently. The client communicates with a separate backend API built with Spring Boot, enabling users to upload assignments, view grades, and interact with the system seamlessly.
