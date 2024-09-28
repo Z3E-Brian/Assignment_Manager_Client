@@ -3,6 +3,12 @@ module org.una.programmingIII.assignment_manager_client {
     requires javafx.fxml;
     requires MaterialFX;
     requires java.logging;
+    requires static lombok;
+    requires java.net.http;
+    requires com.google.gson;
+    requires jakarta.validation;
+    requires com.fasterxml.jackson.databind;
+    requires modelmapper;
 
 
     opens org.una.programmingIII.Assignment_Manager_Client to javafx.fxml;
