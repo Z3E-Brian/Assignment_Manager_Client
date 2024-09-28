@@ -1,4 +1,4 @@
-package org.una.programmingiii.assignment_manager_client.Controller;
+package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

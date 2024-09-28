@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.una.programmingiii.assignment_manager_client.Controller;
+package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.TextInputControl;

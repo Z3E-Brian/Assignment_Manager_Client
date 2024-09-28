@@ -1,8 +1,8 @@
-package org.una.programmingiii.assignment_manager_client;
+package org.una.programmingIII.Assignment_Manager_Client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.una.programmingiii.assignment_manager_client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 
 import java.io.IOException;
 

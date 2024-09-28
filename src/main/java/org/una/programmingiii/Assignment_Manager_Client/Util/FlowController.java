@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.una.programmingiii.assignment_manager_client.Util;
+package org.una.programmingIII.Assignment_Manager_Client.Util;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,8 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.una.programmingiii.assignment_manager_client.App;
-import org.una.programmingiii.assignment_manager_client.Controller.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Controller.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.App;
 
 public class FlowController {
 
@@ -77,7 +77,7 @@ public class FlowController {
 
     public void goMain() {
         try {
-            mainStage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(App.class.getResource("org/una/programmingiii/assignment_manager_client/Controller/HelloController.java")), idioma)));
+            mainStage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(App.class.getResource("org/una/programmingiii/Assignment_Manager_Client/Controller/HelloController.java")), idioma)));
             mainStage.show();
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);

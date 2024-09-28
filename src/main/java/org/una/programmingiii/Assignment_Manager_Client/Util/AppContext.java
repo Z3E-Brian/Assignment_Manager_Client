@@ -1,5 +1,5 @@
 //
-//package org.una.programmingiii.assignment_manager_client.Util;
+//package org.una.programmingiii.Assignment_Manager_Client.Util;
 //
 //import java.io.FileInputStream;
 //import java.io.IOException;

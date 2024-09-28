@@ -3,7 +3,7 @@
 // * To change this template file, choose Tools | Templates
 // * and open the template in the editor.
 // */
-//package org.una.programmingiii.assignment_manager_client.Util;
+//package org.una.programmingiii.Assignment_Manager_Client.Util;
 //
 //import java.util.Optional;
 //import javafx.scene.control.Alert;

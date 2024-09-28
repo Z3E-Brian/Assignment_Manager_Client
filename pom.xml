@@ -83,7 +83,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                org.una.programmingiii.assignment_manager_client/org.una.programmingiii.assignment_manager_client.HelloApplication
+                                org.una.programmingiii.assignment_manager_client/org.una.programmingiii.Assignment_Manager_Client.HelloApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
