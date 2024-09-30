@@ -20,8 +20,13 @@ public class App extends Application {
         // Agrega el icono a la ventana
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png"))));
 
+        stage.setResizable(false);
+        stage.setFullScreen(false);
+
         // Cargar la vista principal en la ventana
         FlowController.getInstance().goMain();
+
+        FlowController.getInstance().goViewInStage("LogInView", stage);
 
         // Mostrar la ventana principal
         stage.show();

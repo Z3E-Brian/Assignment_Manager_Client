@@ -5,6 +5,7 @@ import org.una.programmingIII.Assignment_Manager_Client.App; // Cambiar esta rut
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
@@ -141,8 +142,8 @@ public class FlowController {
         Controller controller = loader.getController();
         controller.initialize();
         Stage stage = new Stage();
-//        InputStream inputStream = App.class.getResourceAsStream("/una/computer_security/laboratory/Resources/cesar.png"); // Cambiar la ruta de la imagen según el nuevo proyecto
-//        stage.getIcons().add(new Image(inputStream));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png"))));
+
         stage.setTitle("Assignment Manager"); // Cambiar título según el proyecto
         stage.setOnHidden((WindowEvent event) -> {
             controller.getStage().getScene().setRoot(new Pane());

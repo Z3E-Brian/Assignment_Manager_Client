@@ -22,6 +22,11 @@
     -fx-text-fill: white;
 }
 
+.Titles {
+    -fx-font-size: 30px;
+    -fx-text-fill: white;
+}
+
 /* Main action buttons */
 .mfx-button {
     -fx-background-color: #D32F2F;
@@ -47,6 +52,7 @@
     -fx-border-color: #ECEFF4;
     -fx-background-color: #D32F2F;
 }
+
 
 /* Secondary buttons / icons */
 .button-secondary {
