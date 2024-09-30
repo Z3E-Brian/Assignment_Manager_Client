@@ -18,14 +18,14 @@ public class AssignmentController extends Controller /*implements initializable*
     private final AssignmentService assignmentService = new AssignmentService();
 
     public void loadAssignment(Long id) {
-        try {
-            AssignmentDto assignment = assignmentService.getAssignmentById(id);
-            titleLabel.setText(assignment.getTitle());
-            descriptionLabel.setText(assignment.getDescription());
-            dueDateLabel.setText(assignment.getDueDate().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            AssignmentDto assignment = assignmentService.getAssignmentById(id);
+//            titleLabel.setText(assignment.getTitle());
+//            descriptionLabel.setText(assignment.getDescription());
+//            dueDateLabel.setText(assignment.getDueDate().toString());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

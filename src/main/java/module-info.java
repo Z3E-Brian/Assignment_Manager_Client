@@ -11,6 +11,7 @@ module org.una.programmingIII.assignment_manager_client {
     requires modelmapper;
 
 
+    opens org.una.programmingIII.Assignment_Manager_Client.Model to javafx.base;
     opens org.una.programmingIII.Assignment_Manager_Client to javafx.fxml;
     exports org.una.programmingIII.Assignment_Manager_Client;
     exports org.una.programmingIII.Assignment_Manager_Client.Controller;

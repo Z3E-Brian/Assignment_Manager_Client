@@ -3,15 +3,14 @@ package org.una.programmingIII.Assignment_Manager_Client.Model;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class AssignmentDto {
 
     private Long id;
@@ -30,4 +29,6 @@ public class AssignmentDto {
 
     @NotNull(message = "Course cannot be null")
     private CourseDto course;
+
+
 }
