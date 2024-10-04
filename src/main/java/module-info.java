@@ -16,4 +16,6 @@ module org.una.programmingIII.assignment_manager_client {
     exports org.una.programmingIII.Assignment_Manager_Client;
     exports org.una.programmingIII.Assignment_Manager_Client.Controller;
     opens org.una.programmingIII.Assignment_Manager_Client.Controller to javafx.fxml;
+    exports org.una.programmingIII.Assignment_Manager_Client.Util;
+    opens org.una.programmingIII.Assignment_Manager_Client.Util to javafx.fxml;
 }

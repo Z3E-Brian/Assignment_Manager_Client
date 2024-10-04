@@ -5,50 +5,46 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
-
-    <bottom>
-        <HBox alignment="CENTER" spacing="15" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="40.0" />
-         </BorderPane.margin>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-        </HBox>
-    </bottom>
-   <top>
-       <MenuBar BorderPane.alignment="CENTER">
-           <Menu mnemonicParsing="false" text="File">
-               <MenuItem mnemonicParsing="false" text="Close" />
-           </Menu>
-           <Menu mnemonicParsing="false" text="Edit">
-               <MenuItem mnemonicParsing="false" text="Delete" />
-           </Menu>
-           <Menu mnemonicParsing="false" text="Help">
-               <MenuItem mnemonicParsing="false" text="About" />
-           </Menu>
-           <Menu mnemonicParsing="false">
-              <graphic>
-                  <ImageView fitHeight="34.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                      <Image url="@../Assets/profile-user-icon-2048x2048-m41rxkoe.png" />
-                  </ImageView>
-              </graphic>
-           </Menu>
-       </MenuBar>
-   </top>
-   <right>
-      <ScrollPane prefHeight="496.0" prefWidth="208.0" BorderPane.alignment="CENTER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
-      </ScrollPane>
-   </right>
-   <center>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <content>
-            <VBox prefHeight="480.0" prefWidth="790.0" />
-         </content>
-      </ScrollPane>
-   </center>
+<BorderPane fx:id="mainBorderPane" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
+    <top>
+        <VBox>
+            <HBox prefHeight="30.0" prefWidth="50.0" spacing="10.0" styleClass="menu-bar">
+                <ImageView fx:id="facebookIcon" fitHeight="24" fitWidth="24">
+                    <Image url="@../Assets/Facebook-Icon.png" />
+                </ImageView>
+                <ImageView fx:id="instagramIcon" fitHeight="24" fitWidth="24">
+                    <Image url="@../Assets/Instagram-Icon.png" />
+                </ImageView>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
+                <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Aula UNA Virtual" />
+                <Region HBox.hgrow="ALWAYS" />
+                <MenuButton fx:id="coursesMenuButton" style="-fx-text-fill: white;" text="Courses">
+                    <items>
+                        <MenuItem fx:id="" text="Curso 1" />
+                        <MenuItem text="Curso 2" />
+                    </items>
+                </MenuButton>
+                <MenuButton style="-fx-text-fill: white;" text="Otras Aulas Virtuales">
+                </MenuButton>
+                <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
+                    <graphic>
+                        <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
+                            <Image url="@../Assets/UserIcon.png" />
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets left="15.0" right="15.0" />
+                </padding>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <!-- Aquí se cargará dinámicamente el contenido de otras vistas -->
+        <BorderPane fx:id="contentArea" />
+    </center>
 </BorderPane>

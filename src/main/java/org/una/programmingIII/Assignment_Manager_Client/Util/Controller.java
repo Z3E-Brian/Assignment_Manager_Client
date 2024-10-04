@@ -1,40 +1,21 @@
-package org.una.programmingIII.Assignment_Manager_Client.Controller;
+package org.una.programmingIII.Assignment_Manager_Client.Util;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Setter
+@Getter
 public abstract class Controller {
 
     private Stage stage;
     private String accion;
     private String nombreVista;
-
-    public String getAccion() {
-        return accion;
-    }
-
-    public void setAccion(String accion) {
-        this.accion = accion;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-    
-    public String getNombreVista() {
-        return nombreVista;
-    }
-
-    public void setNombreVista(String nombreVista) {
-        this.nombreVista = nombreVista;
-    }
 
     public void sendTabEvent(KeyEvent event) {
         event.consume();
@@ -60,4 +41,5 @@ public abstract class Controller {
     }
 
     public abstract void initialize();
+
 }

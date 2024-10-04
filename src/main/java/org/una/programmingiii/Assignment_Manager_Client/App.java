@@ -1,38 +1,35 @@
 package org.una.programmingIII.Assignment_Manager_Client;
 
 import javafx.application.Application;
-import javafx.scene.image.Image;
+import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import javafx.scene.image.Image;
 
 import java.util.Objects;
 
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) {
-        // Inicializa el FlowController sin un archivo de recursos
-        FlowController.getInstance().InitializeFlow(stage, null);
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/una/programmingIII/Assignment_Manager_Client/View/LogInView.fxml"));
+        primaryStage.setTitle("Assignment Manager");
 
-        // Establece el título de la ventana
-        stage.setTitle("Assignment Manager");
 
-        // Agrega el icono a la ventana
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png"))));
+        // Establecer el icono personalizado
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png"))));
 
-        stage.setResizable(false);
-        stage.setFullScreen(false);
+        primaryStage.setResizable(false);
 
-        // Cargar la vista principal en la ventana
-        FlowController.getInstance().goMain();
+        primaryStage.setScene(new javafx.scene.Scene(loader.load()));
 
-        FlowController.getInstance().goViewInStage("LogInView", stage);
-
-        // Mostrar la ventana principal
-        stage.show();
+        Controller controller = loader.getController();
+        controller.setStage(primaryStage);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
         launch();
     }
 }
+

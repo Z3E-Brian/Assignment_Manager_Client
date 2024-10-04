@@ -4,9 +4,12 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+
+import java.io.IOException;
 
 public class LogInController extends Controller {
 
@@ -22,53 +25,60 @@ public class LogInController extends Controller {
     @FXML
     private MFXButton registerButton;
 
-    @FXML
-    private VBox loginVBox; // Asumamos que estás usando un VBox para el layout
-
     @Override
     public void initialize() {
-        // Configurar la lógica del controlador al iniciar
-
-        // Acción para el botón de "Iniciar Sesión"
         loginButton.setOnAction(event -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
 
-            if (authenticateUser(username, password)) {
+//            if (authenticateUser(username, password)) {
                 System.out.println("Login exitoso!");
-                FlowController.getInstance().goMain(); // Navegar a la vista principal
-            } else {
-                System.out.println("Credenciales incorrectas.");
-                // Aquí puedes mostrar un mensaje de error o una alerta
+                try {
+                    Stage stage = (Stage) loginButton.getScene().getWindow();
+                    stage.setResizable(true);
+                    goToView("MainView");
+                    centerStage(stage);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+        });
+
+        registerButton.setOnAction(event -> {
+            try {
+                Stage stage = (Stage) registerButton.getScene().getWindow();
+                goToView("RegisterView");
+                centerStage(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-
-        // Acción para el botón de "Registrarse"
-        registerButton.setOnAction(event -> {
-            // Lógica para ir a la ventana de registro
-            FlowController.getInstance().goViewInWindowModal("RegisterView", getStage(), false); // Navegar a una ventana modal para registrarse
-        });
     }
 
-    // Método de autenticación (ejemplo simple)
+    private void goToView(String viewName) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/una/programmingIII/Assignment_Manager_Client/View/"+viewName+".fxml"));
+        getStage().setTitle("Assignment Manager");
+        getStage().setScene(new javafx.scene.Scene(loader.load()));
+        Controller controller = loader.getController();
+        controller.setStage(getStage());
+        getStage().show();
+
+    }
+
+    private void centerStage(Stage stage) {
+        // Obtener el tamaño de la pantalla
+        double screenX = javafx.stage.Screen.getPrimary().getVisualBounds().getWidth();
+        double screenY = javafx.stage.Screen.getPrimary().getVisualBounds().getHeight();
+
+        // Obtener el tamaño de la ventana
+        double stageWidth = stage.getWidth();
+        double stageHeight = stage.getHeight();
+
+        // Calcular las nuevas coordenadas
+        stage.setX((screenX - stageWidth) / 2);
+        stage.setY((screenY - stageHeight) / 2);
+    }
+
     private boolean authenticateUser(String username, String password) {
-        // Lógica de autenticación real, por ejemplo, consulta a la base de datos o API
         return username.equals("admin") && password.equals("admin");
     }
-
-    @Override
-    public void setStage(Stage stage) {
-        super.setStage(stage); // Usa el método del padre para configurar el Stage
-    }
-
-    @Override
-    public void setAccion(String accion) {
-        super.setAccion(accion); // Usa el método del padre para configurar la acción
-    }
-
-    @Override
-    public void setNombreVista(String nombreVista) {
-        super.setNombreVista(nombreVista); // Usa el método del padre para configurar el nombre de la vista
-    }
-
 }
