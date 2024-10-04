@@ -17,13 +17,9 @@
                 </ImageView>
             </HBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
-                <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Aula UNA Virtual" />
+                <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
                 <Region HBox.hgrow="ALWAYS" />
                 <MenuButton fx:id="coursesMenuButton" style="-fx-text-fill: white;" text="Courses">
-                    <items>
-                        <MenuItem fx:id="" text="Curso 1" />
-                        <MenuItem text="Curso 2" />
-                    </items>
                 </MenuButton>
                 <MenuButton style="-fx-text-fill: white;" text="Otras Aulas Virtuales">
                 </MenuButton>

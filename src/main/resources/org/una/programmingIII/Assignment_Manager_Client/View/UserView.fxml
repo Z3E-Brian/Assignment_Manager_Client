@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
-   <children>
-      <Button fx:id="btnMainMenu" layoutX="248.0" layoutY="104.0" mnemonicParsing="false" onAction="#goBack" text="Button" />
-      <CheckBox layoutX="138.0" layoutY="183.0" mnemonicParsing="false" text="CheckBox" />
-   </children>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
+   <!-- Título -->
+   <Label text="Gestión de Usuarios" style="-fx-font-size: 24px;" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+
+   <!-- Formulario de datos del usuario -->
+   <Label text="Nombre:" AnchorPane.topAnchor="60.0" AnchorPane.leftAnchor="10.0" />
+   <TextField fx:id="nameField" AnchorPane.topAnchor="60.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="10.0" />
+
+   <Label text="Correo electrónico:" AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="10.0" />
+   <TextField fx:id="emailField" AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="10.0" />
+
+   <!-- Botones de acciones -->
+   <Button text="Crear" fx:id="createButton" onAction="#createUser" AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="10.0" />
+   <Button text="Actualizar" fx:id="updateButton" onAction="#updateUser" AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="80.0" />
+   <Button text="Eliminar" fx:id="deleteButton" onAction="#deleteUser" AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="160.0" />
+   <Button text="getAll" fx:id="getAllButton" onAction="#getAll" AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="240.0" />
+
+   <!-- Tabla para mostrar lista de usuarios -->
+   <TableView fx:id="userTable" AnchorPane.topAnchor="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+      <columns>
+         <TableColumn fx:id="idColumn" text="ID" prefWidth="50" />
+         <TableColumn fx:id="nameColumn" text="Nombre" prefWidth="150" />
+         <TableColumn fx:id="emailColumn" text="Correo Electrónico" prefWidth="200" />
+      </columns>
+   </TableView>
 </AnchorPane>

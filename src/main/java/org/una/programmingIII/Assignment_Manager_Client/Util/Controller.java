@@ -39,6 +39,19 @@ public abstract class Controller {
         }
         return false;
     }
+    protected void centerStage(Stage stage) {
+        // Obtener el tamaño de la pantalla
+        double screenX = javafx.stage.Screen.getPrimary().getVisualBounds().getWidth();
+        double screenY = javafx.stage.Screen.getPrimary().getVisualBounds().getHeight();
+
+        // Obtener el tamaño de la ventana
+        double stageWidth = stage.getWidth();
+        double stageHeight = stage.getHeight();
+
+        // Calcular las nuevas coordenadas
+        stage.setX((screenX - stageWidth) / 2);
+        stage.setY((screenY - stageHeight) / 2);
+    }
 
     public abstract void initialize();
 
