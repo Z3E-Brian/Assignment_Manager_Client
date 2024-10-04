@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
+   <children>
+      <Button fx:id="btnMainMenu" layoutX="248.0" layoutY="104.0" mnemonicParsing="false" onAction="#goBack" text="Button" />
+      <CheckBox layoutX="138.0" layoutY="183.0" mnemonicParsing="false" text="CheckBox" />
+   </children>
+</AnchorPane>

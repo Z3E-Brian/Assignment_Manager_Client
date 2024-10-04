@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.14-internal">
+      <!-- Título del assignment -->
+      <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Add Assignment" />
+
+      <!-- Fechas de apertura y cierre -->
+      <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label style="-fx-font-size: 14px;" text="Apertura: jueves, 26 de septiembre de 2024, 00:00" />
+            <Label style="-fx-font-size: 14px;" text="Cierre: jueves, 7 de noviembre de 2024, 00:00" />
+      </VBox>
+
+      <!-- Archivos subidos -->
+      <HBox alignment="CENTER_LEFT" spacing="10">
+            <Hyperlink style="-fx-font-size: 14px;" text="Proyecto Final SI 2024.docx" />
+            <Label text="26 de septiembre de 2024, 19:57" />
+      </HBox>
+
+      <!-- Botón para agregar entrega -->
+      <Button prefWidth="150" style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega" />
+
+      <!-- Estado de la entrega -->
+      <TitledPane style="-fx-background-color: #212121;" text="Estado de la entrega">
+            <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+                  <GridPane hgap="10" vgap="10">
+                        <Label text="Estado de la entrega:" />
+                        <Label text="Todavía no se han realizado envíos" GridPane.columnIndex="1" />
+
+                        <Label text="Estado de la calificación:" GridPane.rowIndex="1" />
+                        <Label text="Sin calificar" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label text="Tiempo restante:" GridPane.rowIndex="2" />
+                        <Label text="34 días 5 horas restante" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label text="Última modificación:" GridPane.rowIndex="3" />
+                        <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <Label text="Comentarios de la entrega:" GridPane.rowIndex="4" />
+                        <Hyperlink text="Comentarios (0)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+                  </GridPane>
+            </VBox>
+      </TitledPane>
+</VBox>
