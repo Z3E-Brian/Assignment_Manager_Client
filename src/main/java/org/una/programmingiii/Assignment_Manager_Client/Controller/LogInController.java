@@ -62,7 +62,6 @@ public class LogInController extends Controller {
         Controller controller = loader.getController();
         controller.setStage(getStage());
         getStage().show();
-
     }
 
 

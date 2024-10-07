@@ -1,6 +1,10 @@
+
 /* General background */
 .root {
     -fx-background-color: #2E3440;
+}
+*{
+    -fx-font-family: Arial Rounded;
 }
 
 /* Top tab (navigation bar or header) */
@@ -98,4 +102,70 @@
 /* Hover over links or buttons */
 .link:hover {
     -fx-text-fill: #42A5F5;
+}
+/*UploadFile style*/
+.vbox-Dates{
+    -fx-background-color: #b0b0b0;
+    -fx-padding: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1px;
+}
+.label-AddDelivery{
+    -fx-background-color: #b0b0b0;
+    -fx-padding: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #b0b0b0;
+    -fx-border-width: 1px;
+}
+.vbox-DragAndDrop{
+    -fx-background-color: #464f5e;
+    -fx-padding: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1px;
+}
+
+.mfx-btn-SaveChanges,.mfx-btn-SaveChanges:armed,.mfx-btn-SaveChanges:focused{
+    -fx-background-color: #8997f4;
+}
+
+.mfx-btn-SaveChanges:hover{
+    -fx-background-color: #a2affd;
+}
+.mfx-btn-Cancel,.mfx-btn-Cancel:armed,.mfx-btn-Cancel:focused{
+    -fx-background-color: #800000;
+}
+.mfx-btn-Cancel:hover{
+    -fx-background-color: #e71e1e;
+}
+.mfx-btn-Previous,.mfx-btn-Previous:armed,.mfx-btn-Previous:focused{
+    -fx-background-color: #bbbaba;
+}
+.mfx-btn-Previous>ImageView{
+    -fx-image: url("../Assets/Back.png");
+}
+.mfx-btn-Previous:hover{
+    -fx-background-color: #bbb1b1;
+}
+.mfx-btn-Upload,.mfx-btn-Upload:armed,.mfx-btn-Upload:focused{
+    -fx-background-color: #bbbaba;
+}
+.mfx-btn-Upload>ImageView{
+    -fx-image: url("../Assets/Upload.png");
+}
+.mfx-btn-Upload:hover{
+    -fx-background-color: #bbb1b1;
+}
+.btn-delete,.btn-delete:armed,.btn-delete:focused{
+    -fx-background-color: #800000;
+    -fx-background-image: url("../Assets/Delete.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 25px 25px;
+}
+.btn-delete:hover{
+    -fx-background-color: #e71e1e;
 }

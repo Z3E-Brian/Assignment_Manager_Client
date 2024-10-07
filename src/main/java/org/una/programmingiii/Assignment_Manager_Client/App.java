@@ -9,7 +9,6 @@ import javafx.scene.image.Image;
 import java.util.Objects;
 
 public class App extends Application {
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/una/programmingIII/Assignment_Manager_Client/View/LogInView.fxml"));
