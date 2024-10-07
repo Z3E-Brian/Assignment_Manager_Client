@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,66 +11,56 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainViewController extends Controller {
 
     @FXML
-    public ImageView imageView;
+    private MenuButton btnCoursesMenu;
+
     @FXML
-    public Button imageButton;
+    private ImageView facebookIcon;
+
     @FXML
-    public ImageView facebookIcon;
+    private Button imageButton;
+
     @FXML
-    public ImageView instagramIcon;
+    private ImageView imageView;
+
     @FXML
-    public MenuButton coursesMenuButton;
+    private ImageView instagramIcon;
+
     @FXML
-    public BorderPane mainBorderPane;
+    private BorderPane root;
+
 
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
-        coursesMenuButton.getItems().add(new MenuItem("Course 1"));
-        coursesMenuButton.getItems().add(new MenuItem("Course 2"));
-
-        coursesMenuButton.getItems().forEach(item -> item.setOnAction(event -> {
-            System.out.println("Switching to Course View");
-            try {
-                setCenterView("CourseView"); //TODO: ADD THE LOGIC TO GET INFO ABOUT THE COURSE
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
-
-    }
-
-    // Método para cambiar el contenido en la parte central (center) del BorderPane
-    public void setCenterView(String fxmlName) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/una/programmingIII/Assignment_Manager_Client/View/" + fxmlName + ".fxml"));
-        Parent newView = loader.load();
-        mainBorderPane.setCenter(newView);
-    }
-
-    @FXML
-    public void onCustomUser() {
-        try {
-            System.out.println("Changing view to AddAssignmentView");
-            setCenterView("UserView");
-        } catch (IOException e) {
-            e.printStackTrace();
+        List<String> courses = Arrays.asList("Course 1", "Course 2", "Course 3");
+        for (String course : courses) {
+            MenuItem menuItem = new MenuItem(course);
+            menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
+            btnCoursesMenu.getItems().add(menuItem);
         }
     }
 
     @FXML
-    public void onCustomAssignment() {
-        try {
-            System.out.println("Changing view to AddAssignmentView");
-            setCenterView("AssignmentView");
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
+    void onActionBtnCoursesMenu(ActionEvent event) {
     }
+    private void handleMenuItemAction(MenuItem menuItem) {
+        String selectedCourse = menuItem.getText();
+        System.out.println("Selected course: " + selectedCourse);
+        FlowController.getInstance().goView("CourseView");
+    }
+    @FXML
+    void onCustomUser(ActionEvent event) {
+        FlowController.getInstance().goView("UserView");
+    }
+
+
 }
 

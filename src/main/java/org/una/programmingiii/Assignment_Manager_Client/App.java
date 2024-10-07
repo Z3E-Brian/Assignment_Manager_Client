@@ -5,26 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
 import javafx.scene.image.Image;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 
+import java.io.InputStream;
 import java.util.Objects;
 
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/una/programmingIII/Assignment_Manager_Client/View/LogInView.fxml"));
-        primaryStage.setTitle("Assignment Manager");
-
-
-        // Establecer el icono personalizado
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png"))));
-
-        primaryStage.setResizable(false);
-
-        primaryStage.setScene(new javafx.scene.Scene(loader.load()));
-
-        Controller controller = loader.getController();
-        controller.setStage(primaryStage);
-        primaryStage.show();
+        FlowController.getInstance().InitializeFlow(primaryStage, null);
+        FlowController.getInstance().goViewInWindow("LogInView");
     }
 
     public static void main(String[] args) {

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
+<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
    <padding>
       <Insets bottom="30" left="30" right="30" top="30" />
    </padding>
@@ -13,6 +15,6 @@
    <Label styleClass="Titles" text="Assignment Manager" />
    <MFXTextField fx:id="usernameField" floatMode="BORDER" promptText="Usuario" style="-fx-pref-width: 300px; -fx-font-size: 16px;" />
    <MFXPasswordField fx:id="passwordField" floatMode="BORDER" promptText="Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" />
-   <MFXButton fx:id="loginButton" defaultButton="true" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Iniciar Sesión" />
-   <MFXButton fx:id="registerButton" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Registrarse" />
+   <MFXButton fx:id="btnLogIn" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Iniciar Sesión" />
+   <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Registrarse" />
 </VBox>
