@@ -20,3 +20,21 @@ target/
 .settings
 .springBeans
 .sts4-cache
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.env
+
+### IntelliJ IDEA ###
+.idea/
+.idea/*
+*.iws
+*.iml
+*.ipr
+.idea/workspace.xml

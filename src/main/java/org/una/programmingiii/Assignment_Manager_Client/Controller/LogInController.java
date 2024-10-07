@@ -43,7 +43,7 @@ public class LogInController extends Controller {
 
     @FXML
     void onActionBtnRegister(ActionEvent event) {
-FlowController.getInstance().goViewInWindow("RegisterView");
+FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
     }
 
     private boolean authenticateUser(String username, String password) {
