@@ -169,3 +169,13 @@
 .btn-delete:hover{
     -fx-background-color: #e71e1e;
 }
+/*CoursesView*/
+.titledPane{
+    -fx-font: 14px "Roboto";
+    -fx-font-style: bold;
+    -fx-padding: 2px;
+}
+.vbox-Background-TitledPane{
+    -fx-background-color: #2E3440;
+    -fx-padding: 5px;
+}
