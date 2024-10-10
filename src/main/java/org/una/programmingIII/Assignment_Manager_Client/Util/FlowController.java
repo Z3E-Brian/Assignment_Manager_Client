@@ -6,10 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -115,10 +112,11 @@ public class FlowController {
         }
         switch (location) {
             case "Center":
+                Parent root = loader.getRoot();
                 VBox vBox = ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter());
                 vBox.getChildren().clear();
-                vBox.getChildren().add(loader.getRoot());
-                break;
+                vBox.getChildren().add(root);
+                VBox.setVgrow(root, Priority.ALWAYS);      break;
             case "Top":
                 HBox hBox = ((HBox) ((BorderPane) stage.getScene().getRoot()).getTop());
                 hBox.getChildren().clear();
