@@ -9,8 +9,8 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.una.programmingIII.Assignment_Manager_Client.Model.Input.UserInput;
-import org.una.programmingIII.Assignment_Manager_Client.Model.UserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 
 public class UserService {
 
@@ -42,8 +42,12 @@ public class UserService {
 
     // GET: Obtener usuarios paginados en un Map
     public Map<String, Object> getUsers(int page, int size, int limit) throws Exception {
+        return getStringObjectMap(page, size, limit, httpClient, objectMapper);
+    }
+
+    static Map<String, Object> getStringObjectMap(int page, int size, int limit, HttpClient httpClient, ObjectMapper objectMapper) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit))
+                .uri(URI.create(UserService.BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit))
                 .GET()
                 .build();
 
@@ -75,7 +79,7 @@ public class UserService {
     }
 
     // POST: Crear un nuevo usuario
-    public UserDto createUser(UserInput userInput) throws Exception {
+    public void createUser(UserInput userInput) throws Exception {
         String requestBody = objectMapper.writeValueAsString(userInput);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -87,7 +91,7 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 201) {
-            return objectMapper.readValue(response.body(), UserDto.class);
+            objectMapper.readValue(response.body(), UserDto.class);
         } else {
             throw new Exception("Error creating user: " + response.statusCode());
         }
@@ -127,4 +131,13 @@ public class UserService {
             throw new Exception("Error deleting user: " + response.statusCode());
         }
     }
+
+//    public boolean authenticate(String username, String password) throws Exception {
+//        UserDto userDto = getUserByEmail(username);
+//        if ("admin".equals(username) && "admin".equals(password)) {
+//            return true;
+//        } else {
+//            throw new Exception("Invalid credentials");
+//        }
+//    }
 }

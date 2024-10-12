@@ -179,3 +179,8 @@
     -fx-background-color: #2E3440;
     -fx-padding: 5px;
 }
+
+.mfx-text-field {
+    -fx-pref-width: 100%; /* Forzar que ocupe el 100% del ancho del padre */
+    -fx-max-width: Infinity; /* Para asegurar que no tenga límites de crecimiento */
+}

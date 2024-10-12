@@ -1,5 +1,4 @@
-package org.una.programmingIII.Assignment_Manager_Client.Model;
-
+package org.una.programmingIII.Assignment_Manager_Client.Dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -8,10 +7,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UniversityDto {
+public class FacultyDto {
 
     private Long id;
     private String name;
-    private String location;
-    private List<FacultyDto> faculties;
+    private List<DepartmentDto> departments;
 }
+

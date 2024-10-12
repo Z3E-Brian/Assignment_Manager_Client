@@ -1,4 +1,4 @@
-package org.una.programmingIII.Assignment_Manager_Client.Model;
+package org.una.programmingIII.Assignment_Manager_Client.Dto;
 
 public enum AssignmentType {
     TASK,

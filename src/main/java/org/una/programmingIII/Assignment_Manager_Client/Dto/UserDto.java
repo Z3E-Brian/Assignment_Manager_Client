@@ -1,7 +1,6 @@
-package org.una.programmingIII.Assignment_Manager_Client.Model;
+package org.una.programmingIII.Assignment_Manager_Client.Dto;
 
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
