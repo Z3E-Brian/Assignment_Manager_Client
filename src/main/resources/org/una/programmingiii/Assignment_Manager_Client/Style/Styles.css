@@ -184,3 +184,19 @@
     -fx-pref-width: 100%; /* Forzar que ocupe el 100% del ancho del padre */
     -fx-max-width: Infinity; /* Para asegurar que no tenga límites de crecimiento */
 }
+
+
+
+/*JMDZ*/
+.tool-bar{
+    -fx-background-color: #040f4e;
+}
+
+.icon-image {
+    -fx-min-width: 10px;
+    -fx-min-height: 15px;
+    -fx-pref-width: 10px;
+    -fx-pref-height: 15px;
+    -fx-max-width: 10px;
+    -fx-max-height: 15px;
+}
