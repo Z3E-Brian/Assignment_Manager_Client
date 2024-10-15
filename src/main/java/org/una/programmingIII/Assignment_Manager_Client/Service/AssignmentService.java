@@ -1,7 +1,7 @@
 package org.una.programmingIII.Assignment_Manager_Client.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.una.programmingIII.Assignment_Manager_Client.Model.AssignmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;

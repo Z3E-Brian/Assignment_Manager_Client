@@ -56,7 +56,7 @@ public class MainViewController extends Controller {
         System.out.println("Selected course: " + selectedCourse);
         if (selectedCourse.equals("Course 1")) {
             FlowController.getInstance().goView("CourseView");
-        } else if (selectedCourse.equals("Course 2")) { FlowController.getInstance().goView("UploadFileView");}
+        } else if (selectedCourse.equals("Course 2")) { FlowController.getInstance().goView("UploadTaskView");}
 
     }
     @FXML

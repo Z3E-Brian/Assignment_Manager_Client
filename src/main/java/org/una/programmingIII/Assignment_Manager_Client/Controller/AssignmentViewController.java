@@ -2,7 +2,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.una.programmingIII.Assignment_Manager_Client.Model.UserRoleState;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UserRoleState;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
 
