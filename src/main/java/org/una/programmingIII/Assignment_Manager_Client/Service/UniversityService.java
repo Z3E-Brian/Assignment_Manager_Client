@@ -3,8 +3,8 @@ package org.una.programmingIII.Assignment_Manager_Client.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Model.Input.UniversityInput;
-import org.una.programmingIII.Assignment_Manager_Client.Model.UniversityDto;
 
 import java.net.URI;
 import java.net.http.HttpClient;

@@ -1,14 +1,13 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
-import io.github.palexdev.materialfx.controls.MFXTableColumn;
-import io.github.palexdev.materialfx.controls.MFXTableView;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import org.apache.hc.core5.http.Header;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
@@ -17,10 +16,16 @@ import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 
 public class UserViewController extends Controller {
 
+    @FXML
+    public HBox hBoxID;
+    @FXML
+    public TitledPane tpanePermissions;
     @FXML
     private MFXTextField nameField, emailField,IDField,numberIDField;
     @FXML
@@ -41,6 +46,15 @@ public class UserViewController extends Controller {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        //add into titledpane all permissions in checkboxes
+        List<PermissionType> permissions = Arrays.asList(PermissionType.values());
+        for (PermissionType permission : permissions) {
+            MFXCheckbox checkBox = new MFXCheckbox(permission.toString());
+            tpanePermissions.getChildrenUnmodifiable().add(checkBox);
+        }
+
+
         loadUsers();
     }
 

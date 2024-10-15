@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.14-internal">
+<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
       <!-- Título del assignment -->
       <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Add Assignment" />
 
@@ -20,7 +20,7 @@
       </HBox>
 
       <!-- Botón para agregar entrega -->
-      <Button prefWidth="150" style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega" />
+      <Button fx:id="btnAddDelivery" onAction="#goToUploadFile" prefWidth="150" style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega" />
 
       <!-- Estado de la entrega -->
       <TitledPane style="-fx-background-color: #212121;" text="Estado de la entrega">

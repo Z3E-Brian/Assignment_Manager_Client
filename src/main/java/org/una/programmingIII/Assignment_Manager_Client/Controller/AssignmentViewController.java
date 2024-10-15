@@ -1,14 +1,15 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import org.una.programmingIII.Assignment_Manager_Client.Model.UserRoleState;
-import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UserRoleState;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 
 public class AssignmentViewController extends Controller {
 
-    private UserRoleState currentUserRole; // Define el rol del usuario (estudiante o profesor)
+    private UserRoleState currentUserRole;
+
+    FlowController flowController = FlowController.getInstance();
 
 
     private void setupStudentView() {
@@ -25,5 +26,9 @@ public class AssignmentViewController extends Controller {
         }
     }
 
+    @FXML
+    public void goToUploadFile() {
+        FlowController.getInstance().goViewInWindowModal("UploadFileView", this.getStage(), true);
+    }
 
 }

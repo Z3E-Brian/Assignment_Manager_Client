@@ -76,6 +76,8 @@ public class UploadFileViewController extends Controller implements Initializabl
     @FXML
     void onActionBtnCancel(ActionEvent event) {
         // Method content
+        //TODO: Confirmation dialog
+        this.getStage().close();
     }
 
     @FXML
@@ -83,6 +85,8 @@ public class UploadFileViewController extends Controller implements Initializabl
         for (File file : uploadedFiles) {
             System.out.println(file.getName());
         }
+        //TODO: Verify if all files are uploaded or something like that
+        this.getStage().close();
     }
 
     @FXML

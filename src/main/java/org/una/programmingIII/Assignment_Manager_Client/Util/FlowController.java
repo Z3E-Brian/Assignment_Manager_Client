@@ -177,8 +177,8 @@ public void goViewInWindow(String viewName) {
         controller.setStage(stage);
         Parent root = loader.getRoot();
         Scene scene = new Scene(root);
-        MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
         stage.setScene(scene);
+
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.initOwner(parentStage);

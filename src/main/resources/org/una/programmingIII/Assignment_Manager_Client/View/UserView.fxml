@@ -57,7 +57,13 @@
             <Insets right="15.0" />
          </HBox.margin></MFXTextField>
    </HBox>
-
+   <Accordion>
+     <panes>
+       <TitledPane fx:id="tpanePermissions" animated="false" text="Permissions">
+           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+       </TitledPane>
+     </panes>
+   </Accordion>
 
    <HBox alignment="CENTER_LEFT" spacing="20.0" VBox.vgrow="ALWAYS">
       <padding>
