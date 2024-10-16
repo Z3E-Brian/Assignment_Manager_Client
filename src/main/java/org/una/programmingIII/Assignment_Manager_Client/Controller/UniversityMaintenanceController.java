@@ -1,13 +1,12 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.beans.property.SimpleStringProperty;
+import io.github.palexdev.materialfx.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,13 +14,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UniversityInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
-import org.una.programmingIII.Assignment_Manager_Client.Mapper.GenericMapper;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javafx.scene.input.MouseEvent;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 
 public class UniversityMaintenanceController extends Controller {
     @FXML
@@ -60,15 +61,14 @@ public class UniversityMaintenanceController extends Controller {
     private UniversityService universityService;
     private UniversityDto universityDto;
     private UniversityInput universityInput;
-    private GenericMapper<UniversityInput, UniversityDto> universityMapper;
+    List<Node> requeridos;
 
     @Override
     public void initialize() {
-
+        requeridos = new ArrayList<>();
         universityService = new UniversityService();
         universityDto = new UniversityDto();
         universityInput = new UniversityInput();
-
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -91,28 +91,43 @@ public class UniversityMaintenanceController extends Controller {
 
     @FXML
     void onActionBtnEditFaculties(ActionEvent event) {
+        clean();
         loadUniversities();
     }
 
     @FXML
     void onActionBtnNew(ActionEvent event) throws Exception {
-        System.out.println("New University");
-        universityInput = new UniversityInput();
-        bindUniversity(true);
-        //universityService.createUniversity(universityInput);
-        loadUniversities();
+        String invalids = validarRequeridos();
+        if (invalids.isBlank()) {
+            System.out.println(invalids);
+            new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
+        } else {
+            universityInput = new UniversityInput();
+            universityInput.setName(txfName.getText());
+            universityInput.setLocation(txfLocation.getText());
+            universityService.createUniversity(universityInput);
+            loadUniversities();
+        }
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
-        convertirADto();
-        universityDto = universityService.updateUniversity(universityDto.getId(), universityInput);
-        loadUniversities();
+        if (!(idTxf.getText().isBlank())) {
+            convertirADto();
+            universityDto = universityService.updateUniversity(universityDto.getId(), universityInput);
+            loadUniversities();
+        }
     }
 
     @FXML
     void onActionBtnDelete(ActionEvent event) throws Exception {
-        universityService.deleteUniversity(universityDto.getId());
+        if (!(idTxf.getText().isEmpty())) {
+            universityService.deleteUniversity(universityDto.getId());
+            clean();
+            loadUniversities();
+        } else {
+            System.out.println("Seleccionar universidad a eliminar");
+        }
     }
 
     private void showAlert(String title, String message, Alert.AlertType alertType) {
@@ -125,48 +140,77 @@ public class UniversityMaintenanceController extends Controller {
 
     @FXML
     void onMouseClickedImgClose(MouseEvent event) {
+        System.out.println("pushed");
         ((Stage) universityTable.getScene().getWindow()).close();
     }
 
     @FXML
     void onMousePressedUniversityTable(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
             convetirainput();
             System.out.println(universityInput);
-            bindUniversity(false);
+
         }
     }
-
-    private void bindUniversity(Boolean newUniversity) {
-        if (!newUniversity) {
-            idTxf.textProperty().bind(universityInput.id);
-        }
-        txfName.textProperty().bindBidirectional(universityInput.name);
-        txfLocation.textProperty().bindBidirectional(universityInput.location);
-    }
-
 
     private void convetirainput() {
-        this.universityInput.setId(new SimpleStringProperty(universityDto.getId().toString()));
-        universityInput.setName(new SimpleStringProperty(universityDto.getName()));
-        universityInput.setLocation(new SimpleStringProperty(universityDto.getLocation()));
+        this.universityInput.setId(universityDto.getId());
+        this.universityInput.setName(universityDto.getName());
+        this.universityInput.setLocation(universityDto.getLocation());
+        idTxf.setText(universityInput.getId().toString());
+        txfName.setText(universityInput.getName());
+        txfLocation.setText(universityInput.getLocation());
     }
 
     private void convertirADto() {
+        universityInput.setName(txfName.getText());
+        universityInput.setLocation(txfLocation.getText());
+
         if (universityInput.getId() != null &&
-                !(universityInput.getId().get().equals(universityDto.getId().toString()))) {
+                !(universityInput.getId().equals(universityDto.getId().toString()))) {
             extractId();
         }
-        universityDto.setLocation(universityInput.getLocation().get());
-        universityDto.setName(universityInput.getName().get());
+        universityDto.setLocation(universityInput.getLocation());
+        universityDto.setName(universityInput.getName());
     }
 
     void extractId() {
         try {
-            universityDto.setId(Long.parseLong(universityInput.getId().get()));
+            universityDto.setId(universityDto.getId());
         } catch (NumberFormatException e) {
             System.err.println("Error: No se puede convertir a Long");
+        }
+    }
+
+    private void clean() {
+        this.idTxf.clear();
+        this.txfLocation.clear();
+        this.txfName.clear();
+    }
+
+    private void indicateRequeridos() {
+        requeridos.clear();
+        requeridos.addAll(Arrays.asList(txfLocation, txfName, idTxf));
+    }
+
+    public String validarRequeridos() {
+        boolean valids = true;
+        String invalidSpaces = "";
+        for (Node node : requeridos) {
+            if (node instanceof MFXTextField && (((MFXTextField) node).getText() == null || ((MFXTextField) node).getText().isBlank())) {
+                if (valids) {
+                    invalidSpaces += ((MFXTextField) node).getFloatingText();
+                } else {
+                    invalidSpaces += "," + ((MFXTextField) node).getFloatingText();
+                }
+                valids = false;
+            }
+        }
+        if (valids) {
+            return "";
+        } else {
+            return "Campos requeridos o con problemas de formato [" + invalidSpaces + "].";
         }
     }
 

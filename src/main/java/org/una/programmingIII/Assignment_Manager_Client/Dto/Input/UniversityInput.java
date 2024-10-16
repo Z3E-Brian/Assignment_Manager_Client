@@ -1,28 +1,20 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto.Input;
 
-import javafx.beans.property.SimpleStringProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UniversityInput {
-    public SimpleStringProperty id;
-    public SimpleStringProperty name;
-    public SimpleStringProperty location;
-    public List<FacultyInput> faculties;
-
-    public UniversityInput() {
-        this.name = new SimpleStringProperty();
-        this.location = new SimpleStringProperty();
-        this.faculties = new ArrayList<>();
-        this.id = new SimpleStringProperty();
-    }
-
+    private Long id;
+    private String name;
+    private String location;
+    private List<FacultyInput> faculties;
 
 }
 

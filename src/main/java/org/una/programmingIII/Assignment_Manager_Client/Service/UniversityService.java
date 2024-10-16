@@ -79,7 +79,6 @@ public class UniversityService {
     // PUT: Actualizar un usuario por ID
     public UniversityDto updateUniversity(Long id, UniversityInput universityInput) throws Exception {
         String requestBody = objectMapper.writeValueAsString(universityInput);
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
                 .header("Content-Type", "application/json")
