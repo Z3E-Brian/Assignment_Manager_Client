@@ -67,7 +67,7 @@
                      <children>
                         <HBox HBox.hgrow="ALWAYS">
                            <children>
-                              <TableView fx:id="universityTable" HBox.hgrow="ALWAYS">
+                              <TableView fx:id="universityTable" onMousePressed="#onMousePressedUniversityTable" HBox.hgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="idColumn" maxWidth="30.0" prefWidth="25.0" text="ID" />
                                     <TableColumn fx:id="nameColumn" prefWidth="150" text="Nombre" />
