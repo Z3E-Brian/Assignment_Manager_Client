@@ -74,19 +74,14 @@ public class UniversityMaintenanceController extends Controller {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        indicateRequeridos();
         loadUniversities();
+        idTxf.setDisable(true);
     }
 
-    private void loadUniversities() {
-        try {
-            List<UniversityDto> universityDtoList = universityService.getAllUniversities();
-            ObservableList<UniversityDto> universityDtoObservableList = FXCollections.observableArrayList(universityDtoList);
-            universityTable.setItems(universityDtoObservableList);
-        } catch (java.net.ConnectException e) {
-            showAlert("Connection Error", "Failed to connect to the server. Please make sure the server is running.", Alert.AlertType.ERROR);
-        } catch (Exception e) {
-            showAlert("Error Loading Universities", e.getMessage(), Alert.AlertType.ERROR);
-        }
+    @FXML
+    void onActionBtnNew(ActionEvent event) throws Exception {
+        clean();
     }
 
     @FXML
@@ -96,28 +91,16 @@ public class UniversityMaintenanceController extends Controller {
     }
 
     @FXML
-    void onActionBtnNew(ActionEvent event) throws Exception {
-        String invalids = validarRequeridos();
-        if (invalids.isBlank()) {
-            System.out.println(invalids);
-            new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
-        } else {
-            universityInput = new UniversityInput();
-            universityInput.setName(txfName.getText());
-            universityInput.setLocation(txfLocation.getText());
-            universityService.createUniversity(universityInput);
-            loadUniversities();
-        }
-    }
-
-    @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
         if (!(idTxf.getText().isBlank())) {
             convertirADto();
             universityDto = universityService.updateUniversity(universityDto.getId(), universityInput);
             loadUniversities();
+        } else {
+            createUniversity();
         }
     }
+
 
     @FXML
     void onActionBtnDelete(ActionEvent event) throws Exception {
@@ -126,16 +109,8 @@ public class UniversityMaintenanceController extends Controller {
             clean();
             loadUniversities();
         } else {
-            System.out.println("Seleccionar universidad a eliminar");
+            new Message().showModal(Alert.AlertType.WARNING, "Eliminar universidad", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
         }
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setHeaderText(title);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     @FXML
@@ -151,6 +126,49 @@ public class UniversityMaintenanceController extends Controller {
             convetirainput();
             System.out.println(universityInput);
 
+        }
+    }
+
+    private void clean() {
+        this.idTxf.clear();
+        this.txfLocation.clear();
+        this.txfName.clear();
+        universityDto = new UniversityDto();
+        universityInput = new UniversityInput();
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setHeaderText(title);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void createUniversity() throws Exception {
+        String invalids = validarRequeridos();
+        if (!(invalids.isBlank())) {
+            System.out.println(invalids);
+            new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
+        } else {
+            universityInput = new UniversityInput();
+            universityInput.setName(txfName.getText());
+            universityInput.setLocation(txfLocation.getText());
+            universityService.createUniversity(universityInput);
+            clean();
+            loadUniversities();
+        }
+    }
+
+    private void loadUniversities() {
+        try {
+            List<UniversityDto> universityDtoList = universityService.getAllUniversities();
+            ObservableList<UniversityDto> universityDtoObservableList = FXCollections.observableArrayList(universityDtoList);
+            universityTable.setItems(universityDtoObservableList);
+        } catch (java.net.ConnectException e) {
+            showAlert("Connection Error", "Failed to connect to the server. Please make sure the server is running.", Alert.AlertType.ERROR);
+        } catch (Exception e) {
+            showAlert("Error Loading Universities", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -183,15 +201,9 @@ public class UniversityMaintenanceController extends Controller {
         }
     }
 
-    private void clean() {
-        this.idTxf.clear();
-        this.txfLocation.clear();
-        this.txfName.clear();
-    }
-
     private void indicateRequeridos() {
         requeridos.clear();
-        requeridos.addAll(Arrays.asList(txfLocation, txfName, idTxf));
+        requeridos.addAll(Arrays.asList(txfLocation, txfName));
     }
 
     public String validarRequeridos() {
