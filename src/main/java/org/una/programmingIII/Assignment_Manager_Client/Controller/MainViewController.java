@@ -61,7 +61,7 @@ public class MainViewController extends Controller {
     }
     @FXML
     void onCustomUser(ActionEvent event) {
-        FlowController.getInstance().goView("UserView");
+        FlowController.getInstance().goView("AssignmentView");
     }
 
 
