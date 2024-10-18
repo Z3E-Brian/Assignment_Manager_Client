@@ -14,9 +14,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Util.Prueba;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class CourseViewController extends Controller implements Initializable {
@@ -35,8 +33,8 @@ public class CourseViewController extends Controller implements Initializable {
         startDate = LocalDate.of(2024, 7, 25);
         endDate = LocalDate.of(2024, 11, 27);
         listPruebas = new ArrayList<>(Arrays.asList(
-                new Prueba(LocalDate.of(2024, 7, 26), "Primera"),
-                new Prueba(LocalDate.of(2024, 8, 5), "Segunda")));
+                new Prueba(LocalDate.of(2020, 7, 26), "General","First"),
+                new Prueba(LocalDate.of(2024, 8, 5),"25 of July - 31 of July", "Second")));
         acDates.prefHeightProperty().bind(scrollPane.heightProperty().subtract(5));
         acDates.prefWidthProperty().bind(scrollPane.widthProperty().subtract(15));
         addWeeklyTitledPanes(startDate, endDate);
@@ -74,19 +72,19 @@ public class CourseViewController extends Controller implements Initializable {
         header.getStyleClass().add("hBox-TitledPane");
         createButtonToAddFile(header);
         weekPane.setGraphic(header);
-        createVboxContentTitled(weekPane, currentStartDate, weekEndDate);
+        createVboxContentTitled(weekPane, titledData);
         acDates.getPanes().add(weekPane);
     }
 
-    private void createVboxContentTitled(TitledPane weekPane, LocalDate currentStartDate, LocalDate weekEndDate) {
+    private void createVboxContentTitled(TitledPane weekPane,String titledData) {
         VBox content = new VBox();
         VBox.setVgrow(content, Priority.ALWAYS);
         content.setMaxHeight(Double.MAX_VALUE);
         content.getStyleClass().add("vbox-Background-TitledPane");
 
         for (Prueba prueba : listPruebas) {
-            LocalDate createdDate = prueba.getCreatedDate();
-            if (!createdDate.isBefore(currentStartDate) && !createdDate.isAfter(weekEndDate)) {
+            String positionData = prueba.getPosition();
+            if (positionData.equals(titledData)) {
                 HBox contentData = new HBox();
                 createLabelToContent(contentData, prueba.getName(), this::goToFile);
                 contentData.getStyleClass().add("hBox-TitledPane");
@@ -94,7 +92,6 @@ public class CourseViewController extends Controller implements Initializable {
                 content.getChildren().add(contentData);
             }
         }
-
         weekPane.setContent(content);
     }
 
@@ -108,13 +105,11 @@ public class CourseViewController extends Controller implements Initializable {
         createDeleteButton(contentData);
         content.getChildren().add(contentData);
 
-        // Obtener la segunda fecha del rango del TitledPane
+//Catch the position of the titledPane
         String titledData = ((Label) ((HBox) titledPane.getGraphic()).getChildren().get(0)).getText();
-        String[] dates = titledData.split(" - ");
-        if (dates.length == 2) {
-            LocalDate secondDate = convertStringToDate(dates[0]);
-            System.out.println("Segunda fecha en el rango: " + secondDate);
-        }
+
+            System.out.println(titledData);
+
     }
 
     private void goToFile(MouseEvent event) {
@@ -124,10 +119,10 @@ public class CourseViewController extends Controller implements Initializable {
     private void deleteFile(ActionEvent event) {
         Button button = (Button) event.getSource();
         HBox parent = (HBox) button.getParent();
-        Label label = (Label) parent.getChildren().get(0); // Asumiendo que el Label es el primer hijo
+        Label label = (Label) parent.getChildren().getFirst();
         String labelText = label.getText();
         System.out.println(labelText);
-        // Lógica para eliminar de la base de datos usando labelText
+        // Logic to delete the file
         //    deleteFromDatabase(labelText);
         parent.getChildren().clear();
     }
@@ -161,8 +156,4 @@ public class CourseViewController extends Controller implements Initializable {
                 endDate.getDayOfMonth() + " of " + endDate.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
     }
 
-    private LocalDate convertStringToDate(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'of' MMMM yyyy", Locale.ENGLISH);
-        return LocalDate.parse(dateString + " " + LocalDate.now().getYear(), formatter);
-    }
 }

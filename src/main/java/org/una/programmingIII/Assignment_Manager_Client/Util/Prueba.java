@@ -11,5 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Prueba {
     LocalDate createdDate;
+    String position;
     String name;
 }
