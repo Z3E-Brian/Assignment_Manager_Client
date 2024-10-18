@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UniversityInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
+import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,14 +88,20 @@ public class UniversityMaintenanceController extends Controller {
 
     @FXML
     void onActionBtnEditFaculties(ActionEvent event) {
-        clean();
-        loadUniversities();
+        if (universityDto != null && universityTable.getSelectionModel().getSelectedItem() != null) {
+            setUniversityDto();
+            FlowController.getInstance().goViewInWindow("EditUniversityFacultiesView");
+            ((Stage) btnEdit.getScene().getWindow()).close();
+        } else {
+            new Message().showModal(Alert.AlertType.ERROR, "FacultadesUniversidad", getStage(), "Debes de seleccionar una universidad");
+
+        }
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
         if (!(idTxf.getText().isBlank())) {
-            convertirADto();
+            converToDto();
             universityDto = universityService.updateUniversity(universityDto.getId(), universityInput);
             loadUniversities();
         } else {
@@ -123,7 +131,7 @@ public class UniversityMaintenanceController extends Controller {
     void onMousePressedUniversityTable(MouseEvent event) {
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
-            convetirainput();
+            convertToInput();
             System.out.println(universityInput);
 
         }
@@ -172,7 +180,7 @@ public class UniversityMaintenanceController extends Controller {
         }
     }
 
-    private void convetirainput() {
+    private void convertToInput() {
         this.universityInput.setId(universityDto.getId());
         this.universityInput.setName(universityDto.getName());
         this.universityInput.setLocation(universityDto.getLocation());
@@ -181,7 +189,7 @@ public class UniversityMaintenanceController extends Controller {
         txfLocation.setText(universityInput.getLocation());
     }
 
-    private void convertirADto() {
+    private void converToDto() {
         universityInput.setName(txfName.getText());
         universityInput.setLocation(txfLocation.getText());
 
@@ -204,6 +212,10 @@ public class UniversityMaintenanceController extends Controller {
     private void indicateRequeridos() {
         requeridos.clear();
         requeridos.addAll(Arrays.asList(txfLocation, txfName));
+    }
+
+    private void setUniversityDto() {
+        AppContext.getInstance().set("universityInput", universityInput);
     }
 
     public String validarRequeridos() {
