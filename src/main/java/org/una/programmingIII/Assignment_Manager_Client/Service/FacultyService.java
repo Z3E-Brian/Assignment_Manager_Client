@@ -3,8 +3,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,52 +12,53 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
-public class UniversityService {
-    private static final String BASE_URL = "http://localhost:8080/api/universities";
+public class FacultyService {
+    private static final String BASE_URL = "http://localhost:8080/api/faculties";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    public UniversityService() {
+    public FacultyService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-    public UniversityDto getUniversityById(Long id) throws Exception {
+    public Map<String, Object> getFacultiesByUniversityId(Long universityId, int page, int size, int limit) throws Exception {
+
+        String url = BASE_URL + "getPageable/" + universityId + "?page=" + page + "&size=" + size + "&limit=" + limit;
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getById?id=" + id))
+                .uri(URI.create(url))
                 .GET()
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), UniversityDto.class);
-        } else if (response.statusCode() == 404) {
-            throw new Exception("University not found");
-        } else {
-            throw new Exception("Error fetching university: " + response.statusCode());
-        }
-    }
-
-    public List<UniversityDto> getAllUniversities() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getUniversities"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<UniversityDto>>() {
+            return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
             });
         } else {
-            throw new Exception("Error fetching users: " + response.statusCode());
+            throw new Exception("Error fetching faculties by university ID: " + response.statusCode());
         }
     }
 
-    // GET: Obtener  Map
-    public Map<String, Object> getAllUniversities(int page, int size, int limit) throws Exception {
+
+    public List<FacultyDto> getAllFaculties() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/getAllFaculties"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<FacultyDto>>() {
+            });
+        } else {
+            throw new Exception("Error fetching faculties: " + response.statusCode());
+        }
+    }
+
+    public Map<String, Object> getFaculties(int page, int size, int limit) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit))
                 .GET()
@@ -70,13 +70,12 @@ public class UniversityService {
             return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
             });
         } else {
-            throw new Exception("Error fetching users: " + response.statusCode());
+            throw new Exception("Error fetching faculties: " + response.statusCode());
         }
     }
 
-    // POST: Crear un nuevo usuario
-    public UniversityDto createUniversity(UniversityDto universityInput) throws Exception {
-        String requestBody = objectMapper.writeValueAsString(universityInput);
+    public FacultyDto createFaculty(FacultyDto facultyInput) throws Exception {
+        String requestBody = objectMapper.writeValueAsString(facultyInput);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/create"))
@@ -87,15 +86,14 @@ public class UniversityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 201) {
-            return objectMapper.readValue(response.body(), UniversityDto.class);
+            return objectMapper.readValue(response.body(), FacultyDto.class);
         } else {
-            throw new Exception("Error creating user: " + response.statusCode());
+            throw new Exception("Error creating faculty: " + response.statusCode());
         }
     }
 
-    // PUT: Actualizar un usuario por ID
-    public UniversityDto updateUniversity(Long id, UniversityDto universityInput) throws Exception {
-        String requestBody = objectMapper.writeValueAsString(universityInput);
+    public FacultyDto updateFaculty(Long id, FacultyDto facultyInput) throws Exception {
+        String requestBody = objectMapper.writeValueAsString(facultyInput);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
                 .header("Content-Type", "application/json")
@@ -105,15 +103,16 @@ public class UniversityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), UniversityDto.class);
+            return objectMapper.readValue(response.body(), FacultyDto.class);
         } else if (response.statusCode() == 404) {
-            throw new Exception("User not found");
+            throw new Exception("Faculty not found");
         } else {
-            throw new Exception("Error updating user: " + response.statusCode());
+            throw new Exception("Error updating faculty: " + response.statusCode());
         }
     }
 
-    public void deleteUniversity(Long id) throws Exception {
+    // DELETE: Eliminar una facultad por ID
+    public void deleteFaculty(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
                 .DELETE()
@@ -122,7 +121,7 @@ public class UniversityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 204) {
-            throw new Exception("Error deleting user: " + response.statusCode());
+            throw new Exception("Error deleting faculty: " + response.statusCode());
         }
     }
 }

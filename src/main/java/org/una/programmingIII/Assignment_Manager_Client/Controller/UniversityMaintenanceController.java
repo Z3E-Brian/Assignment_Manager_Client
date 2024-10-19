@@ -12,7 +12,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UniversityInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
@@ -62,7 +61,6 @@ public class UniversityMaintenanceController extends Controller {
 
     private UniversityService universityService;
     private UniversityDto universityDto;
-    private UniversityInput universityInput;
     List<Node> requeridos;
 
     @Override
@@ -70,7 +68,6 @@ public class UniversityMaintenanceController extends Controller {
         requeridos = new ArrayList<>();
         universityService = new UniversityService();
         universityDto = new UniversityDto();
-        universityInput = new UniversityInput();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -101,12 +98,17 @@ public class UniversityMaintenanceController extends Controller {
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
         if (!(idTxf.getText().isBlank())) {
-            converToDto();
-            universityDto = universityService.updateUniversity(universityDto.getId(), universityInput);
-            loadUniversities();
-        } else {
+            updateUniversity();
+        }else {
             createUniversity();
         }
+    }
+
+    private void updateUniversity() throws Exception {
+        universityDto.setLocation(txfLocation.getText());
+        universityDto.setName(txfName.getText());
+        universityDto = universityService.updateUniversity(universityDto.getId(), universityDto);
+        loadUniversities();
     }
 
 
@@ -131,9 +133,8 @@ public class UniversityMaintenanceController extends Controller {
     void onMousePressedUniversityTable(MouseEvent event) {
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
-            convertToInput();
-            System.out.println(universityInput);
-
+            bindear();
+            System.out.println(universityDto);
         }
     }
 
@@ -142,15 +143,6 @@ public class UniversityMaintenanceController extends Controller {
         this.txfLocation.clear();
         this.txfName.clear();
         universityDto = new UniversityDto();
-        universityInput = new UniversityInput();
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setHeaderText(title);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void createUniversity() throws Exception {
@@ -159,10 +151,10 @@ public class UniversityMaintenanceController extends Controller {
             System.out.println(invalids);
             new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
         } else {
-            universityInput = new UniversityInput();
-            universityInput.setName(txfName.getText());
-            universityInput.setLocation(txfLocation.getText());
-            universityService.createUniversity(universityInput);
+            universityDto = new UniversityDto();
+            universityDto.setName(txfName.getText());
+            universityDto.setLocation(txfLocation.getText());
+            universityService.createUniversity(universityDto);
             clean();
             loadUniversities();
         }
@@ -174,39 +166,17 @@ public class UniversityMaintenanceController extends Controller {
             ObservableList<UniversityDto> universityDtoObservableList = FXCollections.observableArrayList(universityDtoList);
             universityTable.setItems(universityDtoObservableList);
         } catch (java.net.ConnectException e) {
-            showAlert("Connection Error", "Failed to connect to the server. Please make sure the server is running.", Alert.AlertType.ERROR);
+            new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Failed to connect to the server. Please make sure the server is running.");
         } catch (Exception e) {
-            showAlert("Error Loading Universities", e.getMessage(), Alert.AlertType.ERROR);
+            new Message().showModal(Alert.AlertType.ERROR, " Error loading Univesities", getStage(), "Failed to load Universities.");
+
         }
     }
 
-    private void convertToInput() {
-        this.universityInput.setId(universityDto.getId());
-        this.universityInput.setName(universityDto.getName());
-        this.universityInput.setLocation(universityDto.getLocation());
-        idTxf.setText(universityInput.getId().toString());
-        txfName.setText(universityInput.getName());
-        txfLocation.setText(universityInput.getLocation());
-    }
-
-    private void converToDto() {
-        universityInput.setName(txfName.getText());
-        universityInput.setLocation(txfLocation.getText());
-
-        if (universityInput.getId() != null &&
-                !(universityInput.getId().equals(universityDto.getId().toString()))) {
-            extractId();
-        }
-        universityDto.setLocation(universityInput.getLocation());
-        universityDto.setName(universityInput.getName());
-    }
-
-    void extractId() {
-        try {
-            universityDto.setId(universityDto.getId());
-        } catch (NumberFormatException e) {
-            System.err.println("Error: No se puede convertir a Long");
-        }
+    private void bindear() {
+        txfLocation.setText(universityDto.getLocation());
+        txfName.setText(universityDto.getName());
+        idTxf.setText(universityDto.getId().toString());
     }
 
     private void indicateRequeridos() {
@@ -215,7 +185,7 @@ public class UniversityMaintenanceController extends Controller {
     }
 
     private void setUniversityDto() {
-        AppContext.getInstance().set("universityInput", universityInput);
+        AppContext.getInstance().set("universityDto", universityDto);
     }
 
     public String validarRequeridos() {
