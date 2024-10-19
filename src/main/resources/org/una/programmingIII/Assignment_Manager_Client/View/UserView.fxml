@@ -5,69 +5,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="674.0" prefWidth="679.0" spacing="15.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
+<VBox alignment="TOP_CENTER" prefHeight="674.0" prefWidth="679.0" spacing="15.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
    <HBox alignment="CENTER_LEFT">
-      <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios">
-         <padding>
-            <Insets left="15.0" />
-         </padding>
-      </Label>
+      <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios" />
    </HBox>
-   <HBox fx:id="hBoxID" alignment="CENTER_LEFT" spacing="15.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-      <padding>
-         <Insets left="15.0" />
-      </padding>
-      <Label text="ID:" />
-      <MFXTextField fx:id="IDField" floatMode="ABOVE" prefHeight="30.0" HBox.hgrow="ALWAYS">
+   <HBox fx:id="hBoxID" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+      <MFXTextField fx:id="IDField" floatMode="ABOVE" prefHeight="30.0" promptText="ID (Exmp. 12)" HBox.hgrow="ALWAYS">
          <HBox.margin>
-            <Insets right="15.0" />
+            <Insets right="300.0" />
          </HBox.margin>
       </MFXTextField>
    </HBox>
-   <HBox alignment="CENTER_LEFT" spacing="15.0" VBox.vgrow="ALWAYS">
-      <padding>
-         <Insets left="15.0" />
-      </padding>
-
-      <Label text="Identity Card Number:" />
-      <MFXTextField fx:id="numberIDField" floatMode="ABOVE" prefHeight="30.0" prefWidth="456.0" HBox.hgrow="ALWAYS">
+   <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+      <MFXTextField fx:id="numberIDField" floatMode="ABOVE" prefHeight="30.0" prefWidth="456.0" promptText="Identity Card Number (Exmp. 112341234)" HBox.hgrow="ALWAYS">
          <HBox.margin>
-            <Insets right="15.0" />
+            <Insets right="300.0" />
          </HBox.margin></MFXTextField>
    </HBox>
-   <HBox alignment="CENTER_LEFT" spacing="15.0" VBox.vgrow="ALWAYS">
-      <padding>
-         <Insets left="15.0" />
-      </padding>
-
-      <Label text="Name:" />
-      <MFXTextField fx:id="nameField" floatMode="ABOVE" prefHeight="30.0" prefWidth="581.0" HBox.hgrow="ALWAYS">
+   <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+      <MFXTextField fx:id="nameField" floatMode="ABOVE" prefHeight="29.0" prefWidth="636.0" promptText="Name (Exmp. example example example)" HBox.hgrow="ALWAYS">
          <HBox.margin>
-            <Insets right="15.0" />
+            <Insets right="300.0" />
          </HBox.margin></MFXTextField>
    </HBox>
-   <HBox alignment="CENTER_LEFT" spacing="15.0" VBox.vgrow="ALWAYS">
-      <padding>
-         <Insets left="15.0" />
-      </padding>
-
-      <Label text="Email:" />
-      <MFXTextField fx:id="emailField" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" HBox.hgrow="ALWAYS">
+   <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+      <MFXTextField fx:id="emailField" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" promptText="Email (Exmp. example@example.com)" HBox.hgrow="ALWAYS">
          <HBox.margin>
-            <Insets right="15.0" />
+            <Insets right="300.0" />
          </HBox.margin></MFXTextField>
    </HBox>
-
+   <Accordion>
+     <panes>
+       <TitledPane animated="false" text="Permissions">
+               <FlowPane fx:id="fpPermissions" prefHeight="200.0" prefWidth="200.0" />
+            <padding>
+               <Insets right="300.0" />
+            </padding>
+       </TitledPane>
+     </panes>
+   </Accordion>
 
    <HBox alignment="CENTER_LEFT" spacing="20.0" VBox.vgrow="ALWAYS">
       <padding>
          <Insets left="20.0" />
       </padding>
 
-      <Button fx:id="createButton" onAction="#createUser" text="Crear" />
-      <Button fx:id="updateButton" onAction="#updateUser" text="Actualizar" />
-      <Button fx:id="deleteButton" onAction="#deleteUser" text="Eliminar" />
+      <Button fx:id="createButton" onAction="#createUser" text="Create" />
+      <Button fx:id="updateButton" onAction="#updateUser" text="Update" />
+      <Button fx:id="deleteButton" onAction="#deleteUser" text="Delete" />
       <Button fx:id="getAllButton" onAction="#getAll" text="getAll" />
+      <Button fx:id="getUploadButton" onAction="#loadUserByEmail" text="Upload" />
    </HBox>
 
    <TableView fx:id="userTable">
@@ -78,5 +65,8 @@
          <TableColumn fx:id="emailColumn" prefWidth="200" text="Correo Electrónico" />
       </columns>
    </TableView>
+   <padding>
+      <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+   </padding>
 
 </VBox>
