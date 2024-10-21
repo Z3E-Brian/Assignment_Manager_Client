@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class UniversityMaintainanceFacultiesController extends Controller {
+public class FacultyMaintenanceController extends Controller {
     @FXML
     private MFXButton btnAddFaculty;
 
@@ -102,7 +102,7 @@ public class UniversityMaintainanceFacultiesController extends Controller {
     void onActionBtnDepartments(ActionEvent event) {
         if (tbvFaculty.getSelectionModel().getSelectedItem() != null && facultyDto != null) {
             AppContext.getInstance().set("facultyDto", facultyDto);
-            FlowController.getInstance().goViewInWindow("DepartmentMantainanceView");
+            FlowController.getInstance().goViewInWindow("DepartmentMaintenanceView");
             ((Stage) btnDepartments.getScene().getWindow()).close();
         }
     }
@@ -144,7 +144,8 @@ public class UniversityMaintainanceFacultiesController extends Controller {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-        System.out.println("imvBack");
+        FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
+        ((Stage) btnDepartments.getScene().getWindow()).close();
     }
 
     @FXML
@@ -162,6 +163,7 @@ public class UniversityMaintainanceFacultiesController extends Controller {
             universityDto = universityService.getUniversityById(universityDto.getId());
             List<FacultyDto> facultyDtoList = universityDto.getFaculties();
             ObservableList<FacultyDto> facultyDtoObservableList = FXCollections.observableArrayList(facultyDtoList);
+            tbvFaculty.getItems().clear();
             tbvFaculty.setItems(facultyDtoObservableList);
         } catch (Exception e) {
             new Message().showModal(Alert.AlertType.WARNING, "Error de conexion", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
@@ -189,8 +191,8 @@ public class UniversityMaintainanceFacultiesController extends Controller {
             facultyDto.setName(txfFacultyName.getText());
             facultyDto.setUniversityId(universityDto.getId());
             facultyDto = facultyService.createFaculty(facultyDto);
-            clean();
             loadUniversityFaculties();
+            clean();
         }
     }
 
@@ -202,15 +204,16 @@ public class UniversityMaintainanceFacultiesController extends Controller {
         } else {
             facultyDto.setName(txfFacultyName.getText());
             facultyDto = facultyService.updateFaculty(facultyDto.getId(), facultyDto);
-            clean();
             loadUniversityFaculties();
         }
+        clean();
     }
 
     private void clean() {
         this.txfFacultyName.clear();
         this.txfId.clear();
         facultyDto = new FacultyDto();
+        tbvFaculty.getSelectionModel().clearSelection();
     }
 
     private void indicateRequeridos() {

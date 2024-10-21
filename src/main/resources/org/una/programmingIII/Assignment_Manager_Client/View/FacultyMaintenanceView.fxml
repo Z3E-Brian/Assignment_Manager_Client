@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UniversityMaintainanceFacultiesController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.FacultyMaintenanceController">
    <children>
       <VBox layoutX="10.0" layoutY="10.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

@@ -97,7 +97,7 @@ public class UniversityMaintenanceController extends Controller {
     void onActionBtnEditFaculties(ActionEvent event) {
         if (universityDto != null && universityTable.getSelectionModel().getSelectedItem() != null) {
             setUniversityDto();
-            FlowController.getInstance().goViewInWindow("EditUniversityFacultiesView");
+            FlowController.getInstance().goViewInWindow("FacultyMaintenanceView");
             ((Stage) btnEdit.getScene().getWindow()).close();
         } else {
             new Message().showModal(Alert.AlertType.ERROR, "FacultadesUniversidad", getStage(), "Debes de seleccionar una universidad");
@@ -112,13 +112,6 @@ public class UniversityMaintenanceController extends Controller {
         } else {
             createUniversity();
         }
-    }
-
-    private void updateUniversity() throws Exception {
-        universityDto.setLocation(txfLocation.getText());
-        universityDto.setName(txfName.getText());
-        universityDto = universityService.updateUniversity(universityDto.getId(), universityDto);
-        loadUniversities();
     }
 
 
@@ -151,6 +144,7 @@ public class UniversityMaintenanceController extends Controller {
 
     @FXML
     void onMouseClickedImvSearch(MouseEvent event) {
+        loadUniversities();
         System.out.println("search");
     }
 
@@ -164,6 +158,7 @@ public class UniversityMaintenanceController extends Controller {
         this.txfLocation.clear();
         this.txfName.clear();
         universityDto = new UniversityDto();
+        universityTable.getSelectionModel().clearSelection();
     }
 
     private void createUniversity() throws Exception {
@@ -181,10 +176,19 @@ public class UniversityMaintenanceController extends Controller {
         }
     }
 
+    private void updateUniversity() throws Exception {
+        universityDto.setLocation(txfLocation.getText());
+        universityDto.setName(txfName.getText());
+        universityDto = universityService.updateUniversity(universityDto.getId(), universityDto);
+        loadUniversities();
+        clean();
+    }
+
     private void loadUniversities() {
         try {
             List<UniversityDto> universityDtoList = universityService.getAllUniversities();
             ObservableList<UniversityDto> universityDtoObservableList = FXCollections.observableArrayList(universityDtoList);
+            universityTable.getItems().clear();
             universityTable.setItems(universityDtoObservableList);
         } catch (java.net.ConnectException e) {
             new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Failed to connect to the server. Please make sure the server is running.");

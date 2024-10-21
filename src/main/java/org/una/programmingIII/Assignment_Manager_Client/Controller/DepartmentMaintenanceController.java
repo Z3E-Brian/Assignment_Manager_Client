@@ -13,17 +13,19 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FacultyService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 
 import java.util.List;
 
-public class DepartmentMantainanceController extends Controller {
+public class DepartmentMaintenanceController extends Controller {
 
     @FXML
     private MFXButton btnDelete;
@@ -84,7 +86,7 @@ public class DepartmentMantainanceController extends Controller {
 
     @FXML
     void OnMousePressedTbvDepartment(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvDepartment.getSelectionModel().getSelectedItem() != null) {
             departmentDto = tbvDepartment.getSelectionModel().getSelectedItem();
             bind();
         }
@@ -117,7 +119,8 @@ public class DepartmentMantainanceController extends Controller {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-        System.out.println("imvBack");
+        FlowController.getInstance().goViewInWindow("FacultyMaintenanceView");
+        ((Stage) btnSave.getScene().getWindow()).close();
     }
 
     @FXML
@@ -164,6 +167,7 @@ public class DepartmentMantainanceController extends Controller {
             facultyDto = facultyService.getFacultyById(facultyDto.getId());
             List<DepartmentDto> departmentDtoList = facultyDto.getDepartments();
             ObservableList<DepartmentDto> departmentDtoObservableList = FXCollections.observableArrayList(departmentDtoList);
+            tbvDepartment.getItems().clear();
             tbvDepartment.setItems(departmentDtoObservableList);
         } catch (Exception e) {
             new Message().showModal(Alert.AlertType.WARNING, "Error de conexion", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
