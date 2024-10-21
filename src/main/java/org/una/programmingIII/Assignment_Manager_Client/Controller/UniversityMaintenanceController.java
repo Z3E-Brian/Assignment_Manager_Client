@@ -11,11 +11,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UniversityInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
+import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,9 +60,17 @@ public class UniversityMaintenanceController extends Controller {
     @FXML
     private TableView<UniversityDto> universityTable;
 
+    @FXML
+    private ImageView imvClose;
+
+    @FXML
+    private ImageView imvSearch;
+
+    @FXML
+    private ImageView back;
+
     private UniversityService universityService;
     private UniversityDto universityDto;
-    private UniversityInput universityInput;
     List<Node> requeridos;
 
     @Override
@@ -68,7 +78,6 @@ public class UniversityMaintenanceController extends Controller {
         requeridos = new ArrayList<>();
         universityService = new UniversityService();
         universityDto = new UniversityDto();
-        universityInput = new UniversityInput();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -86,19 +95,30 @@ public class UniversityMaintenanceController extends Controller {
 
     @FXML
     void onActionBtnEditFaculties(ActionEvent event) {
-        clean();
-        loadUniversities();
+        if (universityDto != null && universityTable.getSelectionModel().getSelectedItem() != null) {
+            setUniversityDto();
+            FlowController.getInstance().goViewInWindow("EditUniversityFacultiesView");
+            ((Stage) btnEdit.getScene().getWindow()).close();
+        } else {
+            new Message().showModal(Alert.AlertType.ERROR, "FacultadesUniversidad", getStage(), "Debes de seleccionar una universidad");
+
+        }
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
         if (!(idTxf.getText().isBlank())) {
-            convertirADto();
-            universityDto = universityService.updateUniversity(universityDto.getId(), universityInput);
-            loadUniversities();
+            updateUniversity();
         } else {
             createUniversity();
         }
+    }
+
+    private void updateUniversity() throws Exception {
+        universityDto.setLocation(txfLocation.getText());
+        universityDto.setName(txfName.getText());
+        universityDto = universityService.updateUniversity(universityDto.getId(), universityDto);
+        loadUniversities();
     }
 
 
@@ -113,20 +133,30 @@ public class UniversityMaintenanceController extends Controller {
         }
     }
 
-    @FXML
-    void onMouseClickedImgClose(MouseEvent event) {
-        System.out.println("pushed");
-        ((Stage) universityTable.getScene().getWindow()).close();
-    }
 
     @FXML
     void onMousePressedUniversityTable(MouseEvent event) {
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
-            convetirainput();
-            System.out.println(universityInput);
-
+            bindear();
+            System.out.println(universityDto);
         }
+    }
+
+    @FXML
+    void onMouseClickedImvBack(MouseEvent event) {
+        FlowController.getInstance().goViewInWindow("LogInView");
+        ((Stage) btnEdit.getScene().getWindow()).close();
+    }
+
+    @FXML
+    void onMouseClickedImvSearch(MouseEvent event) {
+        System.out.println("search");
+    }
+
+    @FXML
+    void onMouseClickedImvClose(MouseEvent event) {
+        ((Stage) universityTable.getScene().getWindow()).close();
     }
 
     private void clean() {
@@ -134,15 +164,6 @@ public class UniversityMaintenanceController extends Controller {
         this.txfLocation.clear();
         this.txfName.clear();
         universityDto = new UniversityDto();
-        universityInput = new UniversityInput();
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setHeaderText(title);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void createUniversity() throws Exception {
@@ -151,10 +172,10 @@ public class UniversityMaintenanceController extends Controller {
             System.out.println(invalids);
             new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
         } else {
-            universityInput = new UniversityInput();
-            universityInput.setName(txfName.getText());
-            universityInput.setLocation(txfLocation.getText());
-            universityService.createUniversity(universityInput);
+            universityDto = new UniversityDto();
+            universityDto.setName(txfName.getText());
+            universityDto.setLocation(txfLocation.getText());
+            universityService.createUniversity(universityDto);
             clean();
             loadUniversities();
         }
@@ -166,44 +187,26 @@ public class UniversityMaintenanceController extends Controller {
             ObservableList<UniversityDto> universityDtoObservableList = FXCollections.observableArrayList(universityDtoList);
             universityTable.setItems(universityDtoObservableList);
         } catch (java.net.ConnectException e) {
-            showAlert("Connection Error", "Failed to connect to the server. Please make sure the server is running.", Alert.AlertType.ERROR);
+            new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Failed to connect to the server. Please make sure the server is running.");
         } catch (Exception e) {
-            showAlert("Error Loading Universities", e.getMessage(), Alert.AlertType.ERROR);
+            new Message().showModal(Alert.AlertType.ERROR, " Error loading Univesities", getStage(), "Failed to load Universities.");
+
         }
     }
 
-    private void convetirainput() {
-        this.universityInput.setId(universityDto.getId());
-        this.universityInput.setName(universityDto.getName());
-        this.universityInput.setLocation(universityDto.getLocation());
-        idTxf.setText(universityInput.getId().toString());
-        txfName.setText(universityInput.getName());
-        txfLocation.setText(universityInput.getLocation());
-    }
-
-    private void convertirADto() {
-        universityInput.setName(txfName.getText());
-        universityInput.setLocation(txfLocation.getText());
-
-        if (universityInput.getId() != null &&
-                !(universityInput.getId().equals(universityDto.getId().toString()))) {
-            extractId();
-        }
-        universityDto.setLocation(universityInput.getLocation());
-        universityDto.setName(universityInput.getName());
-    }
-
-    void extractId() {
-        try {
-            universityDto.setId(universityDto.getId());
-        } catch (NumberFormatException e) {
-            System.err.println("Error: No se puede convertir a Long");
-        }
+    private void bindear() {
+        txfLocation.setText(universityDto.getLocation());
+        txfName.setText(universityDto.getName());
+        idTxf.setText(universityDto.getId().toString());
     }
 
     private void indicateRequeridos() {
         requeridos.clear();
         requeridos.addAll(Arrays.asList(txfLocation, txfName));
+    }
+
+    private void setUniversityDto() {
+        AppContext.getInstance().set("universityDto", universityDto);
     }
 
     public String validarRequeridos() {

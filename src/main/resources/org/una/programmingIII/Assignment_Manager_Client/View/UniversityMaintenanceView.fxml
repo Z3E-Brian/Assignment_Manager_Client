@@ -43,12 +43,17 @@
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="25.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="imvBack" fitHeight="25.0" fitWidth="25.0" layoutX="159.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvBack" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Assets/Back.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="imvSearch" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#onMouseClickedImvSearch" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../Assets/lupa.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fitHeight="25.0" fitWidth="20.0" layoutX="10.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="imvClose" fitHeight="25.0" fitWidth="25.0" layoutX="206.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvClose" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../Assets/Delete.png" />
                                  </image>
