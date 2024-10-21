@@ -23,6 +23,23 @@ public class FacultyService {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
+    public FacultyDto getFacultyById(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/getById?id=" + id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), FacultyDto.class);
+        } else if (response.statusCode() == 404) {
+            throw new Exception("Faculty not found");
+        } else {
+            throw new Exception("Error fetching Faculty: " + response.statusCode());
+        }
+    }
+
     public Map<String, Object> getFacultiesByUniversityId(Long universityId, int page, int size, int limit) throws Exception {
 
         String url = BASE_URL + "getPageable/" + universityId + "?page=" + page + "&size=" + size + "&limit=" + limit;
@@ -111,7 +128,6 @@ public class FacultyService {
         }
     }
 
-    // DELETE: Eliminar una facultad por ID
     public void deleteFaculty(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
