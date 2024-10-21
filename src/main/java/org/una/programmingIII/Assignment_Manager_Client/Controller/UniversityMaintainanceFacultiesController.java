@@ -13,13 +13,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FacultyService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 
 import java.util.ArrayList;
@@ -58,6 +61,15 @@ public class UniversityMaintainanceFacultiesController extends Controller {
     @FXML
     private MFXTextField txfId;
 
+    @FXML
+    private ImageView imvBack;
+
+    @FXML
+    private ImageView imvClose;
+
+    @FXML
+    private ImageView imvSearch;
+
 
     private FacultyService facultyService;
     private UniversityService universityService;
@@ -88,8 +100,9 @@ public class UniversityMaintainanceFacultiesController extends Controller {
 
 
     @FXML
-    void onActionBtnDeparments(ActionEvent event) {
-
+    void onActionBtnDepartments(ActionEvent event) {
+        FlowController.getInstance().goViewInWindow("DepartmentMantainanceView");
+        ((Stage) btnDeparments.getScene().getWindow()).close();
     }
 
     @FXML
@@ -125,6 +138,21 @@ public class UniversityMaintainanceFacultiesController extends Controller {
             facultyDto = tbvFaculty.getSelectionModel().getSelectedItem();
             bindear();
         }
+    }
+
+    @FXML
+    void onMouseClickedImvBack(MouseEvent event) {
+        System.out.println("imvBack");
+    }
+
+    @FXML
+    void onMouseClickedImvClose(MouseEvent event) {
+        System.out.println("imvClose");
+    }
+
+    @FXML
+    void onMouseClickedImvSearch(MouseEvent event) {
+        System.out.println("imvSearch");
     }
 
     private void loadUniversityFaculties() {

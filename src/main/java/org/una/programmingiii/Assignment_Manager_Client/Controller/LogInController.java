@@ -30,6 +30,7 @@ public class LogInController extends Controller {
     @Override
     public void initialize() {
     }
+
     @FXML
     void onActionBtnLogIn(ActionEvent event) {
         String username = usernameField.getText();
@@ -43,7 +44,8 @@ public class LogInController extends Controller {
 
     @FXML
     void onActionBtnRegister(ActionEvent event) {
-FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
+        FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
+        ((Stage) btnRegister.getScene().getWindow()).close();
     }
 
     private boolean authenticateUser(String username, String password) {

@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
@@ -59,6 +60,15 @@ public class UniversityMaintenanceController extends Controller {
     @FXML
     private TableView<UniversityDto> universityTable;
 
+    @FXML
+    private ImageView imvClose;
+
+    @FXML
+    private ImageView imvSearch;
+
+    @FXML
+    private ImageView back;
+
     private UniversityService universityService;
     private UniversityDto universityDto;
     List<Node> requeridos;
@@ -99,7 +109,7 @@ public class UniversityMaintenanceController extends Controller {
     void onActionBtnSave(ActionEvent event) throws Exception {
         if (!(idTxf.getText().isBlank())) {
             updateUniversity();
-        }else {
+        } else {
             createUniversity();
         }
     }
@@ -123,11 +133,6 @@ public class UniversityMaintenanceController extends Controller {
         }
     }
 
-    @FXML
-    void onMouseClickedImgClose(MouseEvent event) {
-        System.out.println("pushed");
-        ((Stage) universityTable.getScene().getWindow()).close();
-    }
 
     @FXML
     void onMousePressedUniversityTable(MouseEvent event) {
@@ -136,6 +141,22 @@ public class UniversityMaintenanceController extends Controller {
             bindear();
             System.out.println(universityDto);
         }
+    }
+
+    @FXML
+    void onMouseClickedImvBack(MouseEvent event) {
+        FlowController.getInstance().goViewInWindow("LogInView");
+        ((Stage) btnEdit.getScene().getWindow()).close();
+    }
+
+    @FXML
+    void onMouseClickedImvSearch(MouseEvent event) {
+        System.out.println("search");
+    }
+
+    @FXML
+    void onMouseClickedImvClose(MouseEvent event) {
+        ((Stage) universityTable.getScene().getWindow()).close();
     }
 
     private void clean() {
