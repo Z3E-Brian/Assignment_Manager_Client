@@ -51,19 +51,28 @@ public class MainViewController extends Controller {
     @FXML
     void onActionBtnCoursesMenu(ActionEvent event) {
     }
-    private void handleMenuItemAction(MenuItem menuItem) {
-        String selectedCourse = menuItem.getText();
-        System.out.println("Selected course: " + selectedCourse);
-        if (selectedCourse.equals("Course 1")) {
-            FlowController.getInstance().goView("CourseView");
-        } else if (selectedCourse.equals("Course 2")) { FlowController.getInstance().goView("UploadTaskView");}
 
-    }
     @FXML
     void onCustomUser(ActionEvent event) {
         FlowController.getInstance().goView("AssignmentView");
     }
 
-
+    private void handleMenuItemAction(MenuItem menuItem) {
+        String selectedCourse = menuItem.getText();
+        System.out.println("Selected course: " + selectedCourse);
+        switch (selectedCourse) {
+            case "Course 1":
+                FlowController.getInstance().goView("CourseView");
+                break;
+            case "Course 2":
+                FlowController.getInstance().goView("UploadTaskView");
+                break;
+            case "Course 3":
+                FlowController.getInstance().goView("AddAssignmentOrFileView");
+                         break;
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + selectedCourse);
+        }
+    }
 }
 

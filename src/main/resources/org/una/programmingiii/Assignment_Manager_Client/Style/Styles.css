@@ -191,7 +191,7 @@
 /*CoursesView*/
 .titledPane {
     -fx-font: 14px "Roboto";
-    -fx-font-style: bold;
+    /*-fx-font-style: bold;*/
     -fx-padding: 2px;
 }
 
