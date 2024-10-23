@@ -92,8 +92,8 @@ public class SearchAssignmentViewController extends Controller {
     private void getAssignments() {
         AssignmentService service = new AssignmentService();
         String position = (String) AppContext.getInstance().get("position");
-        String course = (String) AppContext.getInstance().get("course");
-        Answer answer = service.getAllAssignmentsByCourseAndPosition(position, course);
+        Long courseId = (Long) AppContext.getInstance().get("course");
+        Answer answer = service.getAllAssignmentsByCourseAndPosition(courseId,position);
         if (answer != null) {
             assignments = (List<AssignmentInput>) answer.getResult("assignments");
             filterList();

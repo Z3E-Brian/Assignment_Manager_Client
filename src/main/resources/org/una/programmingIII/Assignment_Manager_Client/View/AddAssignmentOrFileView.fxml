@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,7 +16,20 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" spacing="15.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AddAssignmentOrFileViewController">
    <children>
-      <Label text="Add to Course" />
+      <HBox>
+         <children>
+            <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="Add to Course" />
+               </children>
+            </HBox>
+            <ImageView fx:id="imgExit" fitHeight="20.0" fitWidth="20.0" onMouseClicked="#onMouseClickedExit" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Assets/Exit.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
       <HBox prefHeight="306.0" prefWidth="560.0">
          <children>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">

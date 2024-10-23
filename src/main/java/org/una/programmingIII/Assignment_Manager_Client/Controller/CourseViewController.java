@@ -9,7 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Prueba;
 
 import java.net.URL;
@@ -107,8 +109,9 @@ public class CourseViewController extends Controller implements Initializable {
 
 //Catch the position of the titledPane
         String titledData = ((Label) ((HBox) titledPane.getGraphic()).getChildren().get(0)).getText();
-
-            System.out.println(titledData);
+        AppContext.getInstance().set("position", titledData);
+        FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView",getStage(),false);
+            //System.out.println(titledData);
 
     }
 

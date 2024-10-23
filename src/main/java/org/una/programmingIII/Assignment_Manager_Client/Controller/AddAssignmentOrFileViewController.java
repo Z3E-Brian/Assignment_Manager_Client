@@ -10,11 +10,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentType;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseContentInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
+import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.CourseContentService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.io.File;
@@ -41,6 +48,8 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
 
     @FXML
     private MFXTextField txfDescriptionAssignment, txfTitleAssignment;
+    @FXML
+    private ImageView imgExit;
 
     @FXML
     private VBox vbxDropAreaAssignment, vbxDropAreaMaterial, vbxFileListAssignment, vbxFileListMaterial;
@@ -50,7 +59,7 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
     private final List<File> uploadedAssignments = new ArrayList<>();
     FileDragAndDropHandler assignmentHandler;
     FileDragAndDropHandler materialHandler;
-
+    Long courseId = (Long) AppContext.getInstance().get("courseId");
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         txfTitleAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(150));
@@ -62,6 +71,7 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
 
         materialHandler = new FileDragAndDropHandler(uploadedMaterials, vbxFileListMaterial);
         materialHandler.setupDragAndDrop(vbxDropAreaMaterial);
+        courseId = (Long) AppContext.getInstance().get("courseId");
     }
 
 
@@ -73,40 +83,40 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
 
     @FXML
     void onActionBtnDelete(ActionEvent event) {
-    if (tbpAssignment.isSelected()) {
-        deleteAssignment();
-    } else {
-        materialHandler.clearFiles();
-    }
-}
-
-private void deleteAssignment() {
-    try {
-        if (assignmentInput.getId() == null) {
-            showError("Delete Assignment", "You must upload the assignment to be deleted");
+        if (tbpAssignment.isSelected()) {
+            deleteAssignment();
         } else {
-            Answer answer = null; // new AssignmentService().deleteAssignment(assignmentInput.getId());
-            answer.setState(true);
-            if (!answer.getState()) {
-                showError("Delete Assignment", answer.getMessage());
-            } else {
-                showInfo("Delete Assignment", answer.getMessage());
-                newAssignment();
-            }
+            materialHandler.clearFiles();
         }
-    } catch (Exception e) {
-        Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
-        showError("Delete Assignment", e.getMessage());
     }
-}
 
-private void showError(String title, String message) {
-    new Message().showModal(Alert.AlertType.ERROR, title, getStage(), message);
-}
+    private void deleteAssignment() {
+        try {
+            if (assignmentInput.getId() == null) {
+                showError("Delete Assignment", "You must upload the assignment to be deleted");
+            } else {
+                Answer answer = new AssignmentService().deleteAssignment(Long.parseLong(assignmentInput.getId().getValue()));
+                answer.setState(true);
+                if (!answer.getState()) {
+                    showError("Delete Assignment", answer.getMessage());
+                } else {
+                    showInfo("Delete Assignment", answer.getMessage());
+                    newAssignment();
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            showError("Delete Assignment", e.getMessage());
+        }
+    }
 
-private void showInfo(String title, String message) {
-    new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
-}
+    private void showError(String title, String message) {
+        new Message().showModal(Alert.AlertType.ERROR, title, getStage(), message);
+    }
+
+    private void showInfo(String title, String message) {
+        new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
+    }
 
     @FXML
     void onActionBtnNew(ActionEvent event) {
@@ -159,7 +169,13 @@ private void showInfo(String title, String message) {
         }
     }
 
+    @FXML
+    void onMouseClickedExit(MouseEvent event) {
+        if (new Message().showConfirmation("Exit", getStage(), "Are you sure you want to exit?")) {
+           getStage().close();
+        }
 
+    }
     private void IndicateRequired() {
         required.clear();
         required.addAll(Arrays.asList(txfTitleAssignment, txfDescriptionAssignment, dtpDueDateAssignment, cbxTypeAssignment));
@@ -217,41 +233,53 @@ private void showInfo(String title, String message) {
         dtpDueDateAssignment.valueProperty().bindBidirectional(assignmentInput.dueDate);
     }
 
-private void saveAssignment() {
-    try {
-        String validationMessage = validateRequired();
-        if (!validationMessage.isEmpty()) {
-            showError("Save Assignment", validationMessage);
-            return;
+    private void saveAssignment() {
+        try {
+            String validationMessage = validateRequired();
+            if (!validationMessage.isEmpty()) {
+                showError("Save Assignment", validationMessage);
+                return;
+            }
+            assignmentInput.setAddress(AppContext.getInstance().get("position").toString());
+            assignmentInput.setCourseId(assignmentInput.getCourseId() == null ? courseId : assignmentInput.getCourseId());
+
+            Answer answer = new AssignmentService().saveAssignment(assignmentInput);
+            answer.setState(true);
+            if (!answer.getState()) {
+                showError("Save Assignment", answer.getMessage());
+            } else {
+                showInfo("Save Assignment", answer.getMessage());
+                assignmentInput = (AssignmentInput) answer.getResult("assignment");
+                if (!uploadedAssignments.isEmpty()){
+                    saveFilesAssignments(Long.parseLong(assignmentInput.getId().getValue()));
+                }
+                newAssignment();
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            showError("Save Assignment", "An error occurred saving the assignment");
         }
-        Answer answer = null; // new AssignmentService().createAssignment(assignmentInput);
-        answer.setState(true);
-        if (!answer.getState()) {
-            showError("Save Assignment", answer.getMessage());
-        } else {
-            showInfo("Save Assignment", answer.getMessage());
-            newAssignment();
-        }
-    } catch (Exception e) {
-        Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
-        showError("Save Assignment", "An error occurred saving the assignment");
     }
-}
+
     private void saveMaterial() {
         try {
-            if (!validateRequired().isEmpty()) {
-
-                Answer answer = null;// new AssignmentService().addMaterial(assignmentInput);
+            if (!uploadedMaterials.isEmpty()) {
+                CourseContentInput courseContentInput = new CourseContentInput();
+                courseContentInput.setAddress(AppContext.getInstance().get("position").toString());
+                courseContentInput.setCourseId(courseId);
+                Answer answer = new CourseContentService().saveCourseContent(courseContentInput);
                 answer.setState(true);
                 if (!answer.getState()) {
                     new Message().showModal(Alert.AlertType.ERROR, "Save Material", getStage(), answer.getMessage());
                 } else {
                     new Message().showModal(Alert.AlertType.INFORMATION, "Save Material", getStage(), answer.getMessage());
+                    courseContentInput = (CourseContentInput) answer.getResult("courseContent");
+                    saveFilesMaterials(courseContentInput.getId());
                     newAssignment();
                 }
 
             } else {
-                new Message().showModal(Alert.AlertType.ERROR, "Save Material", getStage(), validateRequired());
+                new Message().showModal(Alert.AlertType.ERROR, "Save Material", getStage(), "You must upload the material to be saved");
             }
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
@@ -259,5 +287,36 @@ private void saveAssignment() {
         }
     }
 
+private void saveFilesAssignments(Long assignmentId){
+        try {
+            for (File file : uploadedAssignments) {
+                FileInput fileInput = new FileInput();
+                fileInput.setName(file.getName());
+                fileInput.setAssignmentId(assignmentId);
+               Answer answer = new FileService().uploadFile(file, fileInput);
+                if (!answer.getState()) {
+                    showError("Save File", answer.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            showError("Save File", "An error occurred saving the file");
+        }
+}
+private void saveFilesMaterials(Long materialId){
+        try {
+            for (File file : uploadedMaterials) {
+                FileInput fileInput = new FileInput();
+                fileInput.setName(file.getName());
+                fileInput.setCourseContentId(materialId);
+                Answer answer = new FileService().uploadFile(file, fileInput);
+                if (!answer.getState()) {
+                    showError("Save File", answer.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            showError("Save File", "An error occurred saving the file");
+        }}
 }
 

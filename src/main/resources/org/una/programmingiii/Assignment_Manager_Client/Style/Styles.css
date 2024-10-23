@@ -296,3 +296,6 @@
 .mfx-btn-Save>ImageView{
     -fx-image: url("../Assets/Save.png");
 }
+.mfx-text-field {
+    -fx-text-fill: #000000; /* Color negro para el texto */
+}

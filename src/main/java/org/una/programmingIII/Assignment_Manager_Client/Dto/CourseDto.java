@@ -18,12 +18,12 @@ public class CourseDto {
     private UserDto professor;
     private List<UserDto> students;
     private DepartmentDto department;
-    public CourseDto(CourseInput courseInput){
+ /*   public CourseDto(CourseInput courseInput){
         this.id = Long.parseLong(courseInput.id.getValue());
         this.name = courseInput.name.getValue();
         this.description = courseInput.description.getValue();
         this.professor = new UserDto(courseInput.professor);
         this.students = courseInput.students;
         this.department = new DepartmentDto(courseInput.department);
-    }
+    }*/
 }

@@ -30,8 +30,10 @@ public class AssignmentDto {
     private LocalDate dueDate;
 
     @NotNull(message = "Course cannot be null")
-    private CourseDto course;
+    private Long courseId;
 
+    @NotNull(message= "Address cannot be null")
+    private String address;
     public AssignmentDto(AssignmentInput assignmentInput) {
         this();
         this.id = Long.parseLong(assignmentInput.id.getValue());
@@ -39,7 +41,8 @@ public class AssignmentDto {
         this.type = assignmentInput.type;
         this.description = assignmentInput.description.getValue();
         this.dueDate = assignmentInput.dueDate.getValue();
-        this.course = new CourseDto(assignmentInput.course);
+        this.address = assignmentInput.address;
+        this.courseId = assignmentInput.courseId;
     }
 
 }

@@ -13,5 +13,7 @@ public class FileInput {
     private String name;
     private Long fileSize;
     private String filePath;
-    private SubmissionInput submission;
+    private Long submissionId;
+    private Long assignmentId;
+    private Long courseContentId;
 }

@@ -21,7 +21,8 @@ public class AssignmentInput implements Serializable {
     public AssignmentType type;
     public SimpleStringProperty description;
     public ObjectProperty<LocalDate> dueDate;
-    public CourseInput course;
+    public String address;
+    public Long courseId;
 
     public AssignmentInput(AssignmentDto assignmentDto){
         this();
@@ -30,6 +31,7 @@ public class AssignmentInput implements Serializable {
         this.type = assignmentDto.getType();
         this.description = new SimpleStringProperty(assignmentDto.getDescription());
         this.dueDate = new SimpleObjectProperty<>(assignmentDto.getDueDate());
-        this.course = new CourseInput(assignmentDto.getCourse());
+        this.address = assignmentDto.getAddress();
+        this.courseId =assignmentDto.getCourseId();
     }
 }
