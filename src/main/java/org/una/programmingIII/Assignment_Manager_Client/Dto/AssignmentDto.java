@@ -4,6 +4,7 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
 
 import java.time.LocalDate;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class AssignmentDto {
 
     private Long id;
@@ -30,5 +32,14 @@ public class AssignmentDto {
     @NotNull(message = "Course cannot be null")
     private CourseDto course;
 
+    public AssignmentDto(AssignmentInput assignmentInput) {
+        this();
+        this.id = Long.parseLong(assignmentInput.id.getValue());
+        this.title = assignmentInput.title.getValue();
+        this.type = assignmentInput.type;
+        this.description = assignmentInput.description.getValue();
+        this.dueDate = assignmentInput.dueDate.getValue();
+        this.course = new CourseDto(assignmentInput.course);
+    }
 
 }

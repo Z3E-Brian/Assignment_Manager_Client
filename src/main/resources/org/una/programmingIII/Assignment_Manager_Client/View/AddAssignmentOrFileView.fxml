@@ -15,7 +15,7 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" spacing="15.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AddAssignmentOrFileViewController">
    <children>
-      <Label text="Add to Courser" />
+      <Label text="Add to Course" />
       <HBox prefHeight="306.0" prefWidth="560.0">
          <children>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
@@ -33,18 +33,6 @@
                                        <children>
                                           <VBox maxWidth="800.0" spacing="13.0" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <HBox>
-                                                   <children>
-                                                      <HBox prefHeight="34.0" prefWidth="150.0">
-                                                         <children>
-                                                            <MFXTextField fx:id="txfIdAssignment" floatMode="BORDER" floatingText="Id" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="34.0" prefWidth="165.0" HBox.hgrow="ALWAYS" />
-                                                         </children>
-                                                      </HBox>
-                                                   </children>
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
-                                                </HBox>
                                                 <HBox minHeight="-Infinity" prefHeight="34.0">
                                                    <children>
                                                       <MFXTextField fx:id="txfTitleAssignment" floatMode="BORDER" floatingText="Title" minHeight="-Infinity" prefHeight="34.0" HBox.hgrow="ALWAYS" />
@@ -86,6 +74,9 @@
                                                    </padding>
                                                 </HBox>
                                              </children>
+                                             <padding>
+                                                <Insets top="15.0" />
+                                             </padding>
                                           </VBox>
                                           <VBox fx:id="vbxDropAreaAssignment" alignment="BOTTOM_CENTER" maxWidth="500.0" prefHeight="203.0" prefWidth="216.0" styleClass="vbox-DragAndDrop" HBox.hgrow="ALWAYS">
                                              <children>

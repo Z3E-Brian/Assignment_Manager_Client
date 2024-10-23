@@ -40,7 +40,7 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
     private Tab tbpAssignment, tbpMaterial;
 
     @FXML
-    private MFXTextField txfDescriptionAssignment, txfIdAssignment, txfTitleAssignment;
+    private MFXTextField txfDescriptionAssignment, txfTitleAssignment;
 
     @FXML
     private VBox vbxDropAreaAssignment, vbxDropAreaMaterial, vbxFileListAssignment, vbxFileListMaterial;
@@ -53,7 +53,6 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        txfIdAssignment.delegateSetTextFormatter(Format.getInstance().integerFormat());
         txfTitleAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescriptionAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
         cbxTypeAssignment.getItems().addAll(AssignmentType.values());
@@ -136,6 +135,14 @@ private void showInfo(String title, String message) {
 
     @FXML
     void onActionBtnSearch(ActionEvent event) {
+        SearchAssignmentViewController searchAssignmentViewController = (SearchAssignmentViewController) FlowController.getInstance().getController("SearchAssignmentView");
+        FlowController.getInstance().goViewInWindowModal("SearchAssignmentView", getStage(), true);
+        AssignmentInput assignmentInput1 = (AssignmentInput) searchAssignmentViewController.getResult();
+        if (assignmentInput1 != null) {
+            assignmentInput = assignmentInput1;
+            unbindAssignment();
+            bindAssignment(false);
+        }
     }
 
     @FXML
@@ -192,15 +199,11 @@ private void showInfo(String title, String message) {
         assignmentInput = new AssignmentInput();
         unbindAssignment();
         bindAssignment(true);
-        txfIdAssignment.clear();
-        txfIdAssignment.requestFocus();
+        txfTitleAssignment.requestFocus();
         assignmentHandler.clearFiles();
     }
 
     private void bindAssignment(Boolean newAssignment) {
-        if (!newAssignment) {
-            txfIdAssignment.textProperty().bind(assignmentInput.id);
-        }
         txfTitleAssignment.textProperty().bindBidirectional(assignmentInput.title);
         txfDescriptionAssignment.textProperty().bindBidirectional(assignmentInput.description);
         dtpDueDateAssignment.valueProperty().bindBidirectional(assignmentInput.dueDate);
@@ -209,7 +212,6 @@ private void showInfo(String title, String message) {
     }
 
     private void unbindAssignment() {
-        txfIdAssignment.textProperty().unbind();
         txfTitleAssignment.textProperty().bindBidirectional(assignmentInput.title);
         txfDescriptionAssignment.textProperty().bindBidirectional(assignmentInput.description);
         dtpDueDateAssignment.valueProperty().bindBidirectional(assignmentInput.dueDate);

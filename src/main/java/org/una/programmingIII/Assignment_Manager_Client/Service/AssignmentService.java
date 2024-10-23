@@ -1,12 +1,17 @@
 package org.una.programmingIII.Assignment_Manager_Client.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.modelmapper.internal.objenesis.instantiator.android.AndroidSerializationInstantiator;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class AssignmentService {
 
@@ -28,5 +33,29 @@ public class AssignmentService {
         } else {
             throw new RuntimeException("Error: " + response.statusCode());
         }
+    }
+    public Answer getAllAssignmentsByCourseAndPosition(String position, String Course){
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/assignments/findByCourseAndPosition?position="+position+"&course="+Course))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                List<AssignmentDto> assignments = List.of(mapper.readValue(response.body(), AssignmentDto[].class));
+               List<AssignmentInput> assignmentInputs = assignments.stream().map(AssignmentInput::new).toList();
+                return new Answer(true, "","","assignments",assignmentInputs);
+               } else {
+                return new Answer(false, response.body(), "Error : " + response.statusCode());
+            }
+    }catch (Exception e){
+            Logger.getLogger("AssignmentService").severe(e.getMessage());
+            return new Answer(false, e.getMessage(), "Error to get the list of assignments");
+    }
     }
 }
