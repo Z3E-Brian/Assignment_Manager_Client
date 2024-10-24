@@ -2,6 +2,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 
 import io.github.palexdev.materialfx.controls.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,19 +15,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
+import org.una.programmingIII.Assignment_Manager_Client.Interfaces.SessionObserver;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javafx.scene.input.MouseEvent;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 
-public class UniversityMaintenanceController extends Controller {
+public class UniversityMaintenanceController extends Controller implements SessionObserver {
     @FXML
     private MFXButton btnDelete;
 
@@ -71,11 +70,11 @@ public class UniversityMaintenanceController extends Controller {
 
     private UniversityService universityService;
     private UniversityDto universityDto;
-    List<Node> requeridos;
+    List<Node> requireds;
 
     @Override
     public void initialize() {
-        requeridos = new ArrayList<>();
+        requireds = new ArrayList<>();
         universityService = new UniversityService();
         universityDto = new UniversityDto();
 
@@ -86,6 +85,8 @@ public class UniversityMaintenanceController extends Controller {
         indicateRequeridos();
         loadUniversities();
         idTxf.setDisable(true);
+        SessionManager.getInstance().addObserver(this);
+        startTokenValidationTask();
     }
 
     @FXML
@@ -162,7 +163,7 @@ public class UniversityMaintenanceController extends Controller {
     }
 
     private void createUniversity() throws Exception {
-        String invalids = validarRequeridos();
+        String invalids = validateRequireds();
         if (!(invalids.isBlank())) {
             System.out.println(invalids);
             new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
@@ -205,18 +206,18 @@ public class UniversityMaintenanceController extends Controller {
     }
 
     private void indicateRequeridos() {
-        requeridos.clear();
-        requeridos.addAll(Arrays.asList(txfLocation, txfName));
+        requireds.clear();
+        requireds.addAll(Arrays.asList(txfLocation, txfName));
     }
 
     private void setUniversityDto() {
         AppContext.getInstance().set("universityDto", universityDto);
     }
 
-    public String validarRequeridos() {
+    public String validateRequireds() {
         boolean valids = true;
         String invalidSpaces = "";
-        for (Node node : requeridos) {
+        for (Node node : requireds) {
             if (node instanceof MFXTextField && (((MFXTextField) node).getText() == null || ((MFXTextField) node).getText().isBlank())) {
                 if (valids) {
                     invalidSpaces += ((MFXTextField) node).getFloatingText();
@@ -231,6 +232,29 @@ public class UniversityMaintenanceController extends Controller {
         } else {
             return "Campos requeridos o con problemas de formato [" + invalidSpaces + "].";
         }
+    }
+
+
+    private void startTokenValidationTask() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(15000);//15000
+                    SessionManager.getInstance().validateTokens();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public void onSessionExpired() {
+        System.out.println("Token expired, logging out...");
+        Platform.runLater(() -> {
+            FlowController.getInstance().goViewInWindow("LogInView");
+            getStage().close();
+        });
     }
 
 }

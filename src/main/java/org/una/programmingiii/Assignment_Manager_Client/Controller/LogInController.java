@@ -10,10 +10,7 @@ import org.apache.hc.client5.http.auth.InvalidCredentialsException;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AuthenticationService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 public class LogInController extends Controller {
 
@@ -43,8 +40,9 @@ public class LogInController extends Controller {
     void onActionBtnLogIn(ActionEvent event) {
         try {
             if (authenticateUser()) {
-                AppContext.getInstance().set("loginResponse", loginResponse);
-                FlowController.getInstance().goMain();
+                SessionManager.getInstance().setLoginResponse(loginResponse);
+               // FlowController.getInstance().goMain();
+                FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
                 getStage().close();
             }
         } catch (InvalidCredentialsException invalidCredentialsException) {

@@ -43,5 +43,56 @@ public class AuthenticationService {
         }
     }
 
+    // Método para refrescar el token
+    public String refreshToken(String refreshToken) throws Exception {
+        String requestBody = objectMapper.writeValueAsString(refreshToken);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/refreshToken"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else if (response.statusCode() == 401) {
+            throw new InvalidCredentialsException("Invalid refresh token");
+        } else {
+            throw new Exception("Error: " + response.statusCode());
+        }
+    }
+
+    public boolean validateToken(String token) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/validateToken?token=" + token))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return Boolean.parseBoolean(response.body());
+        } else {
+            throw new Exception("Error validating token: " + response.statusCode());
+        }
+    }
+
+    public boolean isAccessTokenExpired(String token) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/isAccessTokenExpired?token=" + token))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return Boolean.parseBoolean(response.body());
+        } else {
+            throw new Exception("Error checking token expiration: " + response.statusCode());
+        }
+    }
+
 
 }
