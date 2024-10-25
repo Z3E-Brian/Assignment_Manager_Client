@@ -54,7 +54,7 @@ public class MainViewController extends Controller {
 
     @FXML
     void onCustomUser(ActionEvent event) {
-        FlowController.getInstance().goView("AssignmentView");
+        FlowController.getInstance().goView("UserView");
     }
 
     private void handleMenuItemAction(MenuItem menuItem) {
