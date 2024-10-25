@@ -43,7 +43,6 @@ public class AuthenticationService {
         }
     }
 
-    // Método para refrescar el token
     public String refreshToken(String refreshToken) throws Exception {
         String requestBody = objectMapper.writeValueAsString(refreshToken);
 
@@ -78,21 +77,5 @@ public class AuthenticationService {
             throw new Exception("Error validating token: " + response.statusCode());
         }
     }
-
-    public boolean isAccessTokenExpired(String token) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/isAccessTokenExpired?token=" + token))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            return Boolean.parseBoolean(response.body());
-        } else {
-            throw new Exception("Error checking token expiration: " + response.statusCode());
-        }
-    }
-
 
 }

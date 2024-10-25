@@ -71,13 +71,14 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private UniversityService universityService;
     private UniversityDto universityDto;
     List<Node> requireds;
+    private boolean isRunningTokenValidationThread;
 
     @Override
     public void initialize() {
         requireds = new ArrayList<>();
         universityService = new UniversityService();
         universityDto = new UniversityDto();
-
+        isRunningTokenValidationThread = true;
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
@@ -160,6 +161,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         this.txfName.clear();
         universityDto = new UniversityDto();
         universityTable.getSelectionModel().clearSelection();
+        isRunningTokenValidationThread = true;
     }
 
     private void createUniversity() throws Exception {
@@ -237,9 +239,9 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     private void startTokenValidationTask() {
         new Thread(() -> {
-            while (true) {
+            while (isRunningTokenValidationThread) {
                 try {
-                    Thread.sleep(15000);//15000
+                    Thread.sleep(5000);//15000
                     SessionManager.getInstance().validateTokens();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -252,6 +254,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     public void onSessionExpired() {
         System.out.println("Token expired, logging out...");
         Platform.runLater(() -> {
+            isRunningTokenValidationThread = !isRunningTokenValidationThread;
             FlowController.getInstance().goViewInWindow("LogInView");
             getStage().close();
         });
