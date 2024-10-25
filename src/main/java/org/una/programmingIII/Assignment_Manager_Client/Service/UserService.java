@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 
+
 public class UserService {
 
     private static final String BASE_URL = "http://localhost:8080/api/users";
@@ -27,7 +28,7 @@ public class UserService {
     // GET: Obtener todos los usuarios
     public List<UserDto> getAllUsers() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getAllUsers"))
+                .uri(URI.create(BASE_URL + "/getAllUsers"))//TODO: remove "/getAllUsers" from URI
                 .GET()
                 .build();
 

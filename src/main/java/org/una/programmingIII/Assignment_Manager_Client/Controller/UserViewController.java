@@ -27,6 +27,8 @@ public class UserViewController extends Controller {
     @FXML
     public HBox hBoxID;
     @FXML
+    public TitledPane tpPermission;
+    @FXML
     private MFXTextField nameField, emailField,IDField,numberIDField;
     @FXML
     private Button createButton, updateButton, deleteButton, getAllButton,getUploadButton;
@@ -41,6 +43,7 @@ public class UserViewController extends Controller {
     private final UserInput userInput = new UserInput();
     @Override
     public void initialize() {
+
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         numberIDColumn.setCellValueFactory(new PropertyValueFactory<>("identificationNumber"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -51,10 +54,13 @@ public class UserViewController extends Controller {
         nameField.textProperty().bindBidirectional(userInput.getName());
         emailField.textProperty().bindBidirectional(userInput.getEmail());
 
-        List<PermissionType> permissions = Arrays.asList(PermissionType.values());
+        PermissionType[] permissions = PermissionType.values();
         for (PermissionType permission : permissions) {
             MFXCheckbox checkBox = new MFXCheckbox(permission.toString());
+            checkBox.setText(permission.toString().replace("_", " "));
+            checkBox.setPrefWidth(180);
             fpPermissions.getChildren().add(checkBox);
+
         }
 
         loadUsers();
@@ -93,8 +99,6 @@ public class UserViewController extends Controller {
             showAlert("Error creating the user", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
-
 
     private boolean validateInput() {
         if (numberIDField.getText() == null || numberIDField.getText().isEmpty()) {
