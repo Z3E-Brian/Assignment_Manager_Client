@@ -89,7 +89,11 @@
             <artifactId>httpclient5</artifactId>
             <version>5.3.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>5.2.4</version>
+        </dependency>
         <!-- GSON o Jackson para parseo de JSON (Opcional) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>

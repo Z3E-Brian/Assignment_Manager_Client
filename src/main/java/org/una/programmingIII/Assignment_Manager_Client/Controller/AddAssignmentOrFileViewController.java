@@ -293,7 +293,7 @@ private void saveFilesAssignments(Long assignmentId){
                 FileInput fileInput = new FileInput();
                 fileInput.setName(file.getName());
                 fileInput.setAssignmentId(assignmentId);
-               Answer answer = new FileService().uploadFile(file, fileInput);
+               Answer answer = new FileService().createFile(fileInput,file );
                 if (!answer.getState()) {
                     showError("Save File", answer.getMessage());
                 }
@@ -309,7 +309,7 @@ private void saveFilesMaterials(Long materialId){
                 FileInput fileInput = new FileInput();
                 fileInput.setName(file.getName());
                 fileInput.setCourseContentId(materialId);
-                Answer answer = new FileService().uploadFile(file, fileInput);
+                Answer answer = new FileService().createFile( fileInput,file);
                 if (!answer.getState()) {
                     showError("Save File", answer.getMessage());
                 }

@@ -11,6 +11,7 @@ module org.una.programmingIII.assignment_manager_client {
     requires modelmapper;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires org.apache.httpcomponents.client5.httpclient5;
+    requires org.apache.httpcomponents.core5.httpcore5;
 
     opens org.una.programmingIII.Assignment_Manager_Client.Dto.Input to com.fasterxml.jackson.databind;
     opens org.una.programmingIII.Assignment_Manager_Client.Dto to com.fasterxml.jackson.databind, javafx.base;
