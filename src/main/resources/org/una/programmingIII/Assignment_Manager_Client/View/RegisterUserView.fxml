@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.RegisterUserController">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30" />
+    </padding>
+   <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@../Assets/UserIcon.png" />
+      </image>
+   </ImageView>
+   <HBox spacing="10.0">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+            <image>
+               <Image url="@../Assets/UserIcon.png" />
+            </image>
+         </ImageView>
+          <MFXTextField fx:id="usernameField" floatMode="BORDER" promptText="Nombre" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+      </children>
+   </HBox>
+   <HBox layoutX="40.0" layoutY="160.0" spacing="10.0" VBox.vgrow="ALWAYS">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
+         <MFXTextField fx:id="identificationNumberField" floatMode="BORDER" promptText="Cedula:" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+      </children>
+   </HBox>
+   <HBox layoutX="40.0" layoutY="546.0" spacing="10.0">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
+          <MFXPasswordField fx:id="passwordField" floatMode="BORDER" promptText="Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+      </children>
+   </HBox>
+   <HBox layoutX="40.0" layoutY="546.0" spacing="10.0">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
+         <MFXPasswordField fx:id="confirmPasswordField" floatMode="BORDER" promptText="Confirmar Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+      </children>
+   </HBox>
+   <HBox layoutX="40.0" layoutY="227.0" spacing="10.0">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
+         <MFXTextField fx:id="emailField" floatMode="BORDER" promptText="Correo" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+      </children>
+   </HBox>
+   <MFXButton fx:id="btnSendEmail" onAction="#onActionBtnSendEmail" prefHeight="34.0" prefWidth="138.0" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Solicitar Link de acceso" />
+   <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+      <children>
+          <MFXButton fx:id="btnLogIn" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Iniciar Sesión" />
+          <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Registrarse" />
+      </children>
+   </HBox>
+</VBox>

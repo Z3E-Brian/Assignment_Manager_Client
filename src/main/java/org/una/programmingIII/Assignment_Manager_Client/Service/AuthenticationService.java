@@ -78,4 +78,24 @@ public class AuthenticationService {
         }
     }
 
+    public void sendVerificationEmail(String email) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/sendVerificationEmail?email=" + email))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            System.out.println("Verification email sent successfully.");
+        } else if (response.statusCode() == 500) {
+            throw new Exception("Error sending verification email: " + response.body());
+        } else {
+            throw new InvalidCredentialsException("Unexpected error: " + response.statusCode());
+        }
+    }
+
+
+
 }

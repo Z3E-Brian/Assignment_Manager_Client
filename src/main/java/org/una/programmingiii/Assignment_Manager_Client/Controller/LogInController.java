@@ -44,9 +44,7 @@ public class LogInController extends Controller {
     void onActionBtnLogIn(ActionEvent event) {
         try {
             if (authenticateUser()) {
-                SessionManager.getInstance().setLoginResponse(loginResponse);
-               // FlowController.getInstance().goMain();
-                FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
+                FlowController.getInstance().goMain();
                 getStage().close();
             }
         } catch (InvalidCredentialsException invalidCredentialsException) {
@@ -59,19 +57,10 @@ public class LogInController extends Controller {
     @FXML
     void onActionBtnRegister(ActionEvent event) {
         System.out.println("Register button pressed");
-        // Aquí se puede implementar la lógica de registro
-        File file = new File("src/main/resources/org/una/programmingIII/Assignment_Manager_Client/Assets/Save.png");
-        FileInput fileInput = new FileInput();
-        fileInput.setName("Save.png");
-        fileInput.setCourseContentId(1L);
-        fileInput.setFileSize(file.length());
-        FileService fileService = new FileService();
-        try {
-            fileService.createFile( fileInput,file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        FlowController.getInstance().goViewInWindow("RegisterUserView");
+        getStage().close();
     }
+
     @FXML
     void onActionBtnGoMain(ActionEvent event) {
         FlowController.getInstance().goMain();
@@ -80,6 +69,7 @@ public class LogInController extends Controller {
 
     @FXML
     void onActionBtnMantenimientoUnis(ActionEvent event) {
+        SessionManager.getInstance().setLoginResponse(loginResponse);
         FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
         getStage().close();
     }

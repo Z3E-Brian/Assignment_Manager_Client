@@ -15,6 +15,7 @@ public class SessionManager {
     private LoginResponse loginResponse;
     private List<SessionObserver> observers = new ArrayList<>();
     private AuthenticationService authenticationService = new AuthenticationService();
+    private boolean isRunningTokenValidationThread;
 
 
     public static SessionManager getInstance() {
@@ -26,17 +27,20 @@ public class SessionManager {
 
     public void addObserver(SessionObserver observer) {
         observers.add(observer);
+        isRunningTokenValidationThread = true;
     }
 
     public void removeObserver(SessionObserver observer) {
+        isRunningTokenValidationThread = false;
         observers.remove(observer);
     }
 
-    public void validateTokens() throws Exception {
+    private void validateTokens() throws Exception {
         if (loginResponse != null && loginResponse.getAccessToken() != null) {
             if (!(isValidToken(loginResponse.getRefreshToken()))) {
+                this.isRunningTokenValidationThread = false;
                 notifySessionExpired();
-            } else if (!(isValidToken(loginResponse.getAccessToken()))) {
+            } else if (!(isValidToken(loginResponse.getAccessToken()))) {// TODO validar inactividad si no refresh token
                 loginResponse.setRefreshToken(getRefreshToken());
             }
         }
@@ -53,6 +57,21 @@ public class SessionManager {
     private void notifySessionExpired() {
         for (SessionObserver observer : observers) {
             observer.onSessionExpired();
+        }
+    }
+
+    public void startTokenValidationTask() {
+        if (isRunningTokenValidationThread) {
+            new Thread(() -> {
+                while (isRunningTokenValidationThread) {
+                    try {
+                        Thread.sleep(20000);
+                        validateTokens();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
     }
 }

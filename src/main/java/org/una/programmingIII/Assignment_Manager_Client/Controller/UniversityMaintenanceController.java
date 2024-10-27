@@ -71,14 +71,13 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private UniversityService universityService;
     private UniversityDto universityDto;
     List<Node> requireds;
-    private boolean isRunningTokenValidationThread;
+
 
     @Override
     public void initialize() {
         requireds = new ArrayList<>();
         universityService = new UniversityService();
         universityDto = new UniversityDto();
-        isRunningTokenValidationThread = true;
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
@@ -87,7 +86,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         loadUniversities();
         idTxf.setDisable(true);
         SessionManager.getInstance().addObserver(this);
-        startTokenValidationTask();
+        SessionManager.getInstance().startTokenValidationTask();
     }
 
     @FXML
@@ -131,7 +130,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     @FXML
     void onMousePressedUniversityTable(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && universityTable.getSelectionModel().getSelectedItem() != null) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
             bindear();
             System.out.println(universityDto);
@@ -161,7 +160,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         this.txfName.clear();
         universityDto = new UniversityDto();
         universityTable.getSelectionModel().clearSelection();
-        isRunningTokenValidationThread = true;
+        SessionManager.getInstance().setRunningTokenValidationThread(true);
     }
 
     private void createUniversity() throws Exception {
@@ -236,26 +235,14 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         }
     }
 
-
-    private void startTokenValidationTask() {
-        new Thread(() -> {
-            while (isRunningTokenValidationThread) {
-                try {
-                    Thread.sleep(5000);//15000
-                    SessionManager.getInstance().validateTokens();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
     @Override
     public void onSessionExpired() {
+
         System.out.println("Token expired, logging out...");
         Platform.runLater(() -> {
-            isRunningTokenValidationThread = !isRunningTokenValidationThread;
             FlowController.getInstance().goViewInWindow("LogInView");
+            FlowController.getInstance().delete("UniversityMaintenanceView");
+            SessionManager.getInstance().removeObserver(this);
             getStage().close();
         });
     }
