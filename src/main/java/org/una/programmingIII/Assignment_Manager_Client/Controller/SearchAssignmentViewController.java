@@ -86,7 +86,7 @@ public class SearchAssignmentViewController extends Controller {
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcType.setCellValueFactory(new PropertyValueFactory<>("type"));
         tbcDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-        getAssignments();
+       // getAssignments();
     }
 
     private void getAssignments() {

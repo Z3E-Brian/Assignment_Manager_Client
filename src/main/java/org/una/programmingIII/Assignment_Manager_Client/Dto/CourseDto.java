@@ -27,8 +27,7 @@ public class CourseDto {
         this.description = courseInput.description.getValue();
         this.professor = courseInput.getProfessor();
         this.departmentId = courseInput.getDepartmentId();
-        this.startDate = courseInput.getStartDate();
-        this.endDate = courseInput.getEndDate();
-
+        this.startDate = courseInput.getStartDate().getValue();
+        this.endDate = courseInput.getEndDate().getValue();
     }
 }

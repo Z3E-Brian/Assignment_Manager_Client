@@ -12,7 +12,6 @@ import java.util.List;
 public class CareerDto {
     private Long id;
     private String name;
-    private String code;
     private String description;
     private DepartmentDto department;
     private List<CourseDto> courses;

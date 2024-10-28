@@ -1,6 +1,7 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto.Input;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +31,7 @@ public class CourseInput {
         this.description = new SimpleStringProperty(courseDto.getDescription());
         this.professor = courseDto.getProfessor();
         this.departmentId = courseDto.getDepartmentId();
-       // this.startDate = courseDto.getStartDate();
-    //    this.endDate = courseDto.getEndDate();
+        this.startDate = new SimpleObjectProperty<>(courseDto.getStartDate());
+        this.endDate = new SimpleObjectProperty<>(courseDto.getEndDate());
     }
 }
