@@ -5,12 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CourseContentDto {
+@AllArgsConstructor
+public class CareerDto {
     private Long id;
-    private String address;
-    private Long courseId;
-    private List<FileDto> files;
+    private String name;
+    private String code;
+    private String description;
+    private DepartmentDto department;
+    private List<CourseDto> courses;
 }

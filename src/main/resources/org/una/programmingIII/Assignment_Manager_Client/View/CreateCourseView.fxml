@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -13,7 +14,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.CreateCourseViewController">
    <children>
@@ -71,7 +71,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="427.0" prefWidth="456.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="Deparment" />
+                              <Label fx:id="lblCareer" text="Career" />
                               <TableView fx:id="tbvCourse" onMousePressed="#onMousePressedUniversityTable">
                                  <columns>
                                     <TableColumn fx:id="tbcName" prefWidth="124.0" text="Name" />
@@ -91,6 +91,8 @@
                                     <MFXTextField fx:id="txfName" floatingText="Course Name" layoutX="10.0" layoutY="186.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="126.0" />
                                     <MFXTextField fx:id="txfDescription" floatingText="Description" layoutX="10.0" layoutY="210.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="126.0" />
                                     <MFXComboBox fx:id="cbxProfessor" floatingText="Professor" onAction="#onActionCbxProfessor" />
+                                    <MFXDatePicker fx:id="dtpStartDate" floatMode="BORDER" floatingText="Start Course Date" />
+                                    <MFXDatePicker fx:id="dtpEndDate" floatMode="BORDER" floatingText="End Course Date" />
                                  </children>
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

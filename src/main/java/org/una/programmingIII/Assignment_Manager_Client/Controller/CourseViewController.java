@@ -4,48 +4,54 @@ import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Prueba;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseContentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.FileDto;
+import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.CourseContentService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
-import java.net.URL;
+
+import java.io.File;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.logging.Logger;
 
-public class CourseViewController extends Controller implements Initializable {
+public class CourseViewController extends Controller  {
 
     @FXML
     private Accordion acDates;
     @FXML
     private ScrollPane scrollPane;
     boolean havePermission = true;
-    ArrayList<Prueba> listPruebas;
     LocalDate startDate;
     LocalDate endDate;
+    List<AssignmentDto> assignments;
+    List<CourseContentDto> courseContents;
+    CourseDto courseDto;
 
     @Override
     public void initialize() {
-        startDate = LocalDate.of(2024, 7, 25);
-        endDate = LocalDate.of(2024, 11, 27);
-        listPruebas = new ArrayList<>(Arrays.asList(
-                new Prueba(LocalDate.of(2020, 7, 26), "General","First"),
-                new Prueba(LocalDate.of(2024, 8, 5),"25 of July - 31 of July", "Second")));
+        courseDto = (CourseDto) AppContext.getInstance().get("course");
+        startDate = courseDto.getStartDate();
+        endDate = courseDto.getEndDate();
+        loanAssignments();
+        loadCourseContents();
         acDates.prefHeightProperty().bind(scrollPane.heightProperty().subtract(5));
         acDates.prefWidthProperty().bind(scrollPane.widthProperty().subtract(15));
         addWeeklyTitledPanes(startDate, endDate);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
 
     private void addWeeklyTitledPanes(LocalDate startDate, LocalDate endDate) {
         LocalDate currentStartDate = startDate;
@@ -54,11 +60,12 @@ public class CourseViewController extends Controller implements Initializable {
             if (isFirstIteration) {
                 createWeeklyTitledPanes(currentStartDate, endDate);
                 isFirstIteration = false;
-            }else{
-            LocalDate weekEndDate = currentStartDate.plusDays(6).isAfter(endDate) ? endDate : currentStartDate.plusDays(6);
-            createWeeklyTitledPanes(currentStartDate, weekEndDate);
-            currentStartDate = currentStartDate.plusWeeks(1);
-        }}
+            } else {
+                LocalDate weekEndDate = currentStartDate.plusDays(6).isAfter(endDate) ? endDate : currentStartDate.plusDays(6);
+                createWeeklyTitledPanes(currentStartDate, weekEndDate);
+                currentStartDate = currentStartDate.plusWeeks(1);
+            }
+        }
     }
 
     private void createWeeklyTitledPanes(LocalDate currentStartDate, LocalDate weekEndDate) {
@@ -78,57 +85,108 @@ public class CourseViewController extends Controller implements Initializable {
         acDates.getPanes().add(weekPane);
     }
 
-    private void createVboxContentTitled(TitledPane weekPane,String titledData) {
-        VBox content = new VBox();
-        VBox.setVgrow(content, Priority.ALWAYS);
-        content.setMaxHeight(Double.MAX_VALUE);
-        content.getStyleClass().add("vbox-Background-TitledPane");
+private void createVboxContentTitled(TitledPane weekPane, String titledData) {
+    VBox content = new VBox();
+    VBox.setVgrow(content, Priority.ALWAYS);
+    content.setMaxHeight(Double.MAX_VALUE);
+    content.getStyleClass().add("vbox-Background-TitledPane");
 
-        for (Prueba prueba : listPruebas) {
-            String positionData = prueba.getPosition();
-            if (positionData.equals(titledData)) {
-                HBox contentData = new HBox();
-                createLabelToContent(contentData, prueba.getName(), this::goToFile);
-                contentData.getStyleClass().add("hBox-TitledPane");
-                createDeleteButton(contentData);
-                content.getChildren().add(contentData);
-            }
-        }
-        weekPane.setContent(content);
-    }
+    assignments.stream()
+        .filter(assignment -> assignment.getAddress().equals(titledData))
+        .forEach(assignment -> {
+            HBox contentData = new HBox();
+            createLabelToContent(contentData, assignment.getTitle(), this::goToFile);
+            contentData.getStyleClass().add("hBox-TitledPane");
+            createDeleteButton(contentData);
+            content.getChildren().add(contentData);
+        });
+
+    courseContents.stream()
+        .filter(courseContent -> courseContent.getAddress().equals(titledData))
+        .flatMap(courseContent -> courseContent.getFiles().stream())
+        .forEach(file -> {
+            HBox contentData = new HBox();
+            createLabelToContent(contentData, file.getName(), this::goToFile);
+            contentData.getStyleClass().add("hBox-TitledPane");
+            createDeleteButton(contentData);
+            content.getChildren().add(contentData);
+        });
+
+    weekPane.setContent(content);
+}
 
     private void addFile(ActionEvent event) {
         HBox parent = (HBox) ((Button) event.getSource()).getParent();
         TitledPane titledPane = (TitledPane) parent.getParent().getParent();
         VBox content = (VBox) titledPane.getContent();
         HBox contentData = new HBox();
-        createLabelToContent(contentData, "Archivo: NuevoArchivo.docx", this::goToFile);
         contentData.getStyleClass().add("hBox-TitledPane");
         createDeleteButton(contentData);
         content.getChildren().add(contentData);
 
-//Catch the position of the titledPane
         String titledData = ((Label) ((HBox) titledPane.getGraphic()).getChildren().get(0)).getText();
         AppContext.getInstance().set("position", titledData);
-        FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView",getStage(),false);
-            //System.out.println(titledData);
-
+        FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView", getStage(), false);
     }
 
     private void goToFile(MouseEvent event) {
+        HBox parent = (HBox) ((Button) event.getSource()).getParent();
+        String labelText = ((Label) parent.getChildren().getFirst()).getText();
+        FileDto fileDto = getFileDto(labelText);
+        if (fileDto!=null){
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save File");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                try {
+                    new FileService().downloadFileInChunks(fileDto.getId(), Path.of(file.getAbsoluteFile() + fileDto.getName()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        //TODO: ADD functionality to go to assignment
         System.out.println("Go to file");
     }
 
     private void deleteFile(ActionEvent event) {
-        Button button = (Button) event.getSource();
-        HBox parent = (HBox) button.getParent();
-        Label label = (Label) parent.getChildren().getFirst();
-        String labelText = label.getText();
-        System.out.println(labelText);
-        // Logic to delete the file
-        //    deleteFromDatabase(labelText);
-        parent.getChildren().clear();
+    HBox parent = (HBox) ((Button) event.getSource()).getParent();
+    String labelText = ((Label) parent.getChildren().getFirst()).getText();
+
+    if (new Message().showConfirmation("Delete File", getStage(), "Are you sure you want to delete the file?")) {
+        assignments.stream()
+            .filter(assignment -> assignment.getTitle().equals(labelText))
+            .findFirst()
+            .ifPresent(assignment -> {
+                try {
+                    Answer answer = new AssignmentService().deleteAssignment(assignment.getId());
+                    if (answer.getState()) assignments.remove(assignment);
+                } catch (Exception e) {
+                    Logger.getLogger(CourseViewController.class.getName()).severe("Unexpected error: " + e.getMessage());
+                }
+            });
+
+        courseContents.stream()
+            .flatMap(courseContent -> courseContent.getFiles().stream())
+            .filter(file -> file.getName().equals(labelText))
+            .findFirst()
+            .ifPresent(file -> {
+                try {
+                    Answer answer = new FileService().deleteFile(file.getId());
+                    if (answer.getState()) {
+                        courseContents.stream()
+                            .filter(courseContent -> courseContent.getFiles().contains(file))
+                            .findFirst()
+                            .ifPresent(courseContent -> courseContent.getFiles().remove(file));
+                    }
+                } catch (Exception e) {
+                    Logger.getLogger(CourseViewController.class.getName()).severe("Unexpected error: " + e.getMessage());
+                }
+            });
     }
+
+    parent.getChildren().clear();
+}
 
     private void createLabelToContent(HBox header, String text, EventHandler<MouseEvent> action) {
         Label label = new Label(text);
@@ -159,4 +217,36 @@ public class CourseViewController extends Controller implements Initializable {
                 endDate.getDayOfMonth() + " of " + endDate.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
     }
 
+    private void loanAssignments() {
+        try {
+            Answer answer = new AssignmentService().getAssignmentsByCourseId(courseDto.getId());
+            if (answer.getState()) {
+                assignments = (List<AssignmentDto>) answer.getResult("assignments");
+            } else {
+                Logger.getLogger(CourseViewController.class.getName()).severe("Failed to load assignments: " + answer.getMessage());
+            }
+        } catch (Exception e) {
+            Logger.getLogger(CourseViewController.class.getName()).severe("Unexpected error: " + e.getMessage());
+        }
+    }
+
+    private void loadCourseContents() {
+        try {
+            Answer answer = new CourseContentService().getAllCourseContentById(courseDto.getId());
+            if (answer.getState()) {
+                courseContents = (List<CourseContentDto>) answer.getResult("courseContents");
+            } else {
+                Logger.getLogger(CourseViewController.class.getName()).severe("Failed to load course contents: " + answer.getMessage());
+            }
+        } catch (Exception e) {
+            Logger.getLogger(CourseViewController.class.getName()).severe("Unexpected error: " + e.getMessage());
+        }
+    }
+    private FileDto getFileDto(String name) {
+        return courseContents.stream()
+            .flatMap(courseContent -> courseContent.getFiles().stream())
+            .filter(file -> file.getName().equals(name))
+            .findFirst()
+            .orElse(null);
+    }
 }

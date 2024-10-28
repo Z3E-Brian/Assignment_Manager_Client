@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
 
 public class UserService {
@@ -130,6 +131,22 @@ public class UserService {
 
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting user: " + response.statusCode());
+        }
+    }
+
+    public Answer getUsersByRole(String role) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/getByRole?role=" + role))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            List<UserDto> users = objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {});
+            return new Answer(true, "Users found","","users", users);
+        } else {
+            throw new Exception("Error fetching users: " + response.statusCode());
         }
     }
 

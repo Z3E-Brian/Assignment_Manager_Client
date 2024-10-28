@@ -129,7 +129,19 @@ private HttpRequest buildDownloadRequest(Long fileId, long downloadedSize) {
             .GET()
             .build();
 }
+public Answer deleteFile(Long id) throws Exception {
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(BASE_URL + "/" + id))
+            .DELETE()
+            .build();
 
+    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    if (response.statusCode() == 204) {
+        return new Answer(true, "The file was deleted", "", "file", null);
+    } else {
+        throw new Exception("Error deleting File: " + response.statusCode());
+    }
+}
 private long writeFileChunk(InputStream inputStream, Path destination, long downloadedSize) throws IOException {
     try (InputStream in = inputStream;
          FileOutputStream out = new FileOutputStream(destination.toFile(), true)) {

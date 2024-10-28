@@ -8,17 +8,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentType;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
-import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.util.ArrayList;
@@ -52,6 +51,12 @@ public class CreateCourseViewController extends Controller {
     private ImageView imvSearch;
 
     @FXML
+    private MFXDatePicker dtpEndDate;
+
+    @FXML
+    private MFXDatePicker dtpStartDate;
+
+    @FXML
     private TableColumn<CourseDto, String> tbcDescription;
 
     @FXML
@@ -69,16 +74,27 @@ public class CreateCourseViewController extends Controller {
     @FXML
     private MFXTextField txfName;
 
+    @FXML
+    private Label lblCareer;
+
     CourseInput courseInput;
     List<UserDto> professors;
     ArrayList<Node> required = new ArrayList<>();
     UserDto professorDto;
+    CareerDto careerDto;
+    CourseDto courseDto;
 
     @Override
     public void initialize() {
+        tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
+        tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
+        loanProfessors();
         cbxProfessor.getItems().addAll(professors);
+        loanCareer();
         indicateRequired();
     }
 
@@ -139,7 +155,9 @@ public class CreateCourseViewController extends Controller {
 
     @FXML
     void onMouseClickedImvClose(MouseEvent event) {
-
+        if (new Message().showConfirmation("Exit", getStage(), "Are you sure you want to exit?")) {
+            getStage().close();
+        }
     }
 
     @FXML
@@ -149,7 +167,11 @@ public class CreateCourseViewController extends Controller {
 
     @FXML
     void onMousePressedUniversityTable(MouseEvent event) {
-
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvCourse.getSelectionModel().getSelectedItem() != null) {
+            courseDto = tbvCourse.getSelectionModel().getSelectedItem();
+            courseInput = new CourseInput(courseDto);
+            bindCourse();
+        }
     }
 
     @FXML
@@ -160,11 +182,11 @@ public class CreateCourseViewController extends Controller {
     private void newCourse() {
         courseInput = new CourseInput();
         unbindAssignment();
-        bindAssignment();
+        bindCourse();
         txfName.requestFocus();
     }
 
-    private void bindAssignment() {
+    private void bindCourse() {
         txfName.textProperty().bindBidirectional(courseInput.name);
         txfDescription.textProperty().bindBidirectional(courseInput.description);
         cbxProfessor.setValue(courseInput.professor);
@@ -179,7 +201,7 @@ public class CreateCourseViewController extends Controller {
 
     private void indicateRequired() {
         required.clear();
-        required.addAll(Arrays.asList(txfName, txfDescription, cbxProfessor));
+        required.addAll(Arrays.asList(txfName, txfDescription, cbxProfessor, dtpStartDate, dtpEndDate));
     }
 
     private String validateRequired() {
@@ -202,6 +224,8 @@ public class CreateCourseViewController extends Controller {
             floatingText = ((MFXTextField) node).getFloatingText();
         } else if (node instanceof MFXComboBox && ((MFXComboBox<?>) node).getValue() == null) {
             floatingText = ((MFXComboBox<?>) node).getFloatingText();
+        }else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
+            floatingText = ((MFXDatePicker) node).getFloatingText();
         }
         return floatingText;
     }
@@ -209,6 +233,7 @@ public class CreateCourseViewController extends Controller {
     private boolean isEmpty(String text) {
         return text == null || text.isEmpty();
     }
+
     private void showError(String title, String message) {
         new Message().showModal(Alert.AlertType.ERROR, title, getStage(), message);
     }
@@ -216,4 +241,25 @@ public class CreateCourseViewController extends Controller {
     private void showInfo(String title, String message) {
         new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
     }
+
+    private void loanCareer() {
+        careerDto = (CareerDto) AppContext.getInstance().get("career");
+        lblCareer.setText(careerDto.getName());
+        tbvCourse.getItems().clear();
+        tbvCourse.getItems().addAll(careerDto.getCourses());
+    }
+
+    private void loanProfessors() {
+        try {
+            Answer answer = new UserService().getUsersByRole("PROFESSOR");
+            if (answer != null) {
+                professors = (List<UserDto>) answer.getResult("users");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+        }
+
+    }
+
+
 }
