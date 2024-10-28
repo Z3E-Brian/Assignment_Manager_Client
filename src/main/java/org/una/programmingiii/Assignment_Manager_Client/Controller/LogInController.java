@@ -46,6 +46,7 @@ public class LogInController extends Controller {
     void onActionBtnLogIn(ActionEvent event) {
         try {
             if (authenticateUser()) {
+                SessionManager.getInstance().setLoginResponse(loginResponse);
                 FlowController.getInstance().goMain();
                 getStage().close();
             }
@@ -83,5 +84,6 @@ public class LogInController extends Controller {
         loginResponse = authenticationService.authenticate(loginInput);
         return loginResponse != null;
     }
+
 
 }
