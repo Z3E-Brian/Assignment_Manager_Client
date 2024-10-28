@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
+import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -70,7 +71,7 @@ public class UniversityService {
             return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
             });
         } else {
-            throw new Exception("Error fetching users: " + response.statusCode());
+            throw new Exception("Error fetching universities: " + response.statusCode());
         }
     }
 
@@ -89,7 +90,7 @@ public class UniversityService {
         if (response.statusCode() == 201) {
             return objectMapper.readValue(response.body(), UniversityDto.class);
         } else {
-            throw new Exception("Error creating user: " + response.statusCode());
+            throw new Exception("Error creating university: " + response.statusCode());
         }
     }
 
@@ -107,9 +108,9 @@ public class UniversityService {
         if (response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), UniversityDto.class);
         } else if (response.statusCode() == 404) {
-            throw new Exception("User not found");
+            throw new ElementNotFoundException("University not found");
         } else {
-            throw new Exception("Error updating user: " + response.statusCode());
+            throw new Exception("Error updating university: " + response.statusCode());
         }
     }
 
@@ -122,7 +123,7 @@ public class UniversityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 204) {
-            throw new Exception("Error deleting user: " + response.statusCode());
+            throw new Exception("Error deleting university: " + response.statusCode());
         }
     }
 }

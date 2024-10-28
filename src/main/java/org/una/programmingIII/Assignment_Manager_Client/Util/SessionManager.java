@@ -41,7 +41,9 @@ public class SessionManager {
                 this.isRunningTokenValidationThread = false;
                 notifySessionExpired();
             } else if (!(isValidToken(loginResponse.getAccessToken()))) {// TODO validar inactividad si no refresh token
-                loginResponse.setRefreshToken(getRefreshToken());
+                System.out.println(loginResponse.getAccessToken());
+                loginResponse.setAccessToken(setNewRefreshToken());
+                System.out.println(loginResponse.getAccessToken());
             }
         }
     }
@@ -50,8 +52,8 @@ public class SessionManager {
         return authenticationService.validateToken(token);
     }
 
-    private String getRefreshToken() {
-        return "";
+    private String setNewRefreshToken() throws Exception {
+        return authenticationService.refreshToken(loginResponse.getAccessToken());
     }
 
     private void notifySessionExpired() {
@@ -65,7 +67,7 @@ public class SessionManager {
             new Thread(() -> {
                 while (isRunningTokenValidationThread) {
                     try {
-                        Thread.sleep(20000);
+                        Thread.sleep(1000);
                         validateTokens();
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -1,6 +1,5 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
-
 import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -14,6 +13,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
 import org.una.programmingIII.Assignment_Manager_Client.Interfaces.SessionObserver;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
@@ -22,6 +23,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javafx.scene.input.MouseEvent;
 
@@ -108,10 +110,14 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
-        if (!(idTxf.getText().isBlank())) {
-            updateUniversity();
-        } else {
-            createUniversity();
+        try {
+            if (!(idTxf.getText().isBlank())) {
+                updateUniversity();
+            } else {
+                createUniversity();
+            }
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, e.getMessage(), getStage(), "Ha ocurrido un error al guardar la universidad");
         }
     }
 
@@ -165,6 +171,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     private void createUniversity() throws Exception {
         String invalids = validateRequireds();
+
         if (!(invalids.isBlank())) {
             System.out.println(invalids);
             new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
@@ -235,10 +242,24 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         }
     }
 
+    private void validateUserFunctions() {
+        Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
+        boolean hasViewCoursesPermission = permissionDtos.stream()
+                .anyMatch(permission -> permission.getName() == PermissionType.VIEW_COURSES);
+
+        if (hasViewCoursesPermission) {
+            // Código para habilitar las funcionalidades relacionadas con ver cursos
+            System.out.println("El usuario tiene permiso para ver cursos.");
+        } else {
+            // Código para deshabilitar o manejar la ausencia del permiso
+            System.out.println("El usuario NO tiene permiso para ver cursos.");
+        }
+    }
+
+
     @Override
     public void onSessionExpired() {
-
-        System.out.println("Token expired, logging out...");
+        new Message().showModal(Alert.AlertType.INFORMATION, "Tiempo de inicio de sesion agotado", getStage(), "Debes de volver a iniciar sesion");
         Platform.runLater(() -> {
             FlowController.getInstance().goViewInWindow("LogInView");
             FlowController.getInstance().delete("UniversityMaintenanceView");

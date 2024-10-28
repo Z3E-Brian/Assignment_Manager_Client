@@ -44,12 +44,10 @@ public class AuthenticationService {
     }
 
     public String refreshToken(String refreshToken) throws Exception {
-        String requestBody = objectMapper.writeValueAsString(refreshToken);
-
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/refreshToken"))
+                .uri(URI.create(BASE_URL + "/refreshToken?refreshToken=" + refreshToken))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -62,6 +60,7 @@ public class AuthenticationService {
             throw new Exception("Error: " + response.statusCode());
         }
     }
+
 
     public boolean validateToken(String token) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -96,6 +95,21 @@ public class AuthenticationService {
         }
     }
 
+    public boolean checkVerificationClick() {
+        try {
+            URI uri = new URI("http://localhost:8080/verify?clicked=true");
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {//TODO Demas exepciones
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
 }

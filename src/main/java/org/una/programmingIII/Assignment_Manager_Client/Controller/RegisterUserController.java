@@ -80,8 +80,13 @@ public class RegisterUserController extends Controller {
     }
 
     @FXML
-    void onActionBtnRegister(ActionEvent event) throws Exception {
-        userService.createUser(userInput);
+    void onActionBtnRegister(ActionEvent event) {
+        if (authenticationService.checkVerificationClick()) {
+            System.out.println("verification clicked");
+        } else {
+            new Message().showModal(Alert.AlertType.ERROR, "Registrar Usuario", getStage(), "Existen espacios  importantes en blanco");
+        }
+        //userService.createUser(userInput);
     }
 
     @FXML
