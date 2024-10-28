@@ -21,6 +21,7 @@ public class CourseDto {
     private Long departmentId;
     private LocalDate startDate;
     private LocalDate endDate;
+
    public CourseDto(CourseInput courseInput){
         this.id = courseInput.id;
         this.name = courseInput.name.getValue();
