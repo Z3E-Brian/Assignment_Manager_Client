@@ -18,7 +18,7 @@ public class CourseDto {
     private String description;
     private UserDto professor;
     private List<UserDto> students;
-    private Long departmentId;
+    private Long careerId;
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -27,7 +27,7 @@ public class CourseDto {
         this.name = courseInput.name.getValue();
         this.description = courseInput.description.getValue();
         this.professor = courseInput.getProfessor();
-        this.departmentId = courseInput.getDepartmentId();
+        this.careerId = courseInput.getCareerId();
         this.startDate = courseInput.getStartDate().getValue();
         this.endDate = courseInput.getEndDate().getValue();
     }

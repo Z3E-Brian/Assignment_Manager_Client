@@ -4,30 +4,33 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.event.ActionEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
+import org.una.programmingIII.Assignment_Manager_Client.Service.CareerService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
-import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
+public class CareerMaintenanceViewController extends Controller {
 
-public class CreateCourseViewController extends Controller {
 
+    @FXML
+    private MFXButton btnCourse;
 
     @FXML
     private MFXButton btnDelete;
@@ -39,9 +42,6 @@ public class CreateCourseViewController extends Controller {
     private MFXButton btnSave;
 
     @FXML
-    private MFXComboBox<UserDto> cbxProfessor;
-
-    @FXML
     private ImageView imvBack;
 
     @FXML
@@ -51,99 +51,90 @@ public class CreateCourseViewController extends Controller {
     private ImageView imvSearch;
 
     @FXML
-    private MFXDatePicker dtpEndDate;
+    private Label lblDepartment;
 
     @FXML
-    private MFXDatePicker dtpStartDate;
+    private TableColumn<CareerDto, String> tbcDescription;
 
     @FXML
-    private TableColumn<CourseDto, String> tbcDescription;
+    private TableColumn<CareerDto, String> tbcName;
 
     @FXML
-    private TableColumn<CourseDto, String> tbcName;
-
-    @FXML
-    private TableColumn<UserDto, String> tbcProfessor;
-
-    @FXML
-    private TableView<CourseDto> tbvCourse;
+    private TableView<CareerDto> tbvCareer;
 
     @FXML
     private MFXTextField txfDescription;
 
     @FXML
     private MFXTextField txfName;
-
-    @FXML
-    private Label lblCareer;
-
-    CourseInput courseInput;
-    List<UserDto> professors;
     ArrayList<Node> required = new ArrayList<>();
-    UserDto professorDto;
+    DepartmentDto departmentDto;
+    CareerInput careerInput;
     CareerDto careerDto;
-    CourseDto courseDto;
-
     @Override
     public void initialize() {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
-        tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
-        loanProfessors();
-        cbxProfessor.getItems().addAll(professors);
-        loanCareer();
+        loanDepartment();
         indicateRequired();
+    }
+
+    @FXML
+    void onActionBtnCourse(ActionEvent event) {
+
     }
 
     @FXML
     void onActionBtnDelete(ActionEvent event) {
         try {
-            if (courseInput.getId() == null) {
-                showError("Delete Course", "You must upload the course to be deleted");
+            if (careerInput.getId() == null) {
+                showError("Delete Career", "You must upload the career to be deleted");
             } else {
-                Answer answer = new CourseService().deleteCourse(courseInput.getId());
+                Answer answer = new CareerService().deleteCareer(careerInput.getId());
                 if (!answer.getState()) {
-                    showError("Delete Course", answer.getMessage());
+                    showError("Delete Career", answer.getMessage());
                 } else {
-                    showInfo("Delete Course", answer.getMessage());
-                    newCourse();
+                    showInfo("Delete Career", answer.getMessage());
+                    newCareer();
                 }
             }
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
-            showError("Delete Course", e.getMessage());
+            showError("Delete Career", e.getMessage());
         }
     }
 
     @FXML
     void onActionBtnNew(ActionEvent event) {
-        if (new Message().showConfirmation("New Course", getStage(), "Are you sure you want to clean the registry?")) {
-            newCourse();
+        if (new Message().showConfirmation("New Career", getStage(), "Are you sure you want to clean the registry?")) {
+            newCareer();
         }
+
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
+
         try {
             String validationMessage = validateRequired();
             if (!validationMessage.isEmpty()) {
-                showError("Save Course", validationMessage);
+                showError("Save Career", validationMessage);
                 return;
             }
-            if (courseInput.getCareerId()==null){
-                courseInput.setCareerId(careerDto.getId());
+            if (careerInput.getDepartment()==null){
+                careerInput.setDepartment(departmentDto);
             }
-            Answer answer = new CourseService().createCourse(courseInput);
+           Answer answer = new CareerService().createCareer(careerInput);
             answer.setState(true);
             if (!answer.getState()) {
                 showError("Save Course", answer.getMessage());
             } else {
                 showInfo("Save Course", answer.getMessage());
-                courseInput = (CourseInput) answer.getResult("course");
-                newCourse();
+                careerInput = (CareerInput) answer.getResult("career");
+                newCareer();
             }
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
@@ -169,43 +160,23 @@ public class CreateCourseViewController extends Controller {
     }
 
     @FXML
-    void onMousePressedUniversityTable(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvCourse.getSelectionModel().getSelectedItem() != null) {
-            courseDto = tbvCourse.getSelectionModel().getSelectedItem();
-            courseInput = new CourseInput(courseDto);
+    void onMousePressedCareerTable(MouseEvent event) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvCareer.getSelectionModel().getSelectedItem() != null) {
+         careerDto = tbvCareer.getSelectionModel().getSelectedItem();
+            careerInput = new CareerInput(careerDto);
             bindCourse();
         }
     }
-
-    @FXML
-    void onActionCbxProfessor(ActionEvent event) {
-        professorDto = cbxProfessor.getValue();
+    private void loanDepartment() {
+        departmentDto = (DepartmentDto) AppContext.getInstance().get("departmentDto");
+        lblDepartment.setText(departmentDto.getName());
+        tbvCareer.getItems().clear();
+        tbvCareer.getItems().addAll(departmentDto.getCareers());
     }
-
-    private void newCourse() {
-        courseInput = new CourseInput();
-        unbindAssignment();
-        bindCourse();
-        txfName.requestFocus();
-    }
-
-    private void bindCourse() {
-        txfName.textProperty().bindBidirectional(courseInput.name);
-        txfDescription.textProperty().bindBidirectional(courseInput.description);
-        cbxProfessor.setValue(courseInput.professor);
-
-    }
-
-    private void unbindAssignment() {
-        txfName.textProperty().bindBidirectional(courseInput.name);
-        txfDescription.textProperty().bindBidirectional(courseInput.description);
-    }
-
     private void indicateRequired() {
         required.clear();
-        required.addAll(Arrays.asList(txfName, txfDescription, cbxProfessor, dtpStartDate, dtpEndDate));
+        required.addAll(Arrays.asList(txfName, txfDescription));
     }
-
     private String validateRequired() {
         StringBuilder invalid = new StringBuilder();
         for (Node node : required) {
@@ -243,25 +214,19 @@ public class CreateCourseViewController extends Controller {
     private void showInfo(String title, String message) {
         new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
     }
-
-    private void loanCareer() {
-        careerDto = (CareerDto) AppContext.getInstance().get("career");
-        lblCareer.setText(careerDto.getName());
-        tbvCourse.getItems().clear();
-        tbvCourse.getItems().addAll(careerDto.getCourses());
+    private void bindCourse() {
+        txfName.textProperty().bindBidirectional(careerInput.name);
+        txfDescription.textProperty().bindBidirectional(careerInput.description);
     }
 
-    private void loanProfessors() {
-        try {
-            Answer answer = new UserService().getUsersByRole("PROFESSOR");
-            if (answer != null) {
-                professors = (List<UserDto>) answer.getResult("users");
-            }
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
-        }
-
+    private void unbindAssignment() {
+        txfName.textProperty().bindBidirectional(careerInput.name);
+        txfDescription.textProperty().bindBidirectional(careerInput.description);
     }
-
-
+    private void newCareer() {
+        careerInput = new CareerInput();
+        unbindAssignment();
+        bindCourse();
+        txfName.requestFocus();
+    }
 }

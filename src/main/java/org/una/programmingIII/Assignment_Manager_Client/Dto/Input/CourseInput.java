@@ -20,7 +20,7 @@ public class CourseInput {
     public SimpleStringProperty name;
     public SimpleStringProperty description;
     public UserDto professor;
-    private Long departmentId;
+    private Long careerId;
     public ObjectProperty<LocalDate> startDate;
     public ObjectProperty<LocalDate> endDate;
 
@@ -30,7 +30,7 @@ public class CourseInput {
         this.name = new SimpleStringProperty(courseDto.getName());
         this.description = new SimpleStringProperty(courseDto.getDescription());
         this.professor = courseDto.getProfessor();
-        this.departmentId = courseDto.getDepartmentId();
+        this.careerId = courseDto.getCareerId();
         this.startDate = new SimpleObjectProperty<>(courseDto.getStartDate());
         this.endDate = new SimpleObjectProperty<>(courseDto.getEndDate());
     }
