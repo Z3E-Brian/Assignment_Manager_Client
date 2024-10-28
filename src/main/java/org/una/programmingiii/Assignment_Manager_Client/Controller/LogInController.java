@@ -15,6 +15,8 @@ import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class LogInController extends Controller {
 
@@ -56,9 +58,9 @@ public class LogInController extends Controller {
 
     @FXML
     void onActionBtnRegister(ActionEvent event) {
-        System.out.println("Register button pressed");
-        FlowController.getInstance().goViewInWindow("RegisterUserView");
-        getStage().close();
+     FlowController.getInstance().goViewInWindow("RegisterUserView");
+       getStage().close();
+
     }
 
     @FXML

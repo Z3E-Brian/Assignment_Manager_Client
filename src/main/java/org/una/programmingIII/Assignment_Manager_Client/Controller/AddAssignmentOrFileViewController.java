@@ -96,7 +96,6 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
                 showError("Delete Assignment", "You must upload the assignment to be deleted");
             } else {
                 Answer answer = new AssignmentService().deleteAssignment(Long.parseLong(assignmentInput.getId().getValue()));
-                answer.setState(true);
                 if (!answer.getState()) {
                     showError("Delete Assignment", answer.getMessage());
                 } else {

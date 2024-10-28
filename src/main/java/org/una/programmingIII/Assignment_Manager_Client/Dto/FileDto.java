@@ -15,4 +15,5 @@ public class FileDto {
     private Long submissionId;
     private Long assignmentId;
     private Long courseContentId;
+    private String provisionalName;
 }

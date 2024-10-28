@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileInput {
+
     private Long id;
     private String name;
     private Long fileSize;

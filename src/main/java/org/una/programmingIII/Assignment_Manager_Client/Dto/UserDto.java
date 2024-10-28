@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class  UserDto {
 
     private Long id;
     private String name;
@@ -19,5 +19,9 @@ public class UserDto {
     private Set<PermissionDto> permissions;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdate;
+    @Override
+    public String toString() {
+        return name;
+    }
 }
 

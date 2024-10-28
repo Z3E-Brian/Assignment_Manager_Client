@@ -39,7 +39,7 @@ public class AssignmentService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/assignments/findByCourseAndPosition?courseId=" + courseId + "&position=" + position))
+                    .uri(URI.create(BASE_URL + "/assignments/getByCourseIdAndAddress/" + courseId + "/" + position))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -52,7 +52,7 @@ public class AssignmentService {
                 List<AssignmentInput> assignmentInputs = assignments.stream().map(AssignmentInput::new).toList();
                 return new Answer(true, "", "", "assignments", assignmentInputs);
             } else {
-                return new Answer(false, response.body(), "Error : " + response.statusCode());
+                return new Answer(false, response.body(), "Error: " + response.statusCode());
             }
         } catch (Exception e) {
             Logger.getLogger("AssignmentService").severe(e.getMessage());
@@ -87,7 +87,7 @@ public class AssignmentService {
             AssignmentDto assignmentDtoInput = new AssignmentDto(assignmentInput);
             String json = mapper.writeValueAsString(assignmentDtoInput);
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/assignments"))
+                    .uri(URI.create(BASE_URL + "/create"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -103,6 +103,29 @@ public class AssignmentService {
         } catch (Exception e) {
             Logger.getLogger("AssignmentService").severe(e.getMessage());
             return new Answer(false, e.getMessage(), "Error to create the assignment");
+        }
+    }
+    public Answer getAssignmentsByCourseId(Long courseId) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/assignments/getByCourseId/" + courseId))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                List<AssignmentDto> assignments = List.of(mapper.readValue(response.body(), AssignmentDto[].class));
+                return new Answer(true, "", "", "assignments", assignments);
+            } else {
+                return new Answer(false, response.body(), "Error: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            Logger.getLogger("AssignmentService").severe(e.getMessage());
+            return new Answer(false, e.getMessage(), "Error to get the list of assignments");
         }
     }
 }

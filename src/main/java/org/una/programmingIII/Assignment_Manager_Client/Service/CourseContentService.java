@@ -33,4 +33,25 @@ public class CourseContentService {
             return new Answer(false, e.getMessage(), "Error to save the course content");
         }
     }
+    public Answer getAllCourseContentById(Long courseId){
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/courseContents/getByCourseId/" + courseId))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return new Answer(true, "", "", "courseContent", new ObjectMapper().readValue(response.body(), CourseContentInput.class));
+            } else {
+                return new Answer(false, response.body(), "Error : " + response.statusCode());
+            }
+        } catch (Exception e) {
+            Logger.getLogger("CourseContentService").severe(e.getMessage());
+            return new Answer(false, e.getMessage(), "Error to get the course content");
+        }
+    }
 }

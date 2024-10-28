@@ -17,13 +17,12 @@ public class CourseDto {
     private String description;
     private UserDto professor;
     private List<UserDto> students;
-    private DepartmentDto department;
- /*   public CourseDto(CourseInput courseInput){
-        this.id = Long.parseLong(courseInput.id.getValue());
+    private Long departmentId;
+   public CourseDto(CourseInput courseInput){
+        this.id = courseInput.id;
         this.name = courseInput.name.getValue();
         this.description = courseInput.description.getValue();
-        this.professor = new UserDto(courseInput.professor);
-        this.students = courseInput.students;
-        this.department = new DepartmentDto(courseInput.department);
-    }*/
+        this.professor = courseInput.getProfessor();
+        this.departmentId = courseInput.getDepartmentId();
+    }
 }
