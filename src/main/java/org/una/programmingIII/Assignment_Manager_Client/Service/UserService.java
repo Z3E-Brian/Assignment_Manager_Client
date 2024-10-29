@@ -1,15 +1,20 @@
 package org.una.programmingIII.Assignment_Manager_Client.Service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
@@ -80,48 +85,64 @@ public class UserService {
         }
     }
 
-    // POST: Crear un nuevo usuario
-    public void createUser(UserInput userInput) throws Exception {
-        String requestBody = objectMapper.writeValueAsString(userInput);
+    public Answer createUser(NewUserDto user) {
+        try {
+            String requestBody = objectMapper.writeValueAsString(user);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/create"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/create"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 201) {
-            objectMapper.readValue(response.body(), UserDto.class);
-        } else {
-            throw new Exception("Error creating user: " + response.statusCode());
+            if (response.statusCode() == 201) {
+                return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
+            } else {
+                return new Answer(false, response.body(), "Error : " + response.statusCode());
+            }
+        }catch (Exception e){
+            Logger.getLogger("UserService").severe(e.getMessage());
+            return new Answer(false, e.getMessage(), "Error to save the user");
         }
     }
 
-    // PUT: Actualizar un usuario por ID
-    public UserDto updateUser(Long id, UserInput userInput) throws Exception {
-        String requestBody = objectMapper.writeValueAsString(userInput);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/" + id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), UserDto.class);
-        } else if (response.statusCode() == 404) {
-            throw new Exception("User not found");
-        } else {
-            throw new Exception("Error updating user: " + response.statusCode());
+    public Answer updateUser(Long id, UserInput userInput) {
+        try {
+            String requestBody = objectMapper.writeValueAsString(userInput);
+            HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                UserDto updatedUser = objectMapper.readValue(response.body(), UserDto.class);
+                return new Answer(true, "", "User updated successfully", "user", updatedUser);
+            }
+            if (response.statusCode() == 404) {
+                throw new Exception("User not found");
+            }
+            throw new Exception("Error updating user: " + response.statusCode() + " - " + response.body());
+        } catch (JsonProcessingException e) {
+            Logger.getLogger("UserService").severe("Error serializing user input: " + e.getMessage());
+            return new Answer(false, e.getMessage(), "Error serializing user data");
+        } catch (IOException e) {
+            Logger.getLogger("UserService").severe("IO error during request: " + e.getMessage());
+            return new Answer(false, e.getMessage(), "Error sending the request");
+        } catch (InterruptedException e) {
+            Logger.getLogger("UserService").severe("Request interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();  // Restores interrupt status
+            return new Answer(false, e.getMessage(), "Request interrupted");
+        } catch (Exception e) {
+            Logger.getLogger("UserService").severe("General error: " + e.getMessage());
+            return new Answer(false, e.getMessage(), "Error updating the user");
         }
     }
+
 
     // DELETE: Eliminar un usuario por ID
-    public void deleteUser(Long id) throws Exception {
+    public Answer deleteUser(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
                 .DELETE()
@@ -132,6 +153,7 @@ public class UserService {
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting user: " + response.statusCode());
         }
+        return null;
     }
 
     public Answer getUsersByRole(String role) throws Exception {
@@ -149,13 +171,4 @@ public class UserService {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
     }
-
-//    public boolean authenticate(String username, String password) throws Exception {
-//        UserDto userDto = getUserByEmail(username);
-//        if ("admin".equals(username) && "admin".equals(password)) {
-//            return true;
-//        } else {
-//            throw new Exception("Invalid credentials");
-//        }
-//    }
 }
