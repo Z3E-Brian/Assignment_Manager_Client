@@ -7,22 +7,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AuthenticationService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Format;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class RegisterUserController extends Controller {
-
-    @FXML
-    private MFXButton btnLogIn;
 
     @FXML
     private MFXButton btnRegister;
@@ -48,53 +44,57 @@ public class RegisterUserController extends Controller {
     private UserService userService;
     private AuthenticationService authenticationService;
     private UserInput userInput;
+    private NewUserDto newUserDto;
     List<Node> requeridos = new ArrayList<>();
 
 
     @Override
     public void initialize() {
+        newUserDto = new NewUserDto();
         userService = new UserService();
         userInput = new UserInput();
         authenticationService = new AuthenticationService();
 
         usernameField.delegateSetTextFormatter(Format.getInstance().textFormat(80));
-        identificationNumberField.delegateSetTextFormatter(Format.getInstance().textFormat(8));
+        passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(8));
         emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
-
-        identificationNumberField.textProperty().bindBidirectional(userInput.getIdentificationNumber());
-        usernameField.textProperty().bindBidirectional(userInput.getName());
-        emailField.textProperty().bindBidirectional(userInput.getEmail());
-        passwordField.textProperty().bindBidirectional(userInput.getPassword());
 
         indicateRequeridos();
         clean();
-        emailField.setText("justin77mendezmena@gmail.com");
+        bind();
+    }
+
+    private void bind() {
+        usernameField.textProperty().bindBidirectional(userInput.name);
+        passwordField.textProperty().bindBidirectional(userInput.password);
+        emailField.textProperty().bindBidirectional(userInput.email);
+        identificationNumberField.textProperty().bindBidirectional(userInput.identificationNumber);
     }
 
     @FXML
-    void onActionBtnLogIn(ActionEvent event) {
-        clean();
-        FlowController.getInstance().goViewInWindow("LogInView");
-        FlowController.getInstance().delete("RegisterUserView");
-        getStage().close();
-    }
+    void onActionBtnRegister(ActionEvent event) throws Exception {
+        String req = validarRequeridos();
+        if (req.isBlank()) {
+            if (passwordField.getText().equals(confirmPasswordField.getText())) {
+                newUserDto = new NewUserDto(userInput);
+                Answer response = userService.createUser(newUserDto);
 
-    @FXML
-    void onActionBtnRegister(ActionEvent event) {
-        if (authenticationService.checkVerificationClick()) {
-            System.out.println("verification clicked");
+                if (response.getState()) {
+                    new Message().showModal(Alert.AlertType.CONFIRMATION, "Autenticacion", getStage(),
+                            "Su cuenta ha sido creada, por favor active su cuenta y inicie sesión.");
+                    FlowController.getInstance().goViewInWindow("LoginView");
+                    getStage().close();
+                } else {
+                    String errorMessage = response.getMessage();
+                    new Message().showModal(Alert.AlertType.ERROR, "Registrar Usuario", getStage(), errorMessage);
+                }
+            } else {
+                new Message().showModal(Alert.AlertType.ERROR, "Registrar Usuario", getStage(), "Las contraseñas no coinciden.");
+            }
         } else {
-            new Message().showModal(Alert.AlertType.ERROR, "Registrar Usuario", getStage(), "Existen espacios  importantes en blanco");
-        }
-        //userService.createUser(userInput);
-    }
-
-    @FXML
-    void onActionBtnSendEmail(ActionEvent event) throws Exception {
-        if (!emailField.getText().isBlank()) {
-            authenticationService.sendVerificationEmail(emailField.getText());
-        } else {
-            new Message().showModal(Alert.AlertType.ERROR, "Registrar Usuario", getStage(), "Existen espacios  importantes en blanco");
+            new Message().showModal(Alert.AlertType.ERROR, "Registrar Usuario", getStage(),
+                    "Existen espacios importantes en blanco");
         }
     }
 

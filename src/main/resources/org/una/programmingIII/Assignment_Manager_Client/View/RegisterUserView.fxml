@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.RegisterUserController">
+<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.RegisterUserController">
     <padding>
         <Insets bottom="30" left="30" right="30" top="30" />
     </padding>
@@ -65,9 +65,13 @@
          <MFXPasswordField fx:id="confirmPasswordField" floatMode="BORDER" promptText="Confirmar Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
       </children>
    </HBox>
-   <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+   <HBox layoutX="40.0" layoutY="420.0" spacing="10.0">
       <children>
-          <MFXButton fx:id="btnLogIn" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Iniciar Sesión" />
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+            <image>
+               <Image url="@../Assets/Save.png" />
+            </image>
+         </ImageView>
           <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Registrarse" />
       </children>
    </HBox>

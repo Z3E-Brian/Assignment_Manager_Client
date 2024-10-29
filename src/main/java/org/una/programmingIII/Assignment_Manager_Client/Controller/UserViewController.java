@@ -50,9 +50,9 @@ public class UserViewController extends Controller {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
-        numberIDField.textProperty().bindBidirectional(userInput.getIdentificationNumber());
-        nameField.textProperty().bindBidirectional(userInput.getName());
-        emailField.textProperty().bindBidirectional(userInput.getEmail());
+//        numberIDField.textProperty().bindBidirectional(userInput.getIdentificationNumber());
+//        nameField.textProperty().bindBidirectional(userInput.getName());
+//        emailField.textProperty().bindBidirectional(userInput.getEmail());
 
         PermissionType[] permissions = PermissionType.values();
         for (PermissionType permission : permissions) {
@@ -86,13 +86,13 @@ public class UserViewController extends Controller {
         userInput.setPassword("1234"); // Contraseña por defecto
 
         // Recoger permisos seleccionados
-        userInput.setRole(fpPermissions.getChildren().stream()
-                .filter(node -> node instanceof MFXCheckbox && ((MFXCheckbox) node).isSelected())
-                .map(node -> PermissionType.valueOf(((MFXCheckbox) node).getText()))
-                .collect(Collectors.toList()));
+//        userInput.setRole(fpPermissions.getChildren().stream()
+//                .filter(node -> node instanceof MFXCheckbox && ((MFXCheckbox) node).isSelected())
+//                .map(node -> PermissionType.valueOf(((MFXCheckbox) node).getText()))
+//                .collect(Collectors.toList()));
 
         try {
-            userService.createUser(userInput);
+           // userService.createUser(userInput);
             loadUsers();
             clearForm();
         } catch (Exception e) {
@@ -154,11 +154,11 @@ public class UserViewController extends Controller {
     }
 
     private void clearForm() {
-        userInput.getName().set("");
-        userInput.getEmail().set("");
-        userInput.getIdentificationNumber().set("");
-        userTable.getSelectionModel().clearSelection();
-        setFieldsEditable(true);
+//        userInput.getName().set("");
+//        userInput.getEmail().set("");
+//        userInput.getIdentificationNumber().set("");
+//        userTable.getSelectionModel().clearSelection();
+//        setFieldsEditable(true);
     }
 
     private void showAlert(String title, String message, Alert.AlertType alertType) {
@@ -191,9 +191,9 @@ public class UserViewController extends Controller {
     }
 
     private void bindUserToForm(UserDto user) {
-        userInput.getName().set(user.getName());
-        userInput.getEmail().set(user.getEmail());
-        userInput.getIdentificationNumber().set(user.getIdentificationNumber());
+//        userInput.getName().set(user.getName());
+//        userInput.getEmail().set(user.getEmail());
+//        userInput.getIdentificationNumber().set(user.getIdentificationNumber());
     }
     @FXML
     private void prepareForNewUser() {

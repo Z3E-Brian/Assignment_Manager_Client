@@ -10,11 +10,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
@@ -31,7 +32,6 @@ public class UserService {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-    // GET: Obtener todos los usuarios
     public List<UserDto> getAllUsers() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getAllUsers"))//TODO: remove "/getAllUsers" from URI
@@ -41,7 +41,8 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {});
+            return objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+            });
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
@@ -61,13 +62,13 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
+            });
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
     }
 
-    // GET: Buscar usuario por email
     public UserDto getUserByEmail(String email) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/findByEmail?email=" + email))
@@ -98,20 +99,24 @@ public class UserService {
 
             if (response.statusCode() == 201) {
                 return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
+            } else if (response.statusCode() == 401) {
+                return new Answer(false, "Usuario actualmente registrado, por favor intente con otro correo.", "Error: " + response.statusCode());
             } else {
-                return new Answer(false, response.body(), "Error : " + response.statusCode());
+                String errorMessage = response.body();
+                return new Answer(false, errorMessage, "Error: " + response.statusCode());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Logger.getLogger("UserService").severe(e.getMessage());
             return new Answer(false, e.getMessage(), "Error to save the user");
         }
     }
 
+
     public Answer updateUser(Long id, UserInput userInput) {
         try {
             String requestBody = objectMapper.writeValueAsString(userInput);
             HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(BASE_URL + "/" + id))
+                    .uri(URI.create(BASE_URL + "/" + id))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -140,6 +145,25 @@ public class UserService {
         }
     }
 
+    public UserDto updateUserDto(Long id, UserInput userInput) throws Exception {
+        String requestBody = objectMapper.writeValueAsString(userInput);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + id))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), UserDto.class);
+        } else if (response.statusCode() == 404) {
+            throw new Exception("User not found");
+        } else {
+            throw new Exception("Error updating user: " + response.statusCode());
+        }
+    }
 
     // DELETE: Eliminar un usuario por ID
     public Answer deleteUser(Long id) throws Exception {
@@ -156,19 +180,5 @@ public class UserService {
         return null;
     }
 
-    public Answer getUsersByRole(String role) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getByRole?role=" + role))
-                .GET()
-                .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            List<UserDto> users = objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {});
-            return new Answer(true, "Users found","","users", users);
-        } else {
-            throw new Exception("Error fetching users: " + response.statusCode());
-        }
-    }
 }

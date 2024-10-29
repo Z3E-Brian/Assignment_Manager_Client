@@ -10,6 +10,7 @@ import org.apache.hc.client5.http.auth.InvalidCredentialsException;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
+import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AuthenticationService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
@@ -50,8 +51,6 @@ public class LogInController extends Controller {
                 FlowController.getInstance().goMain();
                 getStage().close();
             }
-        } catch (InvalidCredentialsException invalidCredentialsException) {
-            new Message().showModal(Alert.AlertType.ERROR, "Inicio de sesion", getStage(), invalidCredentialsException.getMessage());
         } catch (Exception exception) {
             new Message().showModal(Alert.AlertType.ERROR, "Inicio de sesion", getStage(), exception.getMessage());
         }
@@ -59,8 +58,8 @@ public class LogInController extends Controller {
 
     @FXML
     void onActionBtnRegister(ActionEvent event) {
-     FlowController.getInstance().goViewInWindow("RegisterUserView");
-       getStage().close();
+        FlowController.getInstance().goViewInWindow("RegisterUserView");
+        getStage().close();
 
     }
 
