@@ -14,13 +14,16 @@ public class CareerDto {
     private Long id;
     private String name;
     private String description;
-    private DepartmentDto department;
+    private Long departmentId;
     private List<CourseDto> courses;
+    private List<UserDto> users;
+
+
     public CareerDto(CareerInput careerInput){
         this();
         this.id = careerInput.getId();
         this.name = careerInput.name.getValue();
         this.description = careerInput.description.getValue();
-        this.department = careerInput.getDepartment();
+        this.departmentId = careerInput.getDepartmentId();
     }
 }

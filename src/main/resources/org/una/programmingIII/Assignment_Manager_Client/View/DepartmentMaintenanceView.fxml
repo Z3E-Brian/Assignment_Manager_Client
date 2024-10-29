@@ -77,7 +77,8 @@
                         </TableView>
                         <HBox alignment="CENTER" spacing="8.0" VBox.vgrow="SOMETIMES">
                            <children>
-                              <MFXButton fx:id="btnDelete" onAction="#onActionBtnDelete" text="Eliminar" />
+                              <MFXButton fx:id="btnDelete" layoutX="155.0" layoutY="10.0" onAction="#onActionBtnDelete" text="Eliminar" />
+                              <MFXButton fx:id="btnCareers" onAction="#onActionBtnCareers" text="Carreras" />
                            </children>
                         </HBox>
                      </children>

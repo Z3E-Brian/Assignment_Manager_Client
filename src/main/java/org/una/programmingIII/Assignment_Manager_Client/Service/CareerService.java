@@ -20,8 +20,7 @@ public class CareerService {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
     }
-    public Answer createCareer(CareerInput careerInput) throws Exception {
-        CareerDto careerDto = new CareerDto(careerInput);
+    public Answer createCareer(CareerDto careerDto) throws Exception {
         String requestBody = objectMapper.writeValueAsString(careerDto);
 
         HttpRequest request = HttpRequest.newBuilder()

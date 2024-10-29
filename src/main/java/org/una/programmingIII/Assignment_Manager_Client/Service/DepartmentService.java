@@ -21,6 +21,24 @@ public class DepartmentService {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
+    public DepartmentDto getById(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), DepartmentDto.class);
+        } else if (response.statusCode() == 404) {
+            throw new Exception("Department not found with ID: " + id);
+        } else {
+            throw new Exception("Error retrieving department: " + response.statusCode());
+        }
+    }
+
+
     public DepartmentDto createDepartment(DepartmentDto departmentDto) throws Exception {
         String requestBody = objectMapper.writeValueAsString(departmentDto);
 

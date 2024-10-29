@@ -65,7 +65,6 @@
          <MFXPasswordField fx:id="confirmPasswordField" floatMode="BORDER" promptText="Confirmar Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
       </children>
    </HBox>
-   <MFXButton fx:id="btnSendEmail" onAction="#onActionBtnSendEmail" prefHeight="34.0" prefWidth="138.0" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Solicitar Link de acceso" />
    <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
       <children>
           <MFXButton fx:id="btnLogIn" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Iniciar Sesión" />

@@ -136,7 +136,7 @@ public class FacultyMaintenanceController extends Controller {
 
     @FXML
     void OnMousePressedTbvFaculty(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvFaculty.getSelectionModel().getSelectedItem() != null) {
             facultyDto = tbvFaculty.getSelectionModel().getSelectedItem();
             bindear();
         }

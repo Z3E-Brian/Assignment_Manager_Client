@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -17,6 +18,8 @@ public class  UserDto {
     private String email;
     private String identificationNumber;
     private Set<PermissionDto> permissions;
+    private Long careerId;
+    private List<CourseDto> courses;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdate;
     @Override
