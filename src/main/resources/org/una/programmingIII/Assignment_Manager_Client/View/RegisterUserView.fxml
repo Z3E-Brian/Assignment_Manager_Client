@@ -15,16 +15,6 @@
          <Image url="@../Assets/UserIcon.png" />
       </image>
    </ImageView>
-   <HBox spacing="10.0">
-      <children>
-         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
-            <image>
-               <Image url="@../Assets/UserIcon.png" />
-            </image>
-         </ImageView>
-          <MFXTextField fx:id="txfName" floatMode="BORDER" promptText="Nombre" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
-      </children>
-   </HBox>
    <HBox layoutX="40.0" layoutY="624.0" spacing="10.0" VBox.vgrow="NEVER">
       <children>
          <HBox spacing="10.0" HBox.hgrow="ALWAYS">
@@ -34,7 +24,7 @@
                      <Image url="@../Assets/UserIcon.png" />
                   </image>
                </ImageView>
-               <MFXTextField fx:id="txfLastName" floatMode="BORDER" promptText="Nombre" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+               <MFXTextField fx:id="txfLastName" floatMode="BORDER" promptText="Primer Apellido" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
             </children>
          </HBox>
          <HBox spacing="10.0">
@@ -44,18 +34,33 @@
                      <Image url="@../Assets/UserIcon.png" />
                   </image>
                </ImageView>
-               <MFXTextField fx:id="txfSecondLastName" floatMode="BORDER" floatingText="Nombree" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+               <MFXTextField fx:id="txfSecondLastName" floatMode="BORDER" promptText="Segundo Apellido" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
             </children>
          </HBox>
       </children>
    </HBox>
-   <HBox layoutX="40.0" layoutY="160.0" spacing="10.0">
+   <HBox layoutX="30.0" layoutY="219.0" spacing="10.0">
       <children>
-         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
-            <image>
-               <Image url="@../Assets/UserID.png" />
-            </image></ImageView>
-         <MFXTextField fx:id="identificationNumberField" floatMode="BORDER" promptText="Cedula:" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+         <HBox spacing="10.0">
+            <children>
+               <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                  <image>
+                     <Image url="@../Assets/UserIcon.png" />
+                  </image>
+               </ImageView>
+                <MFXTextField fx:id="txfName" floatMode="BORDER" promptText="Nombre" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+            </children>
+         </HBox>
+         <HBox spacing="10.0">
+            <children>
+               <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+                  <image>
+                     <Image url="@../Assets/UserID.png" />
+                  </image>
+               </ImageView>
+               <MFXTextField fx:id="identificationNumberField" floatMode="BORDER" promptText="Cedula:" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+            </children>
+         </HBox>
       </children>
    </HBox>
    <HBox layoutX="40.0" layoutY="227.0" spacing="10.0">

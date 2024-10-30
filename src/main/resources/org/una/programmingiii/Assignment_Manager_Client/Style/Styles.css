@@ -21,6 +21,11 @@
     -fx-border-width: 2px;
 }
 
+.label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #ffffff;
+}
+
 .label2 {
     -fx-font-size: 16px;
     -fx-text-fill: #000000;
@@ -247,52 +252,60 @@
     -fx-max-width: 10px;
     -fx-max-height: 15px;
 }
+
 /*General buttons*/
-.mfx-btn-new,.mfx-btn-new:armed,.mfx-btn-new:focused{
-    -fx-background-color:#2196F3;
+.mfx-btn-new, .mfx-btn-new:armed, .mfx-btn-new:focused {
+    -fx-background-color: #2196F3;
 }
 
-.mfx-btn-new>ImageView{
+.mfx-btn-new > ImageView {
     -fx-image: url("../Assets/AddFile.png");
 }
 
-.mfx-btn-new:hover{
-    -fx-background-color:#00ffcc;
+.mfx-btn-new:hover {
+    -fx-background-color: #00ffcc;
 }
 
-.mfx-btn-Search,.mfx-btn-Search:armed,.mfx-btn-Search:focused{
-    -fx-background-color:#00bcd4;
+.mfx-btn-Search, .mfx-btn-Search:armed, .mfx-btn-Search:focused {
+    -fx-background-color: #00bcd4;
 }
 
-.mfx-btn-Search>ImageView{
+.mfx-btn-Search > ImageView {
     -fx-image: url("../Assets/Search.png");
 }
 
-.mfx-btn-Search:hover{
-    -fx-background-color:#006666;
+.mfx-btn-Search:hover {
+    -fx-background-color: #006666;
 }
 
-.mfx-btn-Delete,.mfx-btn-Delete:armed,.mfx-btn-Delete:focused{
-    -fx-background-color:#f44336;
+.mfx-btn-Delete, .mfx-btn-Delete:armed, .mfx-btn-Delete:focused {
+    -fx-background-color: #f44336;
 }
 
-.mfx-btn-Delete>ImageView{
+.mfx-btn-Delete > ImageView {
     -fx-image: url("../Assets/DeleteFile.png");
 }
 
-.mfx-btn-Delete:hover{
-    -fx-background-color:#ff0000;
+.mfx-btn-Delete:hover {
+    -fx-background-color: #ff0000;
 }
 
-.mfx-btn-Save,.mfx-btn-Save:armed,.mfx-btn-Save:focused{
-    -fx-background-color:#00C853;
+.mfx-btn-Save, .mfx-btn-Save:armed, .mfx-btn-Save:focused {
+    -fx-background-color: #00C853;
 }
-.mfx-btn-Save:hover{
+
+.mfx-btn-Save:hover {
     -fx-background-color: #25ff7d;
 }
-.mfx-btn-Save>ImageView{
+
+.mfx-btn-Save > ImageView {
     -fx-image: url("../Assets/Save.png");
 }
+
 .mfx-text-field {
+    -fx-text-fill: #000000; /* Color negro para el texto */
+}
+
+.mfx-text-field .floating-text {
     -fx-text-fill: #000000; /* Color negro para el texto */
 }
