@@ -2,9 +2,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
 import java.net.URI;

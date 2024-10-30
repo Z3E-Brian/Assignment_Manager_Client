@@ -14,10 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class SubmissionInput {
     private Long id;
-    private AssignmentInput assignment;
-    private UserInput student;
+    private Long assignmentId;
+    private Long studentId;
     private List<FileInput> files;
-    private UserInput reviewedBy;
+    private Long reviewedById;
     private Double grade;
     private String feedback;
     private LocalDateTime createdAt;
