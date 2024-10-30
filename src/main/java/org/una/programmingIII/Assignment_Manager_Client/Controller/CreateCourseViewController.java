@@ -133,7 +133,7 @@ public class CreateCourseViewController extends Controller {
                 showError("Save Course", validationMessage);
                 return;
             }
-            if (courseInput.getCareerId()==null){
+            if (courseInput.getCareerId() == null) {
                 courseInput.setCareerId(careerDto.getId());
             }
             Answer answer = new CourseService().createCourse(courseInput);
@@ -226,7 +226,7 @@ public class CreateCourseViewController extends Controller {
             floatingText = ((MFXTextField) node).getFloatingText();
         } else if (node instanceof MFXComboBox && ((MFXComboBox<?>) node).getValue() == null) {
             floatingText = ((MFXComboBox<?>) node).getFloatingText();
-        }else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
+        } else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
             floatingText = ((MFXDatePicker) node).getFloatingText();
         }
         return floatingText;
@@ -251,17 +251,18 @@ public class CreateCourseViewController extends Controller {
         tbvCourse.getItems().addAll(careerDto.getCourses());
     }
 
-//    private void loanProfessors() {
-//        try {
-//            Answer answer = new UserService().getUsersByRole("PROFESSOR");
-//            if (answer != null) {
-//                professors = (List<UserDto>) answer.getResult("users");
-//            }
-//        } catch (Exception e) {
-//            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
-//        }
-//
-//    }
+    private void loanProfessors() {
+        try {
+            Answer answer = (Answer) new UserService().getAllUsersByPermission("PROFESSOR");
+            if (!answer.getState()) {
+                showError("Load Professors", answer.getMessage());
+            } else {
+                professors = (List<UserDto>) answer.getResult("users");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+        }
+    }
 
 
 }
