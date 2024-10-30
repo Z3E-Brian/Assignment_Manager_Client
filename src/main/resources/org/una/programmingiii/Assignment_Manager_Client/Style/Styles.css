@@ -292,7 +292,9 @@
 .mfx-btn-Save,.mfx-btn-Save:armed,.mfx-btn-Save:focused{
     -fx-background-color:#00C853;
 }
-
+.mfx-btn-Save:hover{
+    -fx-background-color: #25ff7d;
+}
 .mfx-btn-Save>ImageView{
     -fx-image: url("../Assets/Save.png");
 }
