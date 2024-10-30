@@ -1,42 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
     <top>
         <VBox>
-            <HBox prefHeight="30.0" prefWidth="50.0" spacing="10.0" styleClass="menu-bar">
-                <ImageView fx:id="facebookIcon" fitHeight="24" fitWidth="24">
-                    <Image url="@../Assets/Facebook-Icon.png" />
-                </ImageView>
-                <ImageView fx:id="instagramIcon" fitHeight="24" fitWidth="24">
-                    <Image url="@../Assets/Instagram-Icon.png" />
-                </ImageView>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
-                <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
-                <Region HBox.hgrow="ALWAYS" />
-                <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" text="Courses">
+         <VBox>
+            <children>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
+                      <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
+                      <Region HBox.hgrow="ALWAYS" />
+                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" text="Courses">
                 </MenuButton>
-                <MenuButton style="-fx-text-fill: white;" text="Otras Aulas Virtuales">
+                      <MenuButton style="-fx-text-fill: white;" text="Otras Aulas Virtuales">
                 </MenuButton>
-                <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
-                    <graphic>
-                        <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
-                            <Image url="@../Assets/UserIcon.png" />
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <opaqueInsets>
-                    <Insets />
-                </opaqueInsets>
-                <padding>
-                    <Insets left="15.0" right="15.0" />
-                </padding>
-            </HBox>
+                  <VBox alignment="CENTER">
+                     <children>
+                            <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
+                                <graphic>
+                                    <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
+                                        <Image url="@../Assets/UserIcon.png" />
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        <Label fx:id="lblUserName" text="User Name" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+                      <opaqueInsets>
+                          <Insets />
+                      </opaqueInsets>
+                      <padding>
+                          <Insets left="15.0" right="15.0" />
+                      </padding>
+                  </HBox>
+            </children>
+         </VBox>
         </VBox>
     </top>
    <center>

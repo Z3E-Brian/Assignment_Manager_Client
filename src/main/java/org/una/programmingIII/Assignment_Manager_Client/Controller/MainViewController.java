@@ -3,13 +3,9 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
+import javafx.scene.control.*;
+
+
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
@@ -21,7 +17,6 @@ import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +39,9 @@ public class MainViewController extends Controller implements SessionObserver {
     private ImageView instagramIcon;
 
     @FXML
+    private Label lblUserName;
+
+    @FXML
     private BorderPane root;
 
     private LoginResponse loginResponse;
@@ -52,6 +50,7 @@ public class MainViewController extends Controller implements SessionObserver {
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
         List<String> courses = Arrays.asList("Course 1", "Course 2", "Course 3");
+        
         for (String course : courses) {
             MenuItem menuItem = new MenuItem(course);
             menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
@@ -59,6 +58,7 @@ public class MainViewController extends Controller implements SessionObserver {
 
         }
         loadLoginResponse();
+        lblUserName.setText(SessionManager.getInstance().getLoginResponse().getUser().getFullName());
         SessionManager.getInstance().addObserver(this);
         SessionManager.getInstance().setRunningTokenValidationThread(true);
         SessionManager.getInstance().startTokenValidationTask();
@@ -96,7 +96,8 @@ public class MainViewController extends Controller implements SessionObserver {
         if (loginResponse == null) {
             new Message().showModal(Alert.AlertType.ERROR, "Error inicio sesion", getStage(), "Ha ocurrido un error al iniciar sesion");
             FlowController.getInstance().goView("LoginView");
-            getStage().close();
+            FlowController.getInstance().exitMain();
+            FlowController.getInstance().clearLoarders();
         } else {
             loadPermisosUsers();
         }
@@ -122,9 +123,9 @@ public class MainViewController extends Controller implements SessionObserver {
     public void onSessionExpired() {
         Platform.runLater(() -> {
             FlowController.getInstance().goViewInWindow("LogInView");
-            getStage().close();
+            FlowController.getInstance().exitMain();
             SessionManager.getInstance().removeObserver(this);
-            FlowController.getInstance().delete("MainView");
+            FlowController.getInstance().clearLoarders();
             new Message().showModal(Alert.AlertType.INFORMATION, "Tiempo de inicio de sesion agotado", getStage(), "Debes de volver a iniciar sesion");
         });
     }

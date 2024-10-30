@@ -116,7 +116,8 @@ public class FlowController {
                 VBox vBox = ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter());
                 vBox.getChildren().clear();
                 vBox.getChildren().add(root);
-                VBox.setVgrow(root, Priority.ALWAYS);      break;
+                VBox.setVgrow(root, Priority.ALWAYS);
+                break;
             case "Top":
                 HBox hBox = ((HBox) ((BorderPane) stage.getScene().getRoot()).getTop());
                 hBox.getChildren().clear();
@@ -141,26 +142,26 @@ public class FlowController {
         MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
     }
 
-public void goViewInWindow(String viewName) {
-    FXMLLoader loader = getLoader(viewName);
-    Controller controller = loader.getController();
-    Stage stage = new Stage();
-    InputStream inputStream = App.class.getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png");
-    stage.getIcons().add(new Image(inputStream));
-    stage.setTitle("Assignment Manager");
-    stage.setOnHidden((WindowEvent event) -> {
-        controller.getStage().getScene().setRoot(new Pane());
-        controller.setStage(null);
-    });
-    controller.setStage(stage);
-    Parent root = loader.getRoot();
-    Scene scene = new Scene(root);
+    public void goViewInWindow(String viewName) {
+        FXMLLoader loader = getLoader(viewName);
+        Controller controller = loader.getController();
+        Stage stage = new Stage();
+        InputStream inputStream = App.class.getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png");
+        stage.getIcons().add(new Image(inputStream));
+        stage.setTitle("Assignment Manager");
+        stage.setOnHidden((WindowEvent event) -> {
+            controller.getStage().getScene().setRoot(new Pane());
+            controller.setStage(null);
+        });
+        controller.setStage(stage);
+        Parent root = loader.getRoot();
+        Scene scene = new Scene(root);
 
-    stage.setScene(scene);
-    stage.centerOnScreen();
-    MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
-    stage.show();
-}
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
+        stage.show();
+    }
 
     public void goViewInWindowModal(String viewName, Stage parentStage, Boolean resizable) {
         FXMLLoader loader = getLoader(viewName);
@@ -199,12 +200,16 @@ public void goViewInWindow(String viewName) {
         this.loaders.clear();
     }
 
-    public void salir() {
+    public void exitMain() {
         this.mainStage.close();
     }
 
     public void delete(String parametro) {
         loaders.remove(parametro);
+    }
+
+    public void clearLoarders() {
+        loaders.clear();
     }
 
 }

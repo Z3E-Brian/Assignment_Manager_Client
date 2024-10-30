@@ -31,6 +31,9 @@ public class UserDto {
         return name + " " + lastName;
     }
 
+    public String getFullName() {
+        return name + " " + lastName + " " + secondLastName;
+    }
 }
 
 

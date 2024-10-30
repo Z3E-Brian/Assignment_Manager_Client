@@ -67,7 +67,7 @@ public class SessionManager {
             new Thread(() -> {
                 while (isRunningTokenValidationThread) {
                     try {
-                        Thread.sleep(15700);
+                        Thread.sleep(3000);
                         validateTokens();
                     } catch (Exception e) {
                         e.printStackTrace();
