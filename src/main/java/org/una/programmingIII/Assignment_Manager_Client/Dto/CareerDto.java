@@ -19,11 +19,13 @@ public class CareerDto {
     private List<UserDto> users;
 
 
-    public CareerDto(CareerInput careerInput){
+    public CareerDto(CareerInput careerInput) {
         this();
         this.id = careerInput.getId();
-        this.name = careerInput.name.getValue();
-        this.description = careerInput.description.getValue();
+        this.name = careerInput.getName();
+        this.description = careerInput.getDescription();
         this.departmentId = careerInput.getDepartmentId();
+        this.courses = careerInput.getCourses();
+        this.users = careerInput.getUsers();
     }
 }

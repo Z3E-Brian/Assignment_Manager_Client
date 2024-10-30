@@ -84,13 +84,24 @@ public class CareerMaintenanceViewController extends Controller {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
-        txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
+        txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(300));
 
         loadDepartment();
         indicateRequired();
         loadCareers();
         System.out.println(departmentDto);
+        bind();
+    }
+
+    private void bind() {
+        txfDescription.textProperty().bindBidirectional(careerInput.description);
+        txfName.textProperty().bindBidirectional(careerInput.name);
+    }
+
+    private void unbind() {
+        txfDescription.textProperty().unbindBidirectional(careerInput.description);
+        txfName.textProperty().unbindBidirectional(careerInput.name);
     }
 
     private void loadCareers() {
@@ -114,16 +125,34 @@ public class CareerMaintenanceViewController extends Controller {
     }
 
     private void clean() {
+        unbind();
         txfDescription.setText("");
         txfName.setText("");
         careerInput = new CareerInput();
         careerDto = new CareerDto();
+        bind();
     }
 
     @FXML
-    void onActionBtnDelete(ActionEvent event) {
+    void onActionBtnDelete(ActionEvent event) throws Exception {
+        if (careerDto.getId() != null) {
+            Answer answer = new CareerService().deleteCareer(careerDto.getId());
+            if (!answer.getState()) {
+                showError("Save Course", answer.getMessage());
+            } else {
+                showInfo("Save Course", answer.getMessage());
+                clean();
+                loadCareers();
+                loadDepartment();
+            }
+
+        } else {
+            new Message().showModal(Alert.AlertType.WARNING, "Eliminar carrera", getStage(), "Debe seleccionar una de las carreras en la tabla para poder eliminarla.");
+        }
+
 
     }
+
 
     @FXML
     void onActionBtnNew(ActionEvent event) {
@@ -143,21 +172,14 @@ public class CareerMaintenanceViewController extends Controller {
                 return;
             }
 
-            if (careerInput.getDepartmentId() == null) {
-                careerInput.setDepartmentId(departmentDto.getId());
-            }
-
-            careerDto.setDescription(txfDescription.getText());
-            careerDto.setName(txfName.getText());
+            careerDto = new CareerDto(careerInput);
             careerDto.setDepartmentId(departmentDto.getId());
-
 
             Answer answer = new CareerService().createCareer(careerDto);
             if (!answer.getState()) {
                 showError("Save Course", answer.getMessage());
             } else {
                 showInfo("Save Course", answer.getMessage());
-                careerInput = (CareerInput) answer.getResult("career");
                 clean();
                 loadCareers();
             }
@@ -188,6 +210,9 @@ public class CareerMaintenanceViewController extends Controller {
     void onMousePressedCareerTable(MouseEvent event) {
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvCareer.getSelectionModel().getSelectedItem() != null) {
             careerDto = tbvCareer.getSelectionModel().getSelectedItem();
+            unbind();
+            careerInput = new CareerInput(careerDto);
+            bind();
         }
     }
 
