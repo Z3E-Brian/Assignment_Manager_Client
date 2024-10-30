@@ -90,7 +90,7 @@
                                  <children>
                                     <MFXTextField fx:id="txfName" floatingText="Course Name" layoutX="10.0" layoutY="186.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="126.0" />
                                     <MFXTextField fx:id="txfDescription" floatingText="Description" layoutX="10.0" layoutY="210.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="126.0" />
-                                    <MFXComboBox fx:id="cbxProfessor" floatingText="Professor" onAction="#onActionCbxProfessor" />
+                                    <MFXComboBox fx:id="cbxProfessor" floatingText="Professor" onAction="#onActionCbxProfessor" styleClass="mxf-combobox-label" />
                                     <MFXDatePicker fx:id="dtpStartDate" floatMode="BORDER" floatingText="Start Course Date" />
                                     <MFXDatePicker fx:id="dtpEndDate" floatMode="BORDER" floatingText="End Course Date" />
                                  </children>

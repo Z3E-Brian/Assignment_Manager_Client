@@ -3,7 +3,6 @@ package org.una.programmingIII.Assignment_Manager_Client.Dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +15,8 @@ public class UserDto {
 
     private Long id;
     private String name;
+    private String lastName;
+    private String secondLastName;
     private String email;
     private String identificationNumber;
     private boolean isActive;
@@ -25,5 +26,12 @@ public class UserDto {
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdate;
 
+    @Override
+    public String toString() {
+        return name + " " + lastName;
+    }
+
 }
+
+
 

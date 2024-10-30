@@ -43,7 +43,7 @@ public class DepartmentService {
         String requestBody = objectMapper.writeValueAsString(departmentDto);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/create"))
+                .uri(URI.create(BASE_URL + "/"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();

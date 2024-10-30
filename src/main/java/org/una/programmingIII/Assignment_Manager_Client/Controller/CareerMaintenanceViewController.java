@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
@@ -121,7 +122,11 @@ public class CareerMaintenanceViewController extends Controller {
 
     @FXML
     void onActionBtnCourse(ActionEvent event) {
-
+        if (tbvCareer.getSelectionModel().getSelectedItem() != null && careerDto != null) {
+            AppContext.getInstance().set("careerDto", careerDto);
+            FlowController.getInstance().goViewInWindow("CreateCourseView");
+            ((Stage) btnCourse.getScene().getWindow()).close();
+        }
     }
 
     private void clean() {

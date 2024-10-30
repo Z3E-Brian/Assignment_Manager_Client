@@ -16,6 +16,8 @@ import java.util.Set;
 public class NewUserDto {
     private Long id;
     private String name;
+    private String lastName;
+    private String secondLastName;
     private String email;
     private String identificationNumber;
     private String password;
@@ -30,6 +32,8 @@ public class NewUserDto {
         this.careerId = userInput.getCareerId();
 
         this.name = userInput.getName();
+        this.lastName = userInput.getLastName();
+        this.secondLastName = userInput.getSecondLastName();
         this.email = userInput.getEmail();
         this.password = userInput.getPassword();
         this.identificationNumber = userInput.getIdentificationNumber();

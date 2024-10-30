@@ -48,12 +48,13 @@ public class UserService {
         }
     }
 
-    public Answer getAllUsersByPermission(String permission)   {
+    public Answer getAllUsersByPermission(String permission) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getUsersByPermission"))
+                .uri(URI.create(BASE_URL + "/getUsersByPermission?permission=" + permission))
                 .GET()
                 .build();
-        try {
+
+
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
@@ -62,10 +63,7 @@ public class UserService {
             } else {
                 throw new Exception("Error fetching users: " + response.statusCode());
             }
-        } catch (Exception e) {
-            return new Answer(false, e.getMessage(), "Error fetching users");
         }
-    }
 
     // GET: Obtener usuarios paginados en un Map
     public Map<String, Object> getUsers(int page, int size, int limit) throws Exception {

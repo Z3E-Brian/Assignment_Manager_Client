@@ -92,7 +92,7 @@ public class CreateCourseViewController extends Controller {
         tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
-        //loanProfessors();
+        loanProfessors();
         cbxProfessor.getItems().addAll(professors);
         loanCareer();
         indicateRequired();
@@ -245,7 +245,7 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void loanCareer() {
-        careerDto = (CareerDto) AppContext.getInstance().get("career");
+        careerDto = (CareerDto) AppContext.getInstance().get("careerDto");
         lblCareer.setText(careerDto.getName());
         tbvCourse.getItems().clear();
         tbvCourse.getItems().addAll(careerDto.getCourses());
@@ -254,6 +254,7 @@ public class CreateCourseViewController extends Controller {
     private void loanProfessors() {
         try {
             Answer answer = (Answer) new UserService().getAllUsersByPermission("PROFESSOR");
+            System.out.println(answer.getResult("users"));
             if (!answer.getState()) {
                 showError("Load Professors", answer.getMessage());
             } else {

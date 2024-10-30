@@ -9,6 +9,8 @@ public class UserInput implements Serializable {
    private static final long serialVersionUID = 1L;
     public SimpleStringProperty id;
     public SimpleStringProperty name;
+    public SimpleStringProperty lastName;
+    public SimpleStringProperty secondLastName;
     public SimpleStringProperty email;
     public SimpleStringProperty identificationNumber;
     public SimpleStringProperty password;
@@ -21,6 +23,8 @@ public class UserInput implements Serializable {
         this.id = new SimpleStringProperty("");
         this.careerId = new SimpleStringProperty("");
         this.name = new SimpleStringProperty("");
+        this.lastName = new SimpleStringProperty("");
+        this.secondLastName = new SimpleStringProperty("");
         this.identificationNumber = new SimpleStringProperty("");
         this.email = new SimpleStringProperty("");
         this.isActive = new SimpleBooleanProperty(false);
@@ -48,6 +52,22 @@ public class UserInput implements Serializable {
 
     public void setCareerId(Long id) {
         this.careerId.set(id.toString());
+    }
+
+    public String getLastName() {
+        return lastName.get();
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName.set(lastName);
+    }
+
+    public String getSecondLastName() {
+        return secondLastName.get();
+    }
+
+    public void setSecondLastName(String secondLastName) {
+        this.secondLastName.set(secondLastName);
     }
 
     public String getName() {

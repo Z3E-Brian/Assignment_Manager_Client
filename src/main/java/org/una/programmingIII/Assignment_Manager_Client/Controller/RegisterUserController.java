@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AuthenticationService;
@@ -36,13 +35,18 @@ public class RegisterUserController extends Controller {
     private MFXPasswordField passwordField;
 
     @FXML
-    private MFXTextField usernameField;
+    private MFXTextField txfName;
+
+    @FXML
+    private MFXTextField txfLastName;
+
+    @FXML
+    private MFXTextField txfSecondLastName;
 
     @FXML
     private MFXButton btnSendEmail;
 
     private UserService userService;
-    private AuthenticationService authenticationService;
     private UserInput userInput;
     private NewUserDto newUserDto;
     List<Node> requeridos = new ArrayList<>();
@@ -53,9 +57,10 @@ public class RegisterUserController extends Controller {
         newUserDto = new NewUserDto();
         userService = new UserService();
         userInput = new UserInput();
-        authenticationService = new AuthenticationService();
 
-        usernameField.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        txfLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
+        txfSecondLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
         passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(80));
         identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(8));
         emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
@@ -66,7 +71,9 @@ public class RegisterUserController extends Controller {
     }
 
     private void bind() {
-        usernameField.textProperty().bindBidirectional(userInput.name);
+        txfName.textProperty().bindBidirectional(userInput.name);
+        txfLastName.textProperty().bindBidirectional(userInput.lastName);
+        txfSecondLastName.textProperty().bindBidirectional(userInput.secondLastName);
         passwordField.textProperty().bindBidirectional(userInput.password);
         emailField.textProperty().bindBidirectional(userInput.email);
         identificationNumberField.textProperty().bindBidirectional(userInput.identificationNumber);
@@ -99,7 +106,7 @@ public class RegisterUserController extends Controller {
     }
 
     private void indicateRequeridos() {
-        requeridos.addAll(Arrays.asList(emailField, passwordField, usernameField, confirmPasswordField));
+        requeridos.addAll(Arrays.asList(emailField, passwordField, txfName, txfLastName, confirmPasswordField));
     }
 
     public String validarRequeridos() {
@@ -132,7 +139,9 @@ public class RegisterUserController extends Controller {
     private void clean() {
         passwordField.setText("");
         emailField.setText("");
-        usernameField.setText("");
+        txfName.setText("");
+        txfSecondLastName.setText("");
+        txfLastName.setText("");
         confirmPasswordField.setText("");
 
     }
