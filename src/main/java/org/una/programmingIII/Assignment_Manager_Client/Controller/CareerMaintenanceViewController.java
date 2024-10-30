@@ -4,17 +4,15 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
@@ -30,13 +28,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class CareerMaintenanceViewController extends Controller {
-
-    @FXML
-    private MFXButton btnCourse;
-
-    @FXML
-    private MFXButton btnDelete;
-
     @FXML
     private MFXButton btnNew;
 
@@ -69,6 +60,10 @@ public class CareerMaintenanceViewController extends Controller {
 
     @FXML
     private MFXTextField txfName;
+    @FXML
+    private TableColumn<CareerDto, Boolean> tbcDelete;
+    @FXML
+    private TableColumn<CareerDto, Boolean> tbcCourse;
 
     ArrayList<Node> required = new ArrayList<>();
     DepartmentDto departmentDto;
@@ -84,6 +79,10 @@ public class CareerMaintenanceViewController extends Controller {
 
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        tbcDelete.setCellValueFactory((TableColumn.CellDataFeatures<CareerDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory((TableColumn<CareerDto, Boolean> p) -> new ButtonCellDelete());
+        tbcCourse.setCellValueFactory((TableColumn.CellDataFeatures<CareerDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcCourse.setCellFactory((TableColumn<CareerDto, Boolean> p) -> new ButtonCellCourse());
         tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(300));
@@ -119,16 +118,6 @@ public class CareerMaintenanceViewController extends Controller {
 
 
     }
-
-    @FXML
-    void onActionBtnCourse(ActionEvent event) {
-        if (tbvCareer.getSelectionModel().getSelectedItem() != null && careerDto != null) {
-            AppContext.getInstance().set("careerDto", careerDto);
-            FlowController.getInstance().goViewInWindow("CreateCourseView");
-            ((Stage) btnCourse.getScene().getWindow()).close();
-        }
-    }
-
     private void clean() {
         unbind();
         txfDescription.setText("");
@@ -138,25 +127,6 @@ public class CareerMaintenanceViewController extends Controller {
         bind();
     }
 
-    @FXML
-    void onActionBtnDelete(ActionEvent event) throws Exception {
-        if (careerDto.getId() != null) {
-            Answer answer = new CareerService().deleteCareer(careerDto.getId());
-            if (!answer.getState()) {
-                showError("Save Course", answer.getMessage());
-            } else {
-                showInfo("Save Course", answer.getMessage());
-                clean();
-                loadCareers();
-                loadDepartment();
-            }
-
-        } else {
-            new Message().showModal(Alert.AlertType.WARNING, "Eliminar carrera", getStage(), "Debe seleccionar una de las carreras en la tabla para poder eliminarla.");
-        }
-
-
-    }
 
 
     @FXML
@@ -267,6 +237,73 @@ public class CareerMaintenanceViewController extends Controller {
 
     private void showInfo(String title, String message) {
         new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
+    }
+    private void deleteCareer(CareerDto career) {
+        try {
+            Answer answer = new CareerService().deleteCareer(career.getId());
+            if (!answer.getState()) {
+                showError("Delete Career", answer.getMessage());
+            } else {
+                showInfo("Delete Career", answer.getMessage());
+            }
+        } catch (Exception e) {
+            showError("Delete Career", "An error occurred deleting the career");
+        }
+    }
+    private class ButtonCellDelete extends TableCell<CareerDto, Boolean> {
+
+        final MFXButton cellButton = new MFXButton("Delete");
+        ImageView imageView = new ImageView();
+
+
+        ButtonCellDelete() {
+            imageView.setFitHeight(25);
+            imageView.setFitWidth(25);
+            cellButton.setGraphic(imageView);
+            cellButton.getStyleClass().add("mfx-btn-Delete");
+
+            cellButton.setOnAction((ActionEvent t) -> {
+                CareerDto career = (CareerDto) ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
+                deleteCareer(career);
+                loadCareers();
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if (!empty) {
+                setGraphic(cellButton);
+            }
+        }
+    }
+    private class ButtonCellCourse extends TableCell<CareerDto, Boolean> {
+
+        final MFXButton cellButton = new MFXButton("Course");
+        ImageView imageView = new ImageView();
+
+
+        ButtonCellCourse() {
+            imageView.setFitHeight(25);
+            imageView.setFitWidth(25);
+            cellButton.setGraphic(imageView);
+            cellButton.getStyleClass().add("mfx-btn-Enter");
+
+            cellButton.setOnAction((ActionEvent t) -> {
+                careerDto = (CareerDto) ButtonCellCourse.this.getTableView().getItems().get(ButtonCellCourse.this.getIndex());
+                AppContext.getInstance().set("careerDto", careerDto);
+                FlowController.getInstance().goViewInWindow("CreateCourseView");
+                getStage().close();
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if (!empty) {
+                setGraphic(cellButton);
+            }
+        }
     }
 
 

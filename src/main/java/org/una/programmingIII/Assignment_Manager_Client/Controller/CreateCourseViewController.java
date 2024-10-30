@@ -4,13 +4,11 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,9 +26,6 @@ import java.util.logging.Logger;
 
 public class CreateCourseViewController extends Controller {
 
-
-    @FXML
-    private MFXButton btnDelete;
 
     @FXML
     private MFXButton btnNew;
@@ -65,6 +60,11 @@ public class CreateCourseViewController extends Controller {
     @FXML
     private TableColumn<UserDto, String> tbcProfessor;
 
+
+    @FXML
+    private TableColumn<CourseDto, Boolean> tbcDelete;
+
+
     @FXML
     private TableView<CourseDto> tbvCourse;
 
@@ -89,6 +89,8 @@ public class CreateCourseViewController extends Controller {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
+        tbcDelete.setCellValueFactory((TableColumn.CellDataFeatures<CourseDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory((TableColumn<CourseDto, Boolean> p) -> new ButtonCellDelete());
         tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
@@ -98,25 +100,6 @@ public class CreateCourseViewController extends Controller {
         indicateRequired();
     }
 
-    @FXML
-    void onActionBtnDelete(ActionEvent event) {
-        try {
-            if (courseInput.getId() == null) {
-                showError("Delete Course", "You must upload the course to be deleted");
-            } else {
-                Answer answer = new CourseService().deleteCourse(courseInput.getId());
-                if (!answer.getState()) {
-                    showError("Delete Course", answer.getMessage());
-                } else {
-                    showInfo("Delete Course", answer.getMessage());
-                    newCourse();
-                }
-            }
-        } catch (Exception e) {
-            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
-            showError("Delete Course", e.getMessage());
-        }
-    }
 
     @FXML
     void onActionBtnNew(ActionEvent event) {
@@ -251,6 +234,11 @@ public class CreateCourseViewController extends Controller {
         tbvCourse.getItems().addAll(careerDto.getCourses());
     }
 
+    private void updateCareer() {
+        tbvCourse.getItems().clear();
+        tbvCourse.getItems().addAll(careerDto.getCourses());
+    }
+
     private void loanProfessors() {
         try {
             Answer answer = (Answer) new UserService().getAllUsersByPermission("PROFESSOR");
@@ -262,6 +250,52 @@ public class CreateCourseViewController extends Controller {
             }
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+        }
+    }
+
+    private void deleteCourse(CourseDto courseDto){
+        try {
+            if (courseDto.getId() == null) {
+                showError("Delete Course", "You must upload the course to be deleted");
+            } else {
+                Answer answer = new CourseService().deleteCourse(courseDto.getId());
+                if (!answer.getState()) {
+                    showError("Delete Course", answer.getMessage());
+                } else {
+                    showInfo("Delete Course", answer.getMessage());
+                    newCourse();
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            showError("Delete Course", e.getMessage());
+        }
+    }
+    private class ButtonCellDelete extends TableCell<CourseDto, Boolean> {
+
+        final MFXButton cellButton = new MFXButton("Delete");
+        ImageView imageView = new ImageView();
+
+
+        ButtonCellDelete() {
+            imageView.setFitHeight(25);
+            imageView.setFitWidth(25);
+            cellButton.setGraphic(imageView);
+            cellButton.getStyleClass().add("mfx-btn-Delete");
+
+            cellButton.setOnAction((ActionEvent t) -> {
+                CourseDto course = (CourseDto) ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
+                deleteCourse(course);
+                updateCareer();
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if (!empty) {
+                setGraphic(cellButton);
+            }
         }
     }
 

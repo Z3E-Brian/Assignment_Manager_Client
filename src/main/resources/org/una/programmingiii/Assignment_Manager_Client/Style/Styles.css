@@ -25,7 +25,10 @@
     -fx-font-size: 12px;
     -fx-text-fill: #ffffff;
 }
-
+.lbl-Subtitle {
+    -fx-font-size: 22px;
+    -fx-text-fill: #ffffff;
+}
 .label2 {
     -fx-font-size: 16px;
     -fx-text-fill: #000000;
@@ -35,7 +38,9 @@
     -fx-font-size: 30px;
     -fx-text-fill: white;
 }
-
+.table-cell {
+    -fx-alignment: CENTER;
+}
 /* Main action buttons */
 .mfx-button {
     -fx-background-color: #D32F2F;
@@ -300,6 +305,18 @@
 
 .mfx-btn-Save > ImageView {
     -fx-image: url("../Assets/Save.png");
+}
+
+.mfx-btn-Enter, .mfx-btn-Enter:armed, .mfx-btn-Enter:focused {
+    -fx-background-color: #00bcd4;
+}
+
+.mfx-btn-Enter > ImageView {
+    -fx-image: url("../Assets/Enter.png");
+}
+
+.mfx-btn-Enter:hover {
+    -fx-background-color: #006666;
 }
 
 .mfx-text-field {

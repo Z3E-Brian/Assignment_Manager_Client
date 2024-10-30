@@ -2,18 +2,17 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
@@ -40,7 +39,10 @@ public class DepartmentMaintenanceController extends Controller {
     private TableColumn<DepartmentDto, String> clmDepartment;
 
     @FXML
-    private TableColumn<DepartmentDto, Long> clmnId;
+    private TableColumn<DepartmentDto,Boolean> tbcCareer;
+
+    @FXML
+    private TableColumn<DepartmentDto, Boolean> tbcDelete;
 
     @FXML
     private ImageView imvBack;
@@ -63,8 +65,6 @@ public class DepartmentMaintenanceController extends Controller {
     @FXML
     private MFXButton btnCareers;
 
-    @FXML
-    private MFXTextField txfId;
 
     private FacultyService facultyService;
     private DepartmentService departmentService;
@@ -80,10 +80,12 @@ public class DepartmentMaintenanceController extends Controller {
         departmentDto = new DepartmentDto();
         updateUniversityInputLabel();
 
-        clmnId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clmDepartment.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tbcDelete.setCellValueFactory((TableColumn.CellDataFeatures<DepartmentDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory((TableColumn<DepartmentDto, Boolean> p) -> new ButtonCellDelete());
+        tbcCareer.setCellValueFactory((TableColumn.CellDataFeatures<DepartmentDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcCareer.setCellFactory((TableColumn<DepartmentDto, Boolean> p) -> new ButtonCellCareer());
         tbvDepartment.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        txfId.setDisable(true);
         loadDepartments();
     }
 
@@ -105,17 +107,15 @@ public class DepartmentMaintenanceController extends Controller {
         }
     }
 
-    @FXML
-    void onActionBtnDelete(ActionEvent event) throws Exception {
-        if (!(txfId.getText().isEmpty())) {
+
+ private void deleteDepartment(DepartmentDto departmentDto) {
+        try {
             departmentService.deleteDepartment(departmentDto.getId());
-            clean();
             loadDepartments();
-        } else {
-            new Message().showModal(Alert.AlertType.WARNING, "Eliminar departamento", getStage(), "Debe selecionar uno de los departamentos en la tabla para poder eliminarlo.");
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, "Eliminate department", getStage(), "Department could not be deleted.");
         }
     }
-
     @FXML
     void onActionBtnNewDepartment(ActionEvent event) {
         clean();
@@ -123,7 +123,7 @@ public class DepartmentMaintenanceController extends Controller {
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
-        if (!(txfId.getText().isBlank())) {
+        if (!(departmentDto.getId() == null)) {
             updateDepartment();
         } else {
             createDepartment();
@@ -148,7 +148,7 @@ public class DepartmentMaintenanceController extends Controller {
 
     private void createDepartment() throws Exception {
         if ((txfDepartmentName.getText().isBlank())) {
-            new Message().showModal(Alert.AlertType.ERROR, "Crear departamento", getStage(), "Existen espacios  importantes en blanco");
+            new Message().showModal(Alert.AlertType.ERROR, "Create Department", getStage(), "There are important blank spaces");
         } else {
             departmentDto = new DepartmentDto();
             departmentDto.setName(txfDepartmentName.getText());
@@ -161,7 +161,7 @@ public class DepartmentMaintenanceController extends Controller {
 
     private void updateDepartment() throws Exception {
         if ((txfDepartmentName.getText().isBlank())) {
-            new Message().showModal(Alert.AlertType.ERROR, "Actualizar Departamento", getStage(), "Existen espacios  importantes en blanco");
+            new Message().showModal(Alert.AlertType.ERROR, "Update Department", getStage(), "There are important blank spaces");
         } else {
             departmentDto.setName(txfDepartmentName.getText());
             departmentDto = departmentService.updateDepartment(departmentDto.getId(), departmentDto);
@@ -183,20 +183,74 @@ public class DepartmentMaintenanceController extends Controller {
             tbvDepartment.getItems().clear();
             tbvDepartment.setItems(departmentDtoObservableList);
         } catch (Exception e) {
-            new Message().showModal(Alert.AlertType.WARNING, "Error de conexion", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
+            new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
 
         }
     }
 
     private void clean() {
         this.txfDepartmentName.clear();
-        this.txfId.clear();
         departmentDto = new DepartmentDto();
     }
 
     private void bind() {
-        txfId.setText(departmentDto.getId().toString());
         txfDepartmentName.setText(departmentDto.getName());
     }
+    private class ButtonCellDelete extends TableCell<DepartmentDto, Boolean> {
+
+        final MFXButton cellButton = new MFXButton("Delete");
+        ImageView imageView = new ImageView();
+
+
+        ButtonCellDelete() {
+            imageView.setFitHeight(25);
+            imageView.setFitWidth(25);
+            cellButton.setGraphic(imageView);
+            cellButton.getStyleClass().add("mfx-btn-Delete");
+
+            cellButton.setOnAction((ActionEvent t) -> {
+                DepartmentDto departmentDto = (DepartmentDto) ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
+                deleteDepartment(departmentDto);
+                loadDepartments();
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if (!empty) {
+                setGraphic(cellButton);
+            }
+        }
+    }
+    private class ButtonCellCareer extends TableCell<DepartmentDto, Boolean> {
+
+        final MFXButton cellButton = new MFXButton("Career");
+        ImageView imageView = new ImageView();
+
+
+        ButtonCellCareer() {
+            imageView.setFitHeight(25);
+            imageView.setFitWidth(25);
+            cellButton.setGraphic(imageView);
+            cellButton.getStyleClass().add("mfx-btn-Enter");
+
+            cellButton.setOnAction((ActionEvent t) -> {
+                departmentDto = (DepartmentDto)  ButtonCellCareer.this.getTableView().getItems().get(ButtonCellCareer.this.getIndex());
+                AppContext.getInstance().set("departmentDto", departmentDto);
+                FlowController.getInstance().goViewInWindow("CareerMaintenanceView");
+                getStage().close();
+            });
+        }
+
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if (!empty) {
+                setGraphic(cellButton);
+            }
+        }
+    }
+
 
 }
