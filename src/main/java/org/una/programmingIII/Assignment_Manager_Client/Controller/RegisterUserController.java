@@ -61,7 +61,7 @@ public class RegisterUserController extends Controller {
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
         txfLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
         txfSecondLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
-        passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
         identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(8));
         emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
 

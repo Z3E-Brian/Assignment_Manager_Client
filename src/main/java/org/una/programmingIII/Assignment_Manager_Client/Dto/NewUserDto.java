@@ -34,7 +34,7 @@ public class NewUserDto {
         this.name = userInput.getName();
         this.lastName = userInput.getLastName();
         this.secondLastName = userInput.getSecondLastName();
-        this.email = userInput.getEmail();
+        this.email = userInput.getEmail().toLowerCase();
         this.password = userInput.getPassword();
         this.identificationNumber = userInput.getIdentificationNumber();
         this.isActive = userInput.getIsActive();

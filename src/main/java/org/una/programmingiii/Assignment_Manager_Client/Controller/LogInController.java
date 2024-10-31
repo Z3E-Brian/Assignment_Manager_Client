@@ -6,18 +6,10 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import org.apache.hc.client5.http.auth.InvalidCredentialsException;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
-import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AuthenticationService;
-import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class LogInController extends Controller {
 
@@ -31,7 +23,7 @@ public class LogInController extends Controller {
     private MFXPasswordField passwordField;
 
     @FXML
-    private MFXTextField usernameField;
+    private MFXTextField emailField;
 
     private AuthenticationService authenticationService;
     private LoginResponse loginResponse;
@@ -39,7 +31,10 @@ public class LogInController extends Controller {
     @Override
     public void initialize() {
         authenticationService = new AuthenticationService();
-        usernameField.setText("admin@admin.com");
+        passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
+        emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
+        //emailField.setText("admin@admin.com");
+        emailField.setText("justin77mendezmena@gmail.com");
         passwordField.setText("admin");
     }
 
@@ -48,7 +43,8 @@ public class LogInController extends Controller {
         try {
             if (authenticateUser()) {
                 SessionManager.getInstance().setLoginResponse(loginResponse);
-                FlowController.getInstance().goMain();
+                //FlowController.getInstance().goMain();
+                FlowController.getInstance().goViewInWindow("EnrollStudentCourseView");
                 getStage().close();
             }
         } catch (Exception exception) {
@@ -77,7 +73,7 @@ public class LogInController extends Controller {
     }
 
     private boolean authenticateUser() throws Exception {
-        String email = usernameField.getText();
+        String email = emailField.getText().toLowerCase();
         String password = passwordField.getText();
         LoginInput loginInput = new LoginInput(email, password);
         loginResponse = authenticationService.authenticate(loginInput);
