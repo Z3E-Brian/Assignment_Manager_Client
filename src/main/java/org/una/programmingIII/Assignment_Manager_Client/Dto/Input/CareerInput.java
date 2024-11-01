@@ -22,7 +22,7 @@ public class CareerInput implements Serializable {
     public SimpleStringProperty description;
     public SimpleStringProperty departmentId;
     private List<CourseDto> courses;
-    private List<UserDto> users;
+    private List<Long> usersId;
 
     public CareerInput() {
         this.id = new SimpleStringProperty("");
@@ -30,7 +30,7 @@ public class CareerInput implements Serializable {
         this.description = new SimpleStringProperty("");
         this.departmentId = new SimpleStringProperty("");
         this.courses = new ArrayList<>();
-        this.users = new ArrayList<>();
+        this.usersId = new ArrayList<>();
     }
 
     public CareerInput(CareerDto careerDto) {
@@ -40,7 +40,7 @@ public class CareerInput implements Serializable {
         this.description = new SimpleStringProperty(careerDto.getDescription());
         this.departmentId = new SimpleStringProperty(careerDto.getDepartmentId().toString());
         this.courses = careerDto.getCourses();
-        this.users = careerDto.getUsers();
+        this.usersId = careerDto.getUsersId();
     }
 
     public Long getId() {

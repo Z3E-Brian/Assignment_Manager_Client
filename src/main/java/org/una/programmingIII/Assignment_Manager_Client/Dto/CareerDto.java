@@ -16,8 +16,7 @@ public class CareerDto {
     private String description;
     private Long departmentId;
     private List<CourseDto> courses;
-    private List<UserDto> users;
-
+    private List<Long> usersId;
 
     public CareerDto(CareerInput careerInput) {
         this();
@@ -26,6 +25,7 @@ public class CareerDto {
         this.description = careerInput.getDescription();
         this.departmentId = careerInput.getDepartmentId();
         this.courses = careerInput.getCourses();
-        this.users = careerInput.getUsers();
+        this.usersId = careerInput.getUsersId();
     }
 }
+

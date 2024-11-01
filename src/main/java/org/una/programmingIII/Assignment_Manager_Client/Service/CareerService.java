@@ -14,10 +14,31 @@ public class CareerService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private static final String BASE_URL = "http://localhost:8080/api/careers";
+
     public CareerService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
     }
+
+    public Answer getById(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        CareerDto careerDtoResult = objectMapper.readValue(response.body(), CareerDto.class);
+
+        if (response.statusCode() == 200) {
+            return new Answer(true, "The career save", "", "careerDto", careerDtoResult);
+        } else if (response.statusCode() == 404) {
+            return new Answer(false, response.body(), "Error, Career Not Found : " + response.statusCode());
+        } else {
+            return new Answer(false, response.body(), "Error : " + response.statusCode());
+        }
+    }
+
+
     public Answer createCareer(CareerDto careerDto) throws Exception {
         String requestBody = objectMapper.writeValueAsString(careerDto);
 
@@ -37,6 +58,7 @@ public class CareerService {
             throw new Exception("Error creating Career: " + response.statusCode());
         }
     }
+
     public Answer deleteCareer(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))

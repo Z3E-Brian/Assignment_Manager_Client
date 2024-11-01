@@ -32,6 +32,25 @@ public class UserService {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
+    public Answer getById(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        UserDto userDtoResult = objectMapper.readValue(response.body(), UserDto.class);
+
+        if (response.statusCode() == 200) {
+            return new Answer(true, "The career save", "", "userDto", userDtoResult);
+        } else if (response.statusCode() == 404) {
+            return new Answer(false, response.body(), "Error, Career Not Found : " + response.statusCode());
+        } else {
+            return new Answer(false, response.body(), "Error : " + response.statusCode());
+        }
+    }
+
+
     public List<UserDto> getAllUsers() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getAllUsers"))//TODO: remove "/getAllUsers" from URI
@@ -55,15 +74,15 @@ public class UserService {
                 .build();
 
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {
-                return new Answer(true, "", "Users fetched successfully", "users", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
-                }));
-            } else {
-                throw new Exception("Error fetching users: " + response.statusCode());
-            }
+        if (response.statusCode() == 200) {
+            return new Answer(true, "", "Users fetched successfully", "users", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+            }));
+        } else {
+            throw new Exception("Error fetching users: " + response.statusCode());
         }
+    }
 
     // GET: Obtener usuarios paginados en un Map
     public Map<String, Object> getUsers(int page, int size, int limit) throws Exception {

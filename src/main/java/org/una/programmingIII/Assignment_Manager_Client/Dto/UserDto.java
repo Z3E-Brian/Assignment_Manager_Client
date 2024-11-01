@@ -14,6 +14,7 @@ import java.util.Set;
 public class UserDto {
 
     private Long id;
+    private Long careerId;
     private String name;
     private String lastName;
     private String secondLastName;
@@ -21,7 +22,6 @@ public class UserDto {
     private String identificationNumber;
     private boolean isActive;
     private Set<PermissionDto> permissions;
-    private Long careerId;
     private List<CourseDto> courses;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdate;
