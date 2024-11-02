@@ -35,7 +35,7 @@
                            <children>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../Assets/Assignment-Manager.png" />
+                                    <Image url="@../Assets/Assignment-Manager_Icon.png" />
                                  </image>
                               </ImageView>
                               <Label styleClass="Titles" text="Universities Maintainance" />
@@ -66,17 +66,30 @@
                      </children></HBox>
                </items>
             </ToolBar>
-            <VBox>
+            <VBox prefHeight="352.0" prefWidth="800.0">
                <children>
+                  <HBox alignment="CENTER_RIGHT" minHeight="-Infinity">
+                     <children>
+                        <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </MFXButton>
+                     </children>
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                  </HBox>
                   <HBox>
                      <children>
-                        <HBox HBox.hgrow="ALWAYS">
+                        <HBox prefHeight="332.0" prefWidth="800.0" HBox.hgrow="ALWAYS">
                            <children>
                               <TableView fx:id="universityTable" onMousePressed="#onMousePressedUniversityTable" HBox.hgrow="ALWAYS">
                                  <columns>
-                                    <TableColumn fx:id="idColumn" maxWidth="30.0" prefWidth="25.0" text="ID" />
-                                    <TableColumn fx:id="nameColumn" prefWidth="150" text="Nombre" />
-                                    <TableColumn fx:id="locationColumn" prefWidth="200" text="Ubicacion" />
+                                    <TableColumn fx:id="tbcName" prefWidth="150" text="Name" />
+                                    <TableColumn fx:id="tbcLocation" prefWidth="200" text="Location" />
+                                    <TableColumn fx:id="tbcFaculty" prefWidth="75.0" text="Faculty" />
+                                    <TableColumn fx:id="tbcDelete" prefWidth="75.0" text="Delete" />
                                  </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -87,51 +100,44 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </HBox>
-                        <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox spacing="15.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <HBox prefHeight="26.0" prefWidth="550.0">
                            <children>
-                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <MFXTextField fx:id="idTxf" floatingText="ID" prefWidth="126.0" />
-                                    <MFXTextField fx:id="txfName" floatingText="Titulo Universidad" layoutX="10.0" layoutY="186.0" prefWidth="126.0" />
-                                    <MFXTextField fx:id="txfLocation" floatingText="Ubicacion" layoutX="10.0" layoutY="210.0" prefWidth="126.0" />
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </VBox>
+                              <MFXTextField fx:id="txfName" floatMode="BORDER" floatingText="University Title" prefWidth="126.0" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="46.0" prefWidth="800.0" spacing="10.0">
+                  <HBox alignment="CENTER">
                      <children>
-                        <MFXButton fx:id="btnNew" onAction="#onActionBtnNew" prefHeight="50.0" prefWidth="150.0" styleClass="jfx-btn-nuevo" text="Nuevo">
-                           <graphic>
-                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="jfx-btn-nuevo" />
-                           </graphic>
-                        </MFXButton>
-                        <MFXButton fx:id="btnEdit" layoutX="485.0" layoutY="10.0" onAction="#onActionBtnEditFaculties" prefHeight="50.0" prefWidth="150.0" styleClass="jfx-btn-guardar" text="Facultades">
-                           <graphic>
-                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </MFXButton>
-                        <MFXButton fx:id="btnDelete" layoutX="405.0" layoutY="10.0" onAction="#onActionBtnDelete" prefHeight="50.0" prefWidth="150.0" styleClass="jfx-btn-eliminar" text="Eliminar">
-                           <graphic>
-                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </MFXButton>
-                        <MFXButton fx:id="btnSave" layoutX="575.0" layoutY="15.0" onAction="#onActionBtnSave" prefHeight="50.0" prefWidth="150.0" styleClass="jfx-btn-guardar" text="Guardar">
-                           <graphic>
-                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </MFXButton>
+                        <HBox prefHeight="27.0" prefWidth="550.0">
+                           <children>
+                              <MFXTextField fx:id="txfLocation" floatMode="BORDER" floatingText="Location" prefWidth="126.0" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
                      </children>
-                     <padding>
-                        <Insets bottom="5.0" top="5.0" />
-                     </padding>
                   </HBox>
                </children>
             </VBox>
+            <HBox alignment="CENTER" prefHeight="46.0" prefWidth="800.0" spacing="10.0">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+               <children>
+                  <MFXButton fx:id="btnSave" onAction="#onActionBtnSave" prefWidth="95.0" styleClass="mfx-btn-Save" text="Save">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                  </MFXButton>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

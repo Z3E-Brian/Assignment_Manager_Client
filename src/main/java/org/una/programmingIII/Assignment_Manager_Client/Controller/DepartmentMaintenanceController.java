@@ -86,14 +86,6 @@ public class DepartmentMaintenanceController extends Controller {
         loadDepartments();
     }
 
-    @FXML
-    void onActionBtnCareers(ActionEvent event) {
-        if (tbvDepartment.getSelectionModel().getSelectedItem() != null && facultyDto != null) {
-            AppContext.getInstance().set("departmentDto", departmentDto);
-            FlowController.getInstance().goViewInWindow("CareerMaintenanceView");
-            ((Stage) btnCareers.getScene().getWindow()).close();
-        }
-    }
 
 
     @FXML

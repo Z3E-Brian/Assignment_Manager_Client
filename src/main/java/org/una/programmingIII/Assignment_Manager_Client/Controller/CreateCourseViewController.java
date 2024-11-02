@@ -79,32 +79,52 @@ public class CreateCourseViewController extends Controller {
     @FXML
     private Label lblCareer;
 
-    CourseInput courseInput;
-    List<UserDto> professors;
-    ArrayList<Node> required = new ArrayList<>();
-    UserDto professorDto;
-    CareerDto careerDto;
-    CourseDto courseDto;
+    private CourseInput courseInput;
+    private List<UserDto> professors;
+    private ArrayList<Node> required = new ArrayList<>();
+    private UserDto professorDto;
+    private CareerDto careerDto;
+    private CourseDto courseDto;
+    private RequiredFieldsValidator validator;
 
     @Override
     public void initialize() {
+        initializeCourseData();
+        setupTableColumns();
+        setupTextFormatters();
+        loadProfessorsAndCareer();
+        setupValidator();
+    }
+
+    private void initializeCourseData() {
         courseInput = new CourseInput();
         courseDto = new CourseDto();
         careerDto = new CareerDto();
+    }
+
+    private void setupTableColumns() {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
-        tbcDelete.setCellValueFactory((TableColumn.CellDataFeatures<CourseDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
-        tbcDelete.setCellFactory((TableColumn<CourseDto, Boolean> p) -> new ButtonCellDelete());
+        tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory(p -> new ButtonCellDelete());
         tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
+
+    private void setupTextFormatters() {
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
+    }
+
+    private void loadProfessorsAndCareer() {
         loanProfessors();
         loanCareer();
-        indicateRequired();
         cbxProfessor.getItems().addAll(professors);
     }
 
+    private void setupValidator() {
+        validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfDescription, cbxProfessor, dtpStartDate, dtpEndDate));
+    }
 
     @FXML
     void onActionBtnNew(ActionEvent event) {
@@ -116,7 +136,7 @@ public class CreateCourseViewController extends Controller {
     @FXML
     void onActionBtnSave(ActionEvent event) {
         try {
-            String validationMessage = validateRequired();
+            String validationMessage = validator.validate();
             if (!validationMessage.isEmpty()) {
                 showError("Save Course", validationMessage);
                 return;
@@ -188,40 +208,6 @@ public class CreateCourseViewController extends Controller {
         txfDescription.textProperty().unbindBidirectional(courseInput.description);
     }
 
-    private void indicateRequired() {
-        required.clear();
-        required.addAll(Arrays.asList(txfName, txfDescription, cbxProfessor, dtpStartDate, dtpEndDate));
-    }
-
-    private String validateRequired() {
-        StringBuilder invalid = new StringBuilder();
-        for (Node node : required) {
-            String floatingText = getFloatingText(node);
-            if (floatingText != null) {
-                if (!invalid.isEmpty()) {
-                    invalid.append(", ");
-                }
-                invalid.append(floatingText);
-            }
-        }
-        return invalid.isEmpty() ? "" : "Fields required or with formatting problems [" + invalid + "].";
-    }
-
-    private String getFloatingText(Node node) {
-        String floatingText = null;
-        if (node instanceof MFXTextField && isEmpty(((MFXTextField) node).getText())) {
-            floatingText = ((MFXTextField) node).getFloatingText();
-        } else if (node instanceof MFXComboBox && ((MFXComboBox<?>) node).getValue() == null) {
-            floatingText = ((MFXComboBox<?>) node).getFloatingText();
-        } else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
-            floatingText = ((MFXDatePicker) node).getFloatingText();
-        }
-        return floatingText;
-    }
-
-    private boolean isEmpty(String text) {
-        return text == null || text.isEmpty();
-    }
 
     private void showError(String title, String message) {
         new Message().showModal(Alert.AlertType.ERROR, title, getStage(), message);

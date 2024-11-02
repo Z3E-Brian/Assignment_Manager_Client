@@ -2,6 +2,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -40,18 +41,17 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     @FXML
     private MFXButton btnSave;
 
-    @FXML
-    private TableColumn<UniversityDto, Long> idColumn;
 
     @FXML
-    private MFXTextField idTxf;
+    private TableColumn<UniversityDto, String> tbcLocation;
 
     @FXML
-    private TableColumn<UniversityDto, String> locationColumn;
+    private TableColumn<UniversityDto, String> tbcName;
+    @FXML
+    private TableColumn<UniversityDto, Boolean> tbcDelete;
 
     @FXML
-    private TableColumn<UniversityDto, String> nameColumn;
-
+    private TableColumn<UniversityDto, Boolean> tbcFaculty;
     @FXML
     private MFXTextField txfLocation;
 
@@ -72,24 +72,29 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     private UniversityService universityService;
     private UniversityDto universityDto;
-    List<Node> requireds;
 
-
+    private RequiredFieldsValidator validator;
     @Override
-    public void initialize() {
-        requireds = new ArrayList<>();
-        universityService = new UniversityService();
-        universityDto = new UniversityDto();
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        indicateRequeridos();
-        loadUniversities();
-        idTxf.setDisable(true);
-        SessionManager.getInstance().addObserver(this);
-        SessionManager.getInstance().startTokenValidationTask();
-    }
+public void initialize() {
+    universityService = new UniversityService();
+    universityDto = new UniversityDto();
+    setupTableColumns();
+    validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfLocation));
+
+    loadUniversities();
+    SessionManager.getInstance().addObserver(this);
+    SessionManager.getInstance().startTokenValidationTask();
+}
+
+private void setupTableColumns() {
+    tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    tbcLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+    tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+    tbcDelete.setCellFactory(p -> new ButtonCellDelete());
+    tbcFaculty.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+    tbcFaculty.setCellFactory(p -> new ButtonCellFaculty());
+    universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+}
 
     @FXML
     void onActionBtnNew(ActionEvent event) throws Exception {
@@ -97,39 +102,15 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     }
 
     @FXML
-    void onActionBtnEditFaculties(ActionEvent event) {
-        if (universityDto != null && universityTable.getSelectionModel().getSelectedItem() != null) {
-            setUniversityDto();
-            FlowController.getInstance().goViewInWindow("FacultyMaintenanceView");
-            ((Stage) btnEdit.getScene().getWindow()).close();
-        } else {
-            new Message().showModal(Alert.AlertType.ERROR, "FacultadesUniversidad", getStage(), "Debes de seleccionar una universidad");
-
-        }
-    }
-
-    @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
         try {
-            if (!(idTxf.getText().isBlank())) {
+            if (!(universityDto.getId() == null)) {
                 updateUniversity();
             } else {
                 createUniversity();
             }
         } catch (Exception e) {
-            new Message().showModal(Alert.AlertType.ERROR, e.getMessage(), getStage(), "Ha ocurrido un error al guardar la universidad");
-        }
-    }
-
-
-    @FXML
-    void onActionBtnDelete(ActionEvent event) throws Exception {
-        if (!(idTxf.getText().isEmpty())) {
-            universityService.deleteUniversity(universityDto.getId());
-            clean();
-            loadUniversities();
-        } else {
-            new Message().showModal(Alert.AlertType.WARNING, "Eliminar universidad", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
+            new Message().showModal(Alert.AlertType.ERROR, e.getMessage(), getStage(), "An error occurred while saving the university");
         }
     }
 
@@ -138,7 +119,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     void onMousePressedUniversityTable(MouseEvent event) {
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && universityTable.getSelectionModel().getSelectedItem() != null) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
-            bindear();
+            bind();
             System.out.println(universityDto);
         }
     }
@@ -161,20 +142,19 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     }
 
     private void clean() {
-        this.idTxf.clear();
         this.txfLocation.clear();
         this.txfName.clear();
+        this.txfName.requestFocus();
         universityDto = new UniversityDto();
         universityTable.getSelectionModel().clearSelection();
         SessionManager.getInstance().setRunningTokenValidationThread(true);
     }
 
     private void createUniversity() throws Exception {
-        String invalids = validateRequireds();
+        String invalids = validator.validate();
 
         if (!(invalids.isBlank())) {
-            System.out.println(invalids);
-            new Message().showModal(Alert.AlertType.ERROR, "Crear universidad", getStage(), "Existen espacios  importantes en blanco");
+            new Message().showModal(Alert.AlertType.ERROR, "Create University", getStage(),  invalids);
         } else {
             universityDto = new UniversityDto();
             universityDto.setName(txfName.getText());
@@ -202,45 +182,19 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         } catch (java.net.ConnectException e) {
             new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Failed to connect to the server. Please make sure the server is running.");
         } catch (Exception e) {
-            new Message().showModal(Alert.AlertType.ERROR, " Error loading Univesities", getStage(), "Failed to load Universities.");
+            new Message().showModal(Alert.AlertType.ERROR, " Error loading Universities", getStage(), "Failed to load Universities.");
 
         }
     }
 
-    private void bindear() {
+    private void bind() {
         txfLocation.setText(universityDto.getLocation());
         txfName.setText(universityDto.getName());
-        idTxf.setText(universityDto.getId().toString());
     }
 
-    private void indicateRequeridos() {
-        requireds.clear();
-        requireds.addAll(Arrays.asList(txfLocation, txfName));
-    }
-
-    private void setUniversityDto() {
-        AppContext.getInstance().set("universityDto", universityDto);
-    }
-
-    public String validateRequireds() {
-        boolean valids = true;
-        String invalidSpaces = "";
-        for (Node node : requireds) {
-            if (node instanceof MFXTextField && (((MFXTextField) node).getText() == null || ((MFXTextField) node).getText().isBlank())) {
-                if (valids) {
-                    invalidSpaces += ((MFXTextField) node).getFloatingText();
-                } else {
-                    invalidSpaces += "," + ((MFXTextField) node).getFloatingText();
-                }
-                valids = false;
-            }
-        }
-        if (valids) {
-            return "";
-        } else {
-            return "Campos requeridos o con problemas de formato [" + invalidSpaces + "].";
-        }
-    }
+   private void setUniversityDto() {
+       AppContext.getInstance().set("universityDto", universityDto);
+   }
 
     private void validateUserFunctions() {
         Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
@@ -259,13 +213,46 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     @Override
     public void onSessionExpired() {
-        new Message().showModal(Alert.AlertType.INFORMATION, "Tiempo de inicio de sesion agotado", getStage(), "Debes de volver a iniciar sesion");
+new Message().showModal(Alert.AlertType.INFORMATION, "Session timeout", getStage(), "You need to log in again");
         Platform.runLater(() -> {
             FlowController.getInstance().goViewInWindow("LogInView");
             FlowController.getInstance().delete("UniversityMaintenanceView");
             SessionManager.getInstance().removeObserver(this);
             getStage().close();
         });
+    }
+
+    private class ButtonCellDelete extends ButtonCellBase<UniversityDto> {
+        ButtonCellDelete() {
+            super("Delete", "mfx-btn-Delete");
+        }
+
+        @Override
+        protected void handleAction(ActionEvent event) {
+            try {
+                universityDto = getTableView().getItems().get(getIndex());
+                universityService.deleteUniversity(universityDto.getId());
+                clean();
+                loadUniversities();
+            } catch (Exception e) {
+                new Message().showModal(Alert.AlertType.ERROR, "Error deleting", getStage(), "Could not delete the university");
+            }
+        }
+    }
+
+    private class ButtonCellFaculty extends ButtonCellBase<UniversityDto> {
+        ButtonCellFaculty() {
+            super("Faculty", "mfx-btn-Enter");
+        }
+
+        @Override
+        protected void handleAction(ActionEvent event) {
+            universityDto = getTableView().getItems().get(getIndex());
+            setUniversityDto();
+            FlowController.getInstance().goViewInWindow("FacultyMaintenanceView");
+            getStage().close();
+
+        }
     }
 
 }

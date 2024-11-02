@@ -73,31 +73,41 @@ public class FacultyMaintenanceController extends Controller {
     private UniversityService universityService;
     private UniversityDto universityDto;
     private FacultyDto facultyDto;
-    private List<Node> required;
+private RequiredFieldsValidator validator;
 
 
-    @Override
+  @Override
+public void initialize() {
+    initializeServices();
+    initializeDtos();
+    updateUniversityInputLabel();
+    setupTableColumns();
+    setupValidator();
+    loadUniversityFaculties();
+}
 
-    public void initialize() {
-        required = new ArrayList<>();
-        facultyService = new FacultyService();
-        universityService = new UniversityService();
-        universityDto = new UniversityDto();
-        facultyDto = new FacultyDto();
-        updateUniversityInputLabel();
+private void initializeServices() {
+    facultyService = new FacultyService();
+    universityService = new UniversityService();
+}
 
-        clmnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        clmDelete.setCellValueFactory((TableColumn.CellDataFeatures<FacultyDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
-        clmDelete.setCellFactory((TableColumn<FacultyDto, Boolean> p) -> new ButtonCellDelete());
-        clmDepartment.setCellValueFactory((TableColumn.CellDataFeatures<FacultyDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
-        clmDepartment.setCellFactory((TableColumn<FacultyDto, Boolean> p) -> new ButtonCellDepartment());
-        tbvFaculty.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+private void initializeDtos() {
+    universityDto = new UniversityDto();
+    facultyDto = new FacultyDto();
+}
 
-        indicateRequired();
-        loadUniversityFaculties();
+private void setupTableColumns() {
+    clmnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    clmDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+    clmDelete.setCellFactory(p -> new ButtonCellDelete());
+    clmDepartment.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+    clmDepartment.setCellFactory(p -> new ButtonCellDepartment());
+    tbvFaculty.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+}
 
-    }
-
+private void setupValidator() {
+    validator = new RequiredFieldsValidator(Arrays.asList(txfFacultyName));
+}
 
     @FXML
     void onActionBtnAddFaculty(ActionEvent event) throws Exception {
@@ -159,10 +169,9 @@ public class FacultyMaintenanceController extends Controller {
     }
 
     private void createFaculty() throws Exception {
-        String invalids = validateRequired();
+        String invalids = validator.validate();
         if (!(invalids.isBlank())) {
-            System.out.println(invalids);
-            new Message().showModal(Alert.AlertType.ERROR, "Create Faculty", getStage(), "There are important blank spaces");
+            new Message().showModal(Alert.AlertType.ERROR, "Create Faculty", getStage(), invalids);
         } else {
             facultyDto = new FacultyDto();
             facultyDto.setName(txfFacultyName.getText());
@@ -174,10 +183,10 @@ public class FacultyMaintenanceController extends Controller {
     }
 
     private void updateFaculty() throws Exception {
-        String invalids = validateRequired();
+        String invalids = validator.validate();
         if (!(invalids.isBlank())) {
             System.out.println(invalids);
-            new Message().showModal(Alert.AlertType.ERROR, "Update Faculty", getStage(), "There are important blank spaces");
+            new Message().showModal(Alert.AlertType.ERROR, "Update Faculty", getStage(), invalids);
         } else {
             facultyDto.setName(txfFacultyName.getText());
             facultyDto = facultyService.updateFaculty(facultyDto.getId(), facultyDto);
@@ -191,42 +200,6 @@ public class FacultyMaintenanceController extends Controller {
         this.txfFacultyName.requestFocus();
         facultyDto = new FacultyDto();
         tbvFaculty.getSelectionModel().clearSelection();
-    }
-
-    private void indicateRequired() {
-        required.clear();
-        required.addAll(Arrays.asList(txfFacultyName));
-    }
-
-
-    private String validateRequired() {
-        StringBuilder invalid = new StringBuilder();
-        for (Node node : required) {
-            String floatingText = getFloatingText(node);
-            if (floatingText != null) {
-                if (!invalid.isEmpty()) {
-                    invalid.append(", ");
-                }
-                invalid.append(floatingText);
-            }
-        }
-        return invalid.isEmpty() ? "" : "Fields required or with formatting problems [" + invalid + "].";
-    }
-
-    private String getFloatingText(Node node) {
-        String floatingText = null;
-        if (node instanceof MFXTextField && isEmpty(((MFXTextField) node).getText())) {
-            floatingText = ((MFXTextField) node).getFloatingText();
-        } else if (node instanceof MFXComboBox && ((MFXComboBox<?>) node).getValue() == null) {
-            floatingText = ((MFXComboBox<?>) node).getFloatingText();
-        } else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
-            floatingText = ((MFXDatePicker) node).getFloatingText();
-        }
-        return floatingText;
-    }
-
-    private boolean isEmpty(String text) {
-        return text == null || text.isEmpty();
     }
 
 private class ButtonCellDepartment extends ButtonCellBase<FacultyDto> {

@@ -66,34 +66,46 @@ public class CareerMaintenanceViewController extends Controller {
     @FXML
     private TableColumn<CareerDto, Boolean> tbcCourse;
 
-    ArrayList<Node> required = new ArrayList<>();
     DepartmentDto departmentDto;
     CareerInput careerInput;
     CareerDto careerDto;
+    private RequiredFieldsValidator validator;
 
     @Override
-    public void initialize() {
+public void initialize() {
+    initializeCareerData();
+    setupTableColumns();
+    setupTextFormatters();
+    setupValidator();
+    loadDepartment();
+    loadCareers();
+    bind();
+}
 
-        careerInput = new CareerInput();
-        careerDto = new CareerDto();
-        departmentDto = new DepartmentDto();
+private void initializeCareerData() {
+    careerInput = new CareerInput();
+    careerDto = new CareerDto();
+    departmentDto = new DepartmentDto();
+}
 
-        tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        tbcDelete.setCellValueFactory((TableColumn.CellDataFeatures<CareerDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
-        tbcDelete.setCellFactory((TableColumn<CareerDto, Boolean> p) -> new ButtonCellDelete());
-        tbcCourse.setCellValueFactory((TableColumn.CellDataFeatures<CareerDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
-        tbcCourse.setCellFactory((TableColumn<CareerDto, Boolean> p) -> new ButtonCellCourse());
-        tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
-        txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(300));
+private void setupTableColumns() {
+    tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+    tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+    tbcDelete.setCellFactory(p -> new ButtonCellDelete());
+    tbcCourse.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+    tbcCourse.setCellFactory(p -> new ButtonCellCourse());
+    tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+}
 
-        loadDepartment();
-        indicateRequired();
-        loadCareers();
-        System.out.println(departmentDto);
-        bind();
-    }
+private void setupTextFormatters() {
+    txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+    txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(300));
+}
+
+private void setupValidator() {
+    validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfDescription));
+}
 
     private void bind() {
         txfDescription.textProperty().bindBidirectional(careerInput.description);
@@ -116,8 +128,6 @@ public class CareerMaintenanceViewController extends Controller {
             new Message().showModal(Alert.AlertType.WARNING, "Error de conexion", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
 
         }
-
-
     }
 
     private void clean() {
@@ -135,14 +145,13 @@ public class CareerMaintenanceViewController extends Controller {
         if (new Message().showConfirmation("New Career", getStage(), "Are you sure you want to clean the registry?")) {
             clean();
         }
-
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
 
         try {
-            String validationMessage = validateRequired();
+            String validationMessage = validator.validate();
             if (!validationMessage.isEmpty()) {
                 showError("Save Career", validationMessage);
                 return;
@@ -197,41 +206,6 @@ public class CareerMaintenanceViewController extends Controller {
         lblDepartment.setText(departmentDto.getName());
     }
 
-    private void indicateRequired() {
-        required.clear();
-        required.addAll(Arrays.asList(txfName, txfDescription));
-    }
-
-    private String validateRequired() {
-        StringBuilder invalid = new StringBuilder();
-        for (Node node : required) {
-            String floatingText = getFloatingText(node);
-            if (floatingText != null) {
-                if (!invalid.isEmpty()) {
-                    invalid.append(", ");
-                }
-                invalid.append(floatingText);
-            }
-        }
-        return invalid.isEmpty() ? "" : "Fields required or with formatting problems [" + invalid + "].";
-    }
-
-    private String getFloatingText(Node node) {
-        String floatingText = null;
-        if (node instanceof MFXTextField && isEmpty(((MFXTextField) node).getText())) {
-            floatingText = ((MFXTextField) node).getFloatingText();
-        } else if (node instanceof MFXComboBox && ((MFXComboBox<?>) node).getValue() == null) {
-            floatingText = ((MFXComboBox<?>) node).getFloatingText();
-        } else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
-            floatingText = ((MFXDatePicker) node).getFloatingText();
-        }
-        return floatingText;
-    }
-
-    private boolean isEmpty(String text) {
-        return text == null || text.isEmpty();
-    }
-
     private void showError(String title, String message) {
         new Message().showModal(Alert.AlertType.ERROR, title, getStage(), message);
     }
@@ -265,7 +239,6 @@ public class CareerMaintenanceViewController extends Controller {
             loadCareers();
         }
     }
-
 
     private class ButtonCellCourse extends ButtonCellBase<CareerDto> {
         ButtonCellCourse() {
