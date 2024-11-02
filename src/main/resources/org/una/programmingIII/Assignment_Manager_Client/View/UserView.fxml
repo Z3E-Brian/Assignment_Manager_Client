@@ -7,13 +7,13 @@
 <?import javafx.scene.layout.*?>
 
 <HBox spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
-    <TableView fx:id="userTable" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+    <TableView fx:id="userTable" prefHeight="400.0" prefWidth="639.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="numberIDColumn" prefWidth="185.0" text="ID Card" />
-            <TableColumn fx:id="nameColumn" prefWidth="115.0" text="Name" />
-            <TableColumn fx:id="lastNameColumn" prefWidth="200" text="Lastname" />
-            <TableColumn fx:id="secondLastNameColumn" prefWidth="200" text="Second Lastname" />
-            <TableColumn fx:id="emailColumn" prefWidth="200" text="Email" />
+            <TableColumn fx:id="numberIDColumn" prefWidth="50.0" text="ID Card" />
+            <TableColumn fx:id="nameColumn" prefWidth="50.0" text="Name" />
+            <TableColumn fx:id="lastNameColumn" prefWidth="50.0" text="Lastname" />
+            <TableColumn fx:id="secondLastNameColumn" prefWidth="50.0" text="Second Lastname" />
+            <TableColumn fx:id="emailColumn" prefWidth="50.0" text="Email" />
         </columns>
         <HBox.margin>
             <Insets />
@@ -61,34 +61,29 @@
             </Accordion>
 
             <HBox alignment="CENTER" prefHeight="50.0" prefWidth="590.0" spacing="10.0">
-                <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0"
-                           styleClass="mfx-btn-new" text="New">
+                <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
                 </MFXButton>
-                <MFXButton fx:id="btnSearch" buttonType="RAISED" onAction="#onActionBtnSearch" prefWidth="95.0"
-                           styleClass="mfx-btn-Search" text="Search">
+                <MFXButton fx:id="btnSearch" buttonType="RAISED" onAction="#onActionBtnSearch" prefWidth="95.0" styleClass="mfx-btn-Search" text="Search">
                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
                 </MFXButton>
-                <MFXButton fx:id="btnClear" buttonType="RAISED" onAction="#onActionBtnClear" prefWidth="95.0"
-                           styleClass="mfx-btn-new" text="Clear">
+                <MFXButton fx:id="btnClear" buttonType="RAISED" onAction="#onActionBtnClear" prefWidth="95.0" styleClass="mfx-btn-new" text="Clear">
                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
                 </MFXButton>
-                <MFXButton fx:id="btnDelete" onAction="#onActionBtnDelete" prefWidth="95.0" styleClass="mfx-btn-Delete"
-                           text="Delete">
+                <MFXButton fx:id="btnDelete" onAction="#onActionBtnDelete" prefWidth="95.0" styleClass="mfx-btn-Delete" text="Delete">
                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
                 </MFXButton>
-                <MFXButton fx:id="btnSave" onAction="#onActionBtnSave" prefWidth="95.0" styleClass="mfx-btn-Save"
-                           text="Save">
+                <MFXButton fx:id="btnSave" onAction="#onActionBtnSave" prefWidth="95.0" styleClass="mfx-btn-Save" text="Save">
                     <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
                 </MFXButton>
             </HBox>

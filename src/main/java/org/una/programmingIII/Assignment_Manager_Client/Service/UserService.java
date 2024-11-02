@@ -148,7 +148,7 @@ public class UserService {
     }
 
 
-    public Answer updateUser(Long id, UserInput userInput) {
+    public Answer updateUser(Long id, NewUserDto userInput) {
         try {
             String requestBody = objectMapper.writeValueAsString(userInput);
             HttpRequest request = HttpRequest.newBuilder()
@@ -181,25 +181,25 @@ public class UserService {
         }
     }
 
-    public UserDto updateUserDto(Long id, UserInput userInput) throws Exception {
-        String requestBody = objectMapper.writeValueAsString(userInput);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/" + id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), UserDto.class);
-        } else if (response.statusCode() == 404) {
-            throw new Exception("User not found");
-        } else {
-            throw new Exception("Error updating user: " + response.statusCode());
-        }
-    }
+//    public UserDto updateUserDto(Long id, UserInput userInput) throws Exception {
+//        String requestBody = objectMapper.writeValueAsString(userInput);
+//
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create(BASE_URL + "/" + id))
+//                .header("Content-Type", "application/json")
+//                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+//                .build();
+//
+//        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+//
+//        if (response.statusCode() == 200) {
+//            return objectMapper.readValue(response.body(), UserDto.class);
+//        } else if (response.statusCode() == 404) {
+//            throw new Exception("User not found");
+//        } else {
+//            throw new Exception("Error updating user: " + response.statusCode());
+//        }
+//    }
 
     // DELETE: Eliminar un usuario por ID
     public Answer deleteUser(Long id) throws Exception {
