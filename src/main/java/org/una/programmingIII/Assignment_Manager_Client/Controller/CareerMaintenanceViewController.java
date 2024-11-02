@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CareerService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
@@ -118,6 +119,7 @@ public class CareerMaintenanceViewController extends Controller {
 
 
     }
+
     private void clean() {
         unbind();
         txfDescription.setText("");
@@ -126,7 +128,6 @@ public class CareerMaintenanceViewController extends Controller {
         careerDto = new CareerDto();
         bind();
     }
-
 
 
     @FXML
@@ -238,6 +239,7 @@ public class CareerMaintenanceViewController extends Controller {
     private void showInfo(String title, String message) {
         new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
     }
+
     private void deleteCareer(CareerDto career) {
         try {
             Answer answer = new CareerService().deleteCareer(career.getId());
@@ -250,59 +252,32 @@ public class CareerMaintenanceViewController extends Controller {
             showError("Delete Career", "An error occurred deleting the career");
         }
     }
-    private class ButtonCellDelete extends TableCell<CareerDto, Boolean> {
 
-        final MFXButton cellButton = new MFXButton("Delete");
-        ImageView imageView = new ImageView();
-
-
+    private class ButtonCellDelete extends ButtonCellBase<CareerDto> {
         ButtonCellDelete() {
-            imageView.setFitHeight(25);
-            imageView.setFitWidth(25);
-            cellButton.setGraphic(imageView);
-            cellButton.getStyleClass().add("mfx-btn-Delete");
-
-            cellButton.setOnAction((ActionEvent t) -> {
-                CareerDto career = (CareerDto) ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
-                deleteCareer(career);
-                loadCareers();
-            });
+            super("Delete", "mfx-btn-Delete");
         }
 
         @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if (!empty) {
-                setGraphic(cellButton);
-            }
+        protected void handleAction(ActionEvent event) {
+            CareerDto career = getTableView().getItems().get(getIndex());
+            deleteCareer(career);
+            loadCareers();
         }
     }
-    private class ButtonCellCourse extends TableCell<CareerDto, Boolean> {
-
-        final MFXButton cellButton = new MFXButton("Course");
-        ImageView imageView = new ImageView();
 
 
+    private class ButtonCellCourse extends ButtonCellBase<CareerDto> {
         ButtonCellCourse() {
-            imageView.setFitHeight(25);
-            imageView.setFitWidth(25);
-            cellButton.setGraphic(imageView);
-            cellButton.getStyleClass().add("mfx-btn-Enter");
-
-            cellButton.setOnAction((ActionEvent t) -> {
-                careerDto = (CareerDto) ButtonCellCourse.this.getTableView().getItems().get(ButtonCellCourse.this.getIndex());
-                AppContext.getInstance().set("careerDto", careerDto);
-                FlowController.getInstance().goViewInWindow("CreateCourseView");
-                getStage().close();
-            });
+            super("Course", "mfx-btn-Enter");
         }
 
         @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if (!empty) {
-                setGraphic(cellButton);
-            }
+        protected void handleAction(ActionEvent event) {
+            careerDto = getTableView().getItems().get(getIndex());
+            AppContext.getInstance().set("careerDto", careerDto);
+            FlowController.getInstance().goViewInWindow("CreateCourseView");
+            getStage().close();
         }
     }
 

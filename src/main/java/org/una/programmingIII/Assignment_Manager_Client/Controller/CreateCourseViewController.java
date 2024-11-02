@@ -271,33 +271,17 @@ public class CreateCourseViewController extends Controller {
             showError("Delete Course", e.getMessage());
         }
     }
-    private class ButtonCellDelete extends TableCell<CourseDto, Boolean> {
-
-        final MFXButton cellButton = new MFXButton("Delete");
-        ImageView imageView = new ImageView();
-
-
+    private class ButtonCellDelete extends ButtonCellBase<CourseDto> {
         ButtonCellDelete() {
-            imageView.setFitHeight(25);
-            imageView.setFitWidth(25);
-            cellButton.setGraphic(imageView);
-            cellButton.getStyleClass().add("mfx-btn-Delete");
-
-            cellButton.setOnAction((ActionEvent t) -> {
-                CourseDto course = (CourseDto) ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
-                deleteCourse(course);
-                updateCareer();
-            });
+            super("Delete", "mfx-btn-Delete");
         }
 
         @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if (!empty) {
-                setGraphic(cellButton);
-            }
+        protected void handleAction(ActionEvent event) {
+            CourseDto course = ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
+            deleteCourse(course);
+            updateCareer();
         }
+
     }
-
-
 }

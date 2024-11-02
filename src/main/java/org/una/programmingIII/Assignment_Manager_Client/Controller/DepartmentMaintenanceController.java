@@ -17,10 +17,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FacultyService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.util.List;
 
@@ -196,61 +193,31 @@ public class DepartmentMaintenanceController extends Controller {
     private void bind() {
         txfDepartmentName.setText(departmentDto.getName());
     }
-    private class ButtonCellDelete extends TableCell<DepartmentDto, Boolean> {
 
-        final MFXButton cellButton = new MFXButton("Delete");
-        ImageView imageView = new ImageView();
-
-
+    private class ButtonCellDelete extends ButtonCellBase<DepartmentDto> {
         ButtonCellDelete() {
-            imageView.setFitHeight(25);
-            imageView.setFitWidth(25);
-            cellButton.setGraphic(imageView);
-            cellButton.getStyleClass().add("mfx-btn-Delete");
-
-            cellButton.setOnAction((ActionEvent t) -> {
-                DepartmentDto departmentDto = (DepartmentDto) ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
-                deleteDepartment(departmentDto);
-                loadDepartments();
-            });
+            super("Delete", "mfx-btn-Delete");
         }
 
         @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if (!empty) {
-                setGraphic(cellButton);
-            }
+        protected void handleAction(ActionEvent event) {
+            departmentDto = getTableView().getItems().get(getIndex());
+            deleteDepartment(departmentDto);
+            loadDepartments();
         }
     }
-    private class ButtonCellCareer extends TableCell<DepartmentDto, Boolean> {
-
-        final MFXButton cellButton = new MFXButton("Career");
-        ImageView imageView = new ImageView();
-
-
+    private class ButtonCellCareer extends ButtonCellBase<DepartmentDto> {
         ButtonCellCareer() {
-            imageView.setFitHeight(25);
-            imageView.setFitWidth(25);
-            cellButton.setGraphic(imageView);
-            cellButton.getStyleClass().add("mfx-btn-Enter");
-
-            cellButton.setOnAction((ActionEvent t) -> {
-                departmentDto = (DepartmentDto)  ButtonCellCareer.this.getTableView().getItems().get(ButtonCellCareer.this.getIndex());
-                AppContext.getInstance().set("departmentDto", departmentDto);
-                FlowController.getInstance().goViewInWindow("CareerMaintenanceView");
-                getStage().close();
-            });
+            super("Career", "mfx-btn-Enter");
         }
 
         @Override
-        protected void updateItem(Boolean t, boolean empty) {
-            super.updateItem(t, empty);
-            if (!empty) {
-                setGraphic(cellButton);
-            }
+        protected void handleAction(ActionEvent event) {
+            departmentDto = (DepartmentDto)  ButtonCellCareer.this.getTableView().getItems().get(ButtonCellCareer.this.getIndex());
+            AppContext.getInstance().set("departmentDto", departmentDto);
+            FlowController.getInstance().goViewInWindow("CareerMaintenanceView");
+            getStage().close();
         }
     }
-
 
 }

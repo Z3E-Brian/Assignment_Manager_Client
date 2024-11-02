@@ -30,12 +30,12 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="15.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label styleClass="Titles" text="Career Maintainance" />
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../Assets/Assignment-Manager.png" />
+                                    <Image url="@../Assets/Assignment-Manager_Icon.png" />
                                  </image>
                               </ImageView>
+                              <Label styleClass="Titles" text="Career Maintainance" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="25.0" HBox.hgrow="ALWAYS">
