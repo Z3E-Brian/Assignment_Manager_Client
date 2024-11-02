@@ -3,10 +3,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Dto.Input;
 import javafx.beans.property.SimpleStringProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,7 +18,7 @@ public class CareerInput implements Serializable {
     public SimpleStringProperty name;
     public SimpleStringProperty description;
     public SimpleStringProperty departmentId;
-    private List<CourseDto> courses;
+    private List<Long> coursesId;
     private List<Long> usersId;
 
     public CareerInput() {
@@ -29,7 +26,7 @@ public class CareerInput implements Serializable {
         this.name = new SimpleStringProperty("");
         this.description = new SimpleStringProperty("");
         this.departmentId = new SimpleStringProperty("");
-        this.courses = new ArrayList<>();
+        this.coursesId = new ArrayList<>();
         this.usersId = new ArrayList<>();
     }
 
@@ -39,7 +36,7 @@ public class CareerInput implements Serializable {
         this.name = new SimpleStringProperty(careerDto.getName());
         this.description = new SimpleStringProperty(careerDto.getDescription());
         this.departmentId = new SimpleStringProperty(careerDto.getDepartmentId().toString());
-        this.courses = careerDto.getCourses();
+        this.coursesId = careerDto.getCoursesId();
         this.usersId = careerDto.getUsersId();
     }
 

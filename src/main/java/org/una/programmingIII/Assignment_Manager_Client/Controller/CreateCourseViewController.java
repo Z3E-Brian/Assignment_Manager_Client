@@ -5,6 +5,8 @@ import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -86,6 +88,9 @@ public class CreateCourseViewController extends Controller {
 
     @Override
     public void initialize() {
+        courseInput = new CourseInput();
+        courseDto = new CourseDto();
+        careerDto = new CareerDto();
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
@@ -95,9 +100,9 @@ public class CreateCourseViewController extends Controller {
         txfName.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
         loanProfessors();
-        cbxProfessor.getItems().addAll(professors);
         loanCareer();
         indicateRequired();
+        cbxProfessor.getItems().addAll(professors);
     }
 
 
@@ -176,12 +181,11 @@ public class CreateCourseViewController extends Controller {
         txfName.textProperty().bindBidirectional(courseInput.name);
         txfDescription.textProperty().bindBidirectional(courseInput.description);
         cbxProfessor.setValue(courseInput.professor);
-
     }
 
     private void unbindAssignment() {
-        txfName.textProperty().bindBidirectional(courseInput.name);
-        txfDescription.textProperty().bindBidirectional(courseInput.description);
+        txfName.textProperty().unbindBidirectional(courseInput.name);
+        txfDescription.textProperty().unbindBidirectional(courseInput.description);
     }
 
     private void indicateRequired() {
@@ -228,16 +232,26 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void loanCareer() {
-        careerDto = (CareerDto) AppContext.getInstance().get("careerDto");
-        lblCareer.setText(careerDto.getName());
-        tbvCourse.getItems().clear();
-        tbvCourse.getItems().addAll(careerDto.getCourses());
+        try {
+            careerDto = (CareerDto) AppContext.getInstance().get("careerDto");
+            lblCareer.setText(careerDto.getName());
+            updateCareer();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     private void updateCareer() {
-        tbvCourse.getItems().clear();
-        tbvCourse.getItems().addAll(careerDto.getCourses());
+        try {
+            tbvCourse.getItems().clear();
+            List<CourseDto> coursesByCareer = (new CourseService().getCoursesByCareerId(careerDto.getId()));
+            ObservableList<CourseDto> coursesByCareerObservableList = FXCollections.observableArrayList(coursesByCareer);
+            tbvCourse.setItems(coursesByCareerObservableList);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
+
 
     private void loanProfessors() {
         try {
@@ -253,7 +267,7 @@ public class CreateCourseViewController extends Controller {
         }
     }
 
-    private void deleteCourse(CourseDto courseDto){
+    private void deleteCourse(CourseDto courseDto) {
         try {
             if (courseDto.getId() == null) {
                 showError("Delete Course", "You must upload the course to be deleted");
@@ -271,6 +285,7 @@ public class CreateCourseViewController extends Controller {
             showError("Delete Course", e.getMessage());
         }
     }
+
     private class ButtonCellDelete extends ButtonCellBase<CourseDto> {
         ButtonCellDelete() {
             super("Delete", "mfx-btn-Delete");

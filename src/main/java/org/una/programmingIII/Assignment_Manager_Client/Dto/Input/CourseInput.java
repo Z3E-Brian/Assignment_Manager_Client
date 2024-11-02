@@ -8,9 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -29,9 +30,21 @@ public class CourseInput {
         this.id = courseDto.getId();
         this.name = new SimpleStringProperty(courseDto.getName());
         this.description = new SimpleStringProperty(courseDto.getDescription());
-        this.professor = courseDto.getProfessor();
         this.careerId = courseDto.getCareerId();
         this.startDate = new SimpleObjectProperty<>(courseDto.getStartDate());
         this.endDate = new SimpleObjectProperty<>(courseDto.getEndDate());
+        this.getProfessor(courseDto);
+    }
+
+
+    private void getProfessor(CourseDto courseDto) {
+        try {
+            Answer answer = new UserService().getById(courseDto.getProfessorId());
+            if (answer.getState()) {
+                this.professor = (UserDto) answer.getResult("userDto");
+            }
+        } catch (Exception e) {
+            professor = new UserDto();
+        }
     }
 }
