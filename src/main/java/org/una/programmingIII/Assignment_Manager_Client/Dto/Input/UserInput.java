@@ -1,9 +1,15 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto.Input;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
+
 
 public class UserInput implements Serializable {
    private static final long serialVersionUID = 1L;
@@ -17,7 +23,9 @@ public class UserInput implements Serializable {
     public SimpleStringProperty careerId;
     public SimpleBooleanProperty isActive;
 
-    // public List<PermissionType> role;
+     @Setter
+     @Getter
+     public List<PermissionType> role;
 
     public UserInput() {
         this.id = new SimpleStringProperty("");
@@ -29,7 +37,7 @@ public class UserInput implements Serializable {
         this.email = new SimpleStringProperty("");
         this.isActive = new SimpleBooleanProperty(false);
         this.password = new SimpleStringProperty("");
-        //this.role = new ArrayList<PermissionType>();
+        this.role = new ArrayList<>();
     }
 
     public Long getId() {
