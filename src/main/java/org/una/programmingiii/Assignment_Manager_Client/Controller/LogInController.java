@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AuthenticationService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
@@ -44,7 +45,13 @@ public class LogInController extends Controller {
             if (authenticateUser()) {
                 SessionManager.getInstance().setLoginResponse(loginResponse);
                 //FlowController.getInstance().goMain();
+
+
+                //
+                //// RECORDAR PONER EL STUDENT DTO ANTES DE ENTRAR A MATRICLAR CURSOS PARA STUDENT EN LA VISTA DE ENROLLSTUDENTSCOURSE
+                AppContext.getInstance().set("studentDto", loginResponse.getUser());
                 FlowController.getInstance().goViewInWindow("EnrollStudentCourseView");
+
                 getStage().close();
             }
         } catch (Exception exception) {
