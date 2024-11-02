@@ -51,11 +51,6 @@
                                     <Image url="@../Assets/lupa.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fx:id="imvClose" fitHeight="25.0" fitWidth="25.0" layoutX="206.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvClose" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../Assets/Delete.png" />
-                                 </image>
-                              </ImageView>
                            </children>
                            <HBox.margin>
                               <Insets right="20.0" />

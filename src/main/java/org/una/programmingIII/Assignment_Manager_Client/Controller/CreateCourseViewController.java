@@ -94,6 +94,7 @@ public class CreateCourseViewController extends Controller {
         setupTextFormatters();
         loadProfessorsAndCareer();
         setupValidator();
+        bindCourse();
     }
 
     private void initializeCourseData() {
@@ -119,7 +120,6 @@ public class CreateCourseViewController extends Controller {
     private void loadProfessorsAndCareer() {
         loanProfessors();
         loanCareer();
-        cbxProfessor.getItems().addAll(professors);
     }
 
     private void setupValidator() {
@@ -145,12 +145,13 @@ public class CreateCourseViewController extends Controller {
                 courseInput.setCareerId(careerDto.getId());
             }
             Answer answer = new CourseService().createCourse(courseInput);
-            answer.setState(true);
             if (!answer.getState()) {
                 showError("Save Course", answer.getMessage());
             } else {
                 showInfo("Save Course", answer.getMessage());
-                courseInput = (CourseInput) answer.getResult("course");
+                cleanAll();
+                tbvCourse.getItems().clear();
+                getCoursesByCareer();
                 newCourse();
             }
         } catch (Exception e) {
@@ -162,13 +163,6 @@ public class CreateCourseViewController extends Controller {
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
 
-    }
-
-    @FXML
-    void onMouseClickedImvClose(MouseEvent event) {
-        if (new Message().showConfirmation("Exit", getStage(), "Are you sure you want to exit?")) {
-            getStage().close();
-        }
     }
 
     @FXML
@@ -191,21 +185,36 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void newCourse() {
-        courseInput = new CourseInput();
-        unbindAssignment();
+        unbindCourse();
+        cleanAll();
         bindCourse();
-        txfName.requestFocus();
     }
+
+    private void cleanAll() {
+        txfName.clear();
+        txfDescription.clear();
+        cbxProfessor.getSelectionModel().clearSelection();
+
+        dtpStartDate.setValue(null);
+        dtpEndDate.setValue(null);
+
+        courseInput = new CourseInput();
+        courseDto = new CourseDto();
+
+    }
+
 
     private void bindCourse() {
         txfName.textProperty().bindBidirectional(courseInput.name);
         txfDescription.textProperty().bindBidirectional(courseInput.description);
-        cbxProfessor.setValue(courseInput.professor);
+        cbxProfessor.valueProperty().bindBidirectional(courseInput.professor);
     }
 
-    private void unbindAssignment() {
+    private void unbindCourse() {
         txfName.textProperty().unbindBidirectional(courseInput.name);
         txfDescription.textProperty().unbindBidirectional(courseInput.description);
+        cbxProfessor.valueProperty().unbindBidirectional(courseInput.professor);
+        cbxProfessor.clear();
     }
 
 
@@ -221,13 +230,13 @@ public class CreateCourseViewController extends Controller {
         try {
             careerDto = (CareerDto) AppContext.getInstance().get("careerDto");
             lblCareer.setText(careerDto.getName());
-            updateCareer();
+            getCoursesByCareer();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    private void updateCareer() {
+    private void getCoursesByCareer() {
         try {
             tbvCourse.getItems().clear();
             List<CourseDto> coursesByCareer = (new CourseService().getCoursesByCareerId(careerDto.getId()));
@@ -247,6 +256,8 @@ public class CreateCourseViewController extends Controller {
                 showError("Load Professors", answer.getMessage());
             } else {
                 professors = (List<UserDto>) answer.getResult("users");
+                ObservableList<UserDto> professorList = FXCollections.observableArrayList(professors);
+                cbxProfessor.setItems(professorList);
             }
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
@@ -281,7 +292,10 @@ public class CreateCourseViewController extends Controller {
         protected void handleAction(ActionEvent event) {
             CourseDto course = ButtonCellDelete.this.getTableView().getItems().get(ButtonCellDelete.this.getIndex());
             deleteCourse(course);
-            updateCareer();
+            cleanAll();
+            tbvCourse.getItems().clear();
+            getCoursesByCareer();
+            newCourse();
         }
 
     }

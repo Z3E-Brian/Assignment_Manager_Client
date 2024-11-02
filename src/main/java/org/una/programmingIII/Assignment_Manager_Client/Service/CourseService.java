@@ -41,10 +41,9 @@ public class CourseService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         CourseDto courseDtoResult = objectMapper.readValue(response.body(), CourseDto.class);
-        CourseInput courseInputResult = new CourseInput(courseDtoResult);
 
         if (response.statusCode() == 201) {
-            return new Answer(true, "The course save", "", "course", courseInputResult);
+            return new Answer(true, "The course save", "", "courseDto", courseDtoResult);
         } else {
             throw new Exception("Error creating Course: " + response.statusCode());
         }
