@@ -136,6 +136,7 @@ public class CourseViewController extends Controller {
         String titledData = ((Label) ((HBox) titledPane.getGraphic()).getChildren().get(0)).getText();
         AppContext.getInstance().set("position", titledData);
         FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView", getStage(), false);
+        reloadView();
     }
 
     private void goToFile(MouseEvent event) {
@@ -160,11 +161,14 @@ public class CourseViewController extends Controller {
             AppContext.getInstance().set("assignment", assignmentDto);
             //TODO: ADD functionality to go to assignment
             System.out.println(assignmentDto.getDescription());
-           // FlowController.getInstance().goViewInWindowModal("AssignmentView", getStage(), false);
+            // FlowController.getInstance().goViewInWindowModal("AssignmentView", getStage(), false);
         }
 
     }
-
+private void reloadView(){
+        MainViewController mainViewController = (MainViewController) FlowController.getInstance().getController("MainView");
+        mainViewController.deleteAndLoadView("CourseView");
+}
     private void deleteFile(ActionEvent event) {
         HBox parent = (HBox) ((Button) event.getSource()).getParent();
         String labelText = ((Label) parent.getChildren().getFirst()).getText();
@@ -176,7 +180,10 @@ public class CourseViewController extends Controller {
                     .ifPresent(assignment -> {
                         try {
                             Answer answer = new AssignmentService().deleteAssignment(assignment.getId());
-                            if (answer.getState()) assignments.remove(assignment);
+                            if (answer.getState()) {
+                                assignments.remove(assignment);
+                                parent.getChildren().clear();
+                            }
                         } catch (Exception e) {
                             Logger.getLogger(CourseViewController.class.getName()).severe("Unexpected error: " + e.getMessage());
                         }
@@ -194,6 +201,7 @@ public class CourseViewController extends Controller {
                                         .filter(courseContent -> courseContent.getFiles().contains(file))
                                         .findFirst()
                                         .ifPresent(courseContent -> courseContent.getFiles().remove(file));
+                                parent.getChildren().clear();
                             }
                         } catch (Exception e) {
                             Logger.getLogger(CourseViewController.class.getName()).severe("Unexpected error: " + e.getMessage());
@@ -201,7 +209,7 @@ public class CourseViewController extends Controller {
                     });
         }
 
-        parent.getChildren().clear();
+
     }
 
     private void createLabelToContent(HBox header, String text, EventHandler<MouseEvent> action) {
@@ -266,6 +274,7 @@ public class CourseViewController extends Controller {
                 .findFirst()
                 .orElse(null);
     }
+
     private AssignmentDto getAssignmentDto(String title) {
         return assignments.stream()
                 .filter(assignment -> assignment.getTitle().equals(title))

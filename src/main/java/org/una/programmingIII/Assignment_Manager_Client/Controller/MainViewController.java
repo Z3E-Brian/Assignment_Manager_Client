@@ -124,5 +124,9 @@ CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(
             new Message().showModal(Alert.AlertType.INFORMATION, "Tiempo de inicio de sesion agotado", getStage(), "Debes de volver a iniciar sesion");
         });
     }
+    public void deleteAndLoadView(String nameView){
+        FlowController.getInstance().delete(nameView);
+        FlowController.getInstance().goView(nameView);
+    }
 }
 
