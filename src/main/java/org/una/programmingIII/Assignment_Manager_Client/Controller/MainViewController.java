@@ -2,8 +2,6 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -20,10 +18,8 @@ import org.una.programmingIII.Assignment_Manager_Client.Interfaces.SessionObserv
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Flow;
 
 public class MainViewController extends Controller implements SessionObserver {
 
@@ -54,8 +50,13 @@ public class MainViewController extends Controller implements SessionObserver {
     @FXML
     private MFXButton btnUniversitiesMaintenance;
 
+    @FXML
+    private MFXButton btnRegisterStudents_Courses;
+
+
     private LoginResponse loginResponse;
     private List<CourseDto> courses;
+    private boolean isStudentSession;
 
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
@@ -72,6 +73,7 @@ public class MainViewController extends Controller implements SessionObserver {
         SessionManager.getInstance().setRunningTokenValidationThread(true);
         SessionManager.getInstance().startTokenValidationTask();
         restoreBackgroundImage();
+        checkSession();
     }
 
     @FXML
@@ -97,6 +99,20 @@ public class MainViewController extends Controller implements SessionObserver {
     void OnActionBtnUniversitiesMaintenance(ActionEvent event) {
         removeBackgroundImage();
         FlowController.getInstance().goView("UniversityMaintenanceView");
+    }
+
+    @FXML
+    void OnActionBtnRegisterStudents_Courses(ActionEvent event) {
+        checkStudentLogin();
+    }
+
+    private void checkStudentLogin() {
+        if (isStudentSession) {
+            AppContext.getInstance().set("studentDto", SessionManager.getInstance().getLoginResponse().getUser());
+            FlowController.getInstance().goView("EnrollStudentCourseView");
+        } else {
+            FlowController.getInstance().goView("SelectStudentToEnrollView");
+        }
     }
 
     private void handleMenuItemAction(MenuItem menuItem) {
@@ -157,6 +173,21 @@ public class MainViewController extends Controller implements SessionObserver {
     public void restoreBackgroundImage() {
         if (!vboxCenterView.getStyleClass().contains("vBox_Main")) {
             vboxCenterView.getStyleClass().add("vBox_Main");
+        }
+    }
+
+    private void checkSession() {
+        Set<PermissionDto> loginUserPermissions = SessionManager.getInstance()
+                .getLoginResponse()
+                .getUser()
+                .getPermissions();
+
+        boolean hasProfessorPermission = loginUserPermissions.stream()
+                .anyMatch(permission -> PermissionType.TAKE_CLASSES.equals(permission.getName()));
+
+        if (hasProfessorPermission) {
+            isStudentSession = true;
+            btnRegisterStudents_Courses.setText("Enroll Courses");
         }
     }
 

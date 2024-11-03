@@ -75,7 +75,6 @@ public class EnrollStudentCourseController extends Controller {
         tbvAvailableCourses.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         tbvEnrollCourses.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         loadInitialData();
-        System.out.println("EnrollStudentCourseController");
     }
 
 
@@ -91,7 +90,11 @@ public class EnrollStudentCourseController extends Controller {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-
+        if (isProfessorSession) {
+            FlowController.getInstance().deleteAndLoadView("SelectStudentToEnrollView");
+        } else {
+            FlowController.getInstance().goMain();
+        }
     }
 
     @FXML
@@ -256,7 +259,7 @@ public class EnrollStudentCourseController extends Controller {
             cellButton.getStyleClass().add("mfx-btn-Enter");
 
             cellButton.setOnAction((ActionEvent t) -> {
-                CourseDto courseDto = (CourseDto) EnrollStudentCourseController.ButtonCellEnrollCourse.this.getTableView().getItems().get(EnrollStudentCourseController.ButtonCellEnrollCourse.this.getIndex());
+                CourseDto courseDto = ButtonCellEnrollCourse.this.getTableView().getItems().get(ButtonCellEnrollCourse.this.getIndex());
                 enrollStudentInCourse(courseDto.getId());
             });
         }

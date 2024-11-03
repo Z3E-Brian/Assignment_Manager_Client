@@ -6,13 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
@@ -57,7 +55,8 @@ public class SelectStudentToEnrollController extends Controller {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-
+        FlowController.getInstance().delete("SelectStudentToEnrollView");
+        FlowController.getInstance().goMain();
     }
 
     @FXML
@@ -94,8 +93,7 @@ public class SelectStudentToEnrollController extends Controller {
         protected void handleAction(ActionEvent event) {
             UserDto studentDto = SelectStudentToEnrollController.ButtonCellEnrollCourse.this.getTableView().getItems().get(SelectStudentToEnrollController.ButtonCellEnrollCourse.this.getIndex());
             AppContext.getInstance().set("studentDto", studentDto);
-            FlowController.getInstance().goViewInWindow("EnrollStudentCourseView");
-            getStage().close();
+            FlowController.getInstance().deleteAndLoadView("EnrollStudentCourseView");
         }
     }
 }
