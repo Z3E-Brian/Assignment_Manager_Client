@@ -36,7 +36,7 @@ public class DepartmentMaintenanceController extends Controller {
     private TableColumn<DepartmentDto, String> clmDepartment;
 
     @FXML
-    private TableColumn<DepartmentDto,Boolean> tbcCareer;
+    private TableColumn<DepartmentDto, Boolean> tbcCareer;
 
     @FXML
     private TableColumn<DepartmentDto, Boolean> tbcDelete;
@@ -44,12 +44,9 @@ public class DepartmentMaintenanceController extends Controller {
     @FXML
     private ImageView imvBack;
 
-    @FXML
-    private ImageView imvClose;
 
     @FXML
     private ImageView imvSearch;
-
     @FXML
     private Label lblFaculty;
 
@@ -87,7 +84,6 @@ public class DepartmentMaintenanceController extends Controller {
     }
 
 
-
     @FXML
     void OnMousePressedTbvDepartment(MouseEvent event) {
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && tbvDepartment.getSelectionModel().getSelectedItem() != null) {
@@ -97,7 +93,7 @@ public class DepartmentMaintenanceController extends Controller {
     }
 
 
- private void deleteDepartment(DepartmentDto departmentDto) {
+    private void deleteDepartment(DepartmentDto departmentDto) {
         try {
             departmentService.deleteDepartment(departmentDto.getId());
             loadDepartments();
@@ -105,6 +101,7 @@ public class DepartmentMaintenanceController extends Controller {
             new Message().showModal(Alert.AlertType.ERROR, "Eliminate department", getStage(), "Department could not be deleted.");
         }
     }
+
     @FXML
     void onActionBtnNewDepartment(ActionEvent event) {
         clean();
@@ -121,13 +118,7 @@ public class DepartmentMaintenanceController extends Controller {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-        FlowController.getInstance().goViewInWindow("FacultyMaintenanceView");
-        ((Stage) btnSave.getScene().getWindow()).close();
-    }
-
-    @FXML
-    void onMouseClickedImvClose(MouseEvent event) {
-        System.out.println("imvClose");
+        FlowController.getInstance().deleteAndLoadView("FacultyMaintenanceView");
     }
 
     @FXML
@@ -198,6 +189,7 @@ public class DepartmentMaintenanceController extends Controller {
             loadDepartments();
         }
     }
+
     private class ButtonCellCareer extends ButtonCellBase<DepartmentDto> {
         ButtonCellCareer() {
             super("Career", "mfx-btn-Enter");
@@ -205,10 +197,9 @@ public class DepartmentMaintenanceController extends Controller {
 
         @Override
         protected void handleAction(ActionEvent event) {
-            departmentDto = (DepartmentDto)  ButtonCellCareer.this.getTableView().getItems().get(ButtonCellCareer.this.getIndex());
+            departmentDto = ButtonCellCareer.this.getTableView().getItems().get(ButtonCellCareer.this.getIndex());
             AppContext.getInstance().set("departmentDto", departmentDto);
-            FlowController.getInstance().goViewInWindow("CareerMaintenanceView");
-            getStage().close();
+            FlowController.getInstance().deleteAndLoadView("CareerMaintenanceView");
         }
     }
 

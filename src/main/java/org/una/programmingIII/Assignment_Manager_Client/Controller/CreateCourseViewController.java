@@ -41,8 +41,6 @@ public class CreateCourseViewController extends Controller {
     @FXML
     private ImageView imvBack;
 
-    @FXML
-    private ImageView imvClose;
 
     @FXML
     private ImageView imvSearch;
@@ -162,7 +160,7 @@ public class CreateCourseViewController extends Controller {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-
+        FlowController.getInstance().deleteAndLoadView("CareerMaintenanceView");
     }
 
     @FXML

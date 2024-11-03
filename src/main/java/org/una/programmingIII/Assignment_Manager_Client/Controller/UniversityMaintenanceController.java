@@ -32,8 +32,6 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     @FXML
     private MFXButton btnDelete;
 
-    @FXML
-    private MFXButton btnEdit;
 
     @FXML
     private MFXButton btnNew;
@@ -62,9 +60,6 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private TableView<UniversityDto> universityTable;
 
     @FXML
-    private ImageView imvClose;
-
-    @FXML
     private ImageView imvSearch;
 
     @FXML
@@ -74,27 +69,28 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private UniversityDto universityDto;
 
     private RequiredFieldsValidator validator;
+
     @Override
-public void initialize() {
-    universityService = new UniversityService();
-    universityDto = new UniversityDto();
-    setupTableColumns();
-    validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfLocation));
+    public void initialize() {
+        universityService = new UniversityService();
+        universityDto = new UniversityDto();
+        setupTableColumns();
+        validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfLocation));
 
-    loadUniversities();
-    SessionManager.getInstance().addObserver(this);
-    SessionManager.getInstance().startTokenValidationTask();
-}
+        loadUniversities();
+        SessionManager.getInstance().addObserver(this);
+        SessionManager.getInstance().startTokenValidationTask();
+    }
 
-private void setupTableColumns() {
-    tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    tbcLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-    tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-    tbcDelete.setCellFactory(p -> new ButtonCellDelete());
-    tbcFaculty.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-    tbcFaculty.setCellFactory(p -> new ButtonCellFaculty());
-    universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-}
+    private void setupTableColumns() {
+        tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tbcLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+        tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory(p -> new ButtonCellDelete());
+        tbcFaculty.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcFaculty.setCellFactory(p -> new ButtonCellFaculty());
+        universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
 
     @FXML
     void onActionBtnNew(ActionEvent event) throws Exception {
@@ -126,19 +122,14 @@ private void setupTableColumns() {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-        FlowController.getInstance().goViewInWindow("LogInView");
-        ((Stage) btnEdit.getScene().getWindow()).close();
+        FlowController.getInstance().delete("UniversityMaintenanceView");
+        FlowController.getInstance().goMain();
     }
 
     @FXML
     void onMouseClickedImvSearch(MouseEvent event) {
         loadUniversities();
         System.out.println("search");
-    }
-
-    @FXML
-    void onMouseClickedImvClose(MouseEvent event) {
-        ((Stage) universityTable.getScene().getWindow()).close();
     }
 
     private void clean() {
@@ -154,7 +145,7 @@ private void setupTableColumns() {
         String invalids = validator.validate();
 
         if (!(invalids.isBlank())) {
-            new Message().showModal(Alert.AlertType.ERROR, "Create University", getStage(),  invalids);
+            new Message().showModal(Alert.AlertType.ERROR, "Create University", getStage(), invalids);
         } else {
             universityDto = new UniversityDto();
             universityDto.setName(txfName.getText());
@@ -192,9 +183,9 @@ private void setupTableColumns() {
         txfName.setText(universityDto.getName());
     }
 
-   private void setUniversityDto() {
-       AppContext.getInstance().set("universityDto", universityDto);
-   }
+    private void setUniversityDto() {
+        AppContext.getInstance().set("universityDto", universityDto);
+    }
 
     private void validateUserFunctions() {
         Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
@@ -213,7 +204,7 @@ private void setupTableColumns() {
 
     @Override
     public void onSessionExpired() {
-new Message().showModal(Alert.AlertType.INFORMATION, "Session timeout", getStage(), "You need to log in again");
+        new Message().showModal(Alert.AlertType.INFORMATION, "Session timeout", getStage(), "You need to log in again");
         Platform.runLater(() -> {
             FlowController.getInstance().goViewInWindow("LogInView");
             FlowController.getInstance().delete("UniversityMaintenanceView");
@@ -249,9 +240,7 @@ new Message().showModal(Alert.AlertType.INFORMATION, "Session timeout", getStage
         protected void handleAction(ActionEvent event) {
             universityDto = getTableView().getItems().get(getIndex());
             setUniversityDto();
-            FlowController.getInstance().goViewInWindow("FacultyMaintenanceView");
-            getStage().close();
-
+            FlowController.getInstance().deleteAndLoadView("FacultyMaintenanceView");
         }
     }
 

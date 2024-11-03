@@ -1,29 +1,23 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CareerService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -37,9 +31,6 @@ public class CareerMaintenanceViewController extends Controller {
 
     @FXML
     private ImageView imvBack;
-
-    @FXML
-    private ImageView imvClose;
 
     @FXML
     private ImageView imvSearch;
@@ -72,40 +63,40 @@ public class CareerMaintenanceViewController extends Controller {
     private RequiredFieldsValidator validator;
 
     @Override
-public void initialize() {
-    initializeCareerData();
-    setupTableColumns();
-    setupTextFormatters();
-    setupValidator();
-    loadDepartment();
-    loadCareers();
-    bind();
-}
+    public void initialize() {
+        initializeCareerData();
+        setupTableColumns();
+        setupTextFormatters();
+        setupValidator();
+        loadDepartment();
+        loadCareers();
+        bind();
+    }
 
-private void initializeCareerData() {
-    careerInput = new CareerInput();
-    careerDto = new CareerDto();
-    departmentDto = new DepartmentDto();
-}
+    private void initializeCareerData() {
+        careerInput = new CareerInput();
+        careerDto = new CareerDto();
+        departmentDto = new DepartmentDto();
+    }
 
-private void setupTableColumns() {
-    tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-    tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-    tbcDelete.setCellFactory(p -> new ButtonCellDelete());
-    tbcCourse.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-    tbcCourse.setCellFactory(p -> new ButtonCellCourse());
-    tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-}
+    private void setupTableColumns() {
+        tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory(p -> new ButtonCellDelete());
+        tbcCourse.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcCourse.setCellFactory(p -> new ButtonCellCourse());
+        tbvCareer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
 
-private void setupTextFormatters() {
-    txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
-    txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(300));
-}
+    private void setupTextFormatters() {
+        txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        txfDescription.delegateSetTextFormatter(Format.getInstance().textFormat(300));
+    }
 
-private void setupValidator() {
-    validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfDescription));
-}
+    private void setupValidator() {
+        validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfDescription));
+    }
 
     private void bind() {
         txfDescription.textProperty().bindBidirectional(careerInput.description);
@@ -176,14 +167,7 @@ private void setupValidator() {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-
-    }
-
-    @FXML
-    void onMouseClickedImvClose(MouseEvent event) {
-        if (new Message().showConfirmation("Exit", getStage(), "Are you sure you want to exit?")) {
-            getStage().close();
-        }
+        FlowController.getInstance().deleteAndLoadView("DepartmentMaintenanceView");
     }
 
     @FXML
@@ -249,8 +233,7 @@ private void setupValidator() {
         protected void handleAction(ActionEvent event) {
             careerDto = getTableView().getItems().get(getIndex());
             AppContext.getInstance().set("careerDto", careerDto);
-            FlowController.getInstance().goViewInWindow("CreateCourseView");
-            getStage().close();
+            FlowController.getInstance().deleteAndLoadView("CreateCourseView");
         }
     }
 
