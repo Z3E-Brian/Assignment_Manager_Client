@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.SelectStudentToEnrollController">
+   <children>
+      <VBox layoutX="10.0" layoutY="10.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ToolBar prefHeight="40.0" prefWidth="800.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <items>
+                  <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="385.0" spacing="15.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="Titles" text="EnrollStudents" />
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Assets/Assignment-Manager.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="lblFaculty" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="25.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ImageView fx:id="imvBack" fitHeight="25.0" fitWidth="25.0" layoutX="159.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvBack" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Assets/Back.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="imvSearch" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#onMouseClickedImvSearch" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Assets/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </HBox>
+                     </children>
+                  </HBox>
+               </items>
+            </ToolBar>
+            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Label styleClass="lbl-Subtitle" text="Students" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <HBox />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tbvStudents" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="tbcStudentName" minWidth="-Infinity" prefWidth="150" text="Name" />
+                              <TableColumn fx:id="tbcStudentLastName" prefWidth="150" text="LastName" />
+                              <TableColumn fx:id="tbcStudentIdentificationNumber" prefWidth="150" text="IdentificationNumber" />
+                              <TableColumn fx:id="tbcEnrollCourses" prefWidth="75.0" text="EnrollCourses" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

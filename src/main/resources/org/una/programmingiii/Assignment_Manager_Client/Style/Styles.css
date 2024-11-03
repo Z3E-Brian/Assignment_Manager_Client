@@ -310,6 +310,18 @@
     -fx-image: url("../Assets/Save.png");
 }
 
+.mfx-btn-Enroll, .mfx-btn-Enroll:armed, .mfx-btn-Enroll:focused {
+    -fx-background-color: #ffeb00;
+}
+
+.mfx-btn-Enroll > ImageView {
+    -fx-image: url("../Assets/enroll.png");
+}
+
+.mfx-btn-Enroll:hover {
+    -fx-background-color: #0eefd5;
+}
+
 .mfx-btn-Enter, .mfx-btn-Enter:armed, .mfx-btn-Enter:focused {
     -fx-background-color: #00bcd4;
 }

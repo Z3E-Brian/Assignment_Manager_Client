@@ -84,6 +84,23 @@ public class UserService {
         }
     }
 
+    public Answer getAllStudentsByCareerId(Long careerId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/students/byCareerId/" + careerId))
+                .GET()
+                .build();
+
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return new Answer(true, "", "students fetched successfully", "students", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+            }));
+        } else {
+            throw new Exception("Error fetching users: " + response.statusCode());
+        }
+    }
+
     // GET: Obtener usuarios paginados en un Map
     public Map<String, Object> getUsers(int page, int size, int limit) throws Exception {
         return getStringObjectMap(page, size, limit, httpClient, objectMapper);

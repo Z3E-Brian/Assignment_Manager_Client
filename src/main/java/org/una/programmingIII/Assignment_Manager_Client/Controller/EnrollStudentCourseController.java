@@ -8,17 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CareerService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
-import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.util.List;
+import java.util.Set;
 
 public class EnrollStudentCourseController extends Controller {
 
@@ -55,17 +53,17 @@ public class EnrollStudentCourseController extends Controller {
     @FXML
     private TableView<CourseDto> tbvEnrollCourses;
 
-    private UserService userService;
     private UserDto studentDto;
     private CareerDto careerDto;
     private CourseService courseService;
+    private boolean isProfessorSession;
 
     @Override
     public void initialize() {
-        userService = new UserService();
         studentDto = new UserDto();
         careerDto = new CareerDto();
         courseService = new CourseService();
+        isProfessorSession = false;
 
         tbcEnrolledCourses.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcAvailableCourses.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -102,7 +100,7 @@ public class EnrollStudentCourseController extends Controller {
 
     private void loadCareerInfo() {
         try {
-            Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
+            Long careerId = studentDto.getCareerId();
             Answer answer = new CareerService().getById(careerId);
             if (answer.getState()) {
                 careerDto = (CareerDto) answer.getResult("careerDto");
@@ -117,7 +115,7 @@ public class EnrollStudentCourseController extends Controller {
         }
     }
 
-    private void cargarCursos() {
+    private void loadCoursesStudentLogin() {
         clearTables();
         cargarCursosMatriculadoUsuario();
         cargarCursosDisponibles();
@@ -160,8 +158,23 @@ public class EnrollStudentCourseController extends Controller {
     private void loadInitialData() {
         studentDto = (UserDto) AppContext.getInstance().get("studentDto");
         lblStudentName.setText(studentDto.getName());
+        checkProfessorSession();
         loadCareerInfo();
-        cargarCursos();
+        loadCoursesStudentLogin();
+    }
+
+    private void checkProfessorSession() {
+        Set<PermissionDto> loginUserPermissions = SessionManager.getInstance()
+                .getLoginResponse()
+                .getUser()
+                .getPermissions();
+
+        boolean hasProfessorPermission = loginUserPermissions.stream()
+                .anyMatch(permission -> PermissionType.PROFESSOR.equals(permission.getName()));
+
+        if (hasProfessorPermission) {
+            isProfessorSession = true;
+        }
     }
 
     private void enrollStudentInCourse(Long courseId) {
@@ -169,7 +182,7 @@ public class EnrollStudentCourseController extends Controller {
             Answer answer = courseService.enrollStudentInCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
                 new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Enrolled sucessfully");
-                cargarCursos();
+                loadCoursesStudentLogin();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Enroll course", getStage(), "Something went wrong with course enrollment");
             }
@@ -184,7 +197,7 @@ public class EnrollStudentCourseController extends Controller {
             Answer answer = courseService.unenrollStudentFromCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
                 new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Unenrolled sucessfully");
-                cargarCursos();
+                loadCoursesStudentLogin();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Uneroll course", getStage(), "Something went wrong with course unEnrollment");
             }
@@ -238,7 +251,7 @@ public class EnrollStudentCourseController extends Controller {
                 CourseDto courseDto = (CourseDto) EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getTableView().getItems().get(EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getIndex());
                 System.out.println(courseDto);
                 unEnrollStudentInCourse(courseDto.getId());
-                cargarCursos();
+                loadCoursesStudentLogin();
             });
         }
 
