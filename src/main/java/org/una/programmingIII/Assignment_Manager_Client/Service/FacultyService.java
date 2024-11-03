@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,16 +18,19 @@ public class FacultyService {
     private static final String BASE_URL = "http://localhost:8080/api/faculties";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-
+String jwtToken;
     public FacultyService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
     }
 
     public FacultyDto getFacultyById(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getById?id=" + id))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -45,6 +50,7 @@ public class FacultyService {
         String url = BASE_URL + "getPageable/" + universityId + "?page=" + page + "&size=" + size + "&limit=" + limit;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -62,6 +68,7 @@ public class FacultyService {
     public List<FacultyDto> getAllFaculties() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getAllFaculties"))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -78,6 +85,7 @@ public class FacultyService {
     public Map<String, Object> getFaculties(int page, int size, int limit) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -96,6 +104,7 @@ public class FacultyService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/create"))
+                .header("Authorization", "Bearer " + jwtToken)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -113,6 +122,7 @@ public class FacultyService {
         String requestBody = objectMapper.writeValueAsString(facultyInput);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
+                .header("Authorization", "Bearer " + jwtToken)
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -131,6 +141,7 @@ public class FacultyService {
     public void deleteFaculty(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
+                .header("Authorization", "Bearer " + jwtToken)
                 .DELETE()
                 .build();
 

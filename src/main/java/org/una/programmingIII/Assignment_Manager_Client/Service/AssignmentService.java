@@ -7,7 +7,9 @@ import org.modelmapper.internal.objenesis.instantiator.android.AndroidSerializat
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseContentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,15 +22,19 @@ public class AssignmentService {
 
     private static final String BASE_URL = "http://localhost:8080/api/assignments";  // URL de tu API
     private final ObjectMapper mapper;
+    private final String jwtToken;
 
     public AssignmentService() {
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JavaTimeModule());
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
     }
     public AssignmentDto getAssignmentById(Long id) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
+                .header("Authorization", "Bearer " + jwtToken)
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
@@ -47,6 +53,7 @@ public class AssignmentService {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/getByCourseIdAndAddress/" + courseId + "/" + position))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -70,6 +77,7 @@ public class AssignmentService {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
@@ -92,6 +100,7 @@ public class AssignmentService {
             String json = mapper.writeValueAsString(assignmentDto);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/create"))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -114,6 +123,7 @@ public class AssignmentService {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/getByCourseId/" + courseId))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();

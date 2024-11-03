@@ -6,6 +6,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 import org.una.programmingIII.Assignment_Manager_Client.Exception.InvalidCredentialsException;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,10 +18,12 @@ public class AuthenticationService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
+
     public AuthenticationService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
+
     }
 
     public LoginResponse authenticate(LoginInput loginInput) throws Exception {
@@ -45,6 +48,7 @@ public class AuthenticationService {
     public String refreshToken(String refreshToken) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/refreshToken?refreshToken=" + refreshToken))
+                .header("Authorization", "Bearer " + refreshToken)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
@@ -62,8 +66,11 @@ public class AuthenticationService {
 
 
     public boolean validateToken(String token) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        String refreshToken = loginResponse.getRefreshToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/validateToken?token=" + token))
+                .header("Authorization", "Bearer " + refreshToken)
                 .GET()
                 .build();
 

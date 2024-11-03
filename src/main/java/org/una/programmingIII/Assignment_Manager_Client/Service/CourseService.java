@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -19,14 +21,15 @@ public class CourseService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private static final String BASE_URL = "http://localhost:8080/api/courses";
-
-
+    String jwtToken;
     public CourseService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
 
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
     }
 
     public Answer createCourse(CourseInput courseInput) throws Exception {
@@ -35,6 +38,7 @@ public class CourseService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/"))
+                .header("Authorization", "Bearer " + jwtToken)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -52,6 +56,7 @@ public class CourseService {
     public Answer deleteCourse(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
+                .header("Authorization", "Bearer " + jwtToken)
                 .DELETE()
                 .build();
 
@@ -64,8 +69,10 @@ public class CourseService {
     }
 
     public List<CourseDto> getCoursesByCareerId(Long careerId) throws Exception {
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getByCareerId/" + careerId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -84,6 +91,7 @@ public class CourseService {
     public List<CourseDto> getEnrolledCoursesByStudentId(Long studentId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/enrolled/" + studentId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -100,6 +108,7 @@ public class CourseService {
     public List<CourseDto> getAvailableCoursesForAStudentInCareer(Long careerId, Long studentId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/available/career/" + careerId + "/user/" + studentId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -116,6 +125,7 @@ public class CourseService {
     public Answer enrollStudentInCourse(Long studentId, Long courseId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/enroll/" + courseId + "/user/" + studentId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
@@ -131,6 +141,7 @@ public class CourseService {
     public Answer unenrollStudentFromCourse(Long studentId, Long courseId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/unenroll/" + courseId + "/user/" + studentId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .DELETE()
                 .build();
 
@@ -146,6 +157,7 @@ public class CourseService {
     public List<CourseDto> findAvailableCoursesByCareerIdUserIdAndProfessorId(Long professorId, Long studentId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/available/professor/" + professorId + "/student/" + studentId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 
@@ -163,6 +175,7 @@ public class CourseService {
     public List<CourseDto> findCoursesEnrolledByStudentIdAAndProfessorIs(Long professorId, Long studentId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/enrolled/professor/" + professorId + "/student/" + studentId))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 

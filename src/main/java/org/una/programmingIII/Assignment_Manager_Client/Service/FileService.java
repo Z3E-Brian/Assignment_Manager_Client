@@ -2,10 +2,14 @@ package org.una.programmingIII.Assignment_Manager_Client.Service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.scene.control.Alert;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FileDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -28,10 +32,13 @@ public class FileService {
     private static final String BASE_URL = "http://localhost:8080/api/files";
     private static final String UPLOAD_URL = "http://localhost:8080/api/files/upload";
     private static final int CHUNK_SIZE = 512 * 1024;
+    String jwtToken;
 
     public FileService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
     }
 
     public Answer createFile(FileInput fileInput, File file) throws Exception {
@@ -39,6 +46,7 @@ public class FileService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/"))
+                .header("Authorization", "Bearer " + jwtToken)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -73,96 +81,102 @@ public class FileService {
         }
         return chunks;
     }
+
     public static void uploadFileInChunks(File file, Long fileInputId) throws IOException {
-    List<byte[]> chunks = splitFile(file);
-    int totalChunks = chunks.size();
-    for (int chunkNumber = 0; chunkNumber < chunks.size(); chunkNumber++) {
-        byte[] fileChunk = chunks.get(chunkNumber);
-        HttpURLConnection connection = (HttpURLConnection) new URL(UPLOAD_URL).openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=---Boundary");
+        List<byte[]> chunks = splitFile(file);
+        int totalChunks = chunks.size();
+        for (int chunkNumber = 0; chunkNumber < chunks.size(); chunkNumber++) {
+            byte[] fileChunk = chunks.get(chunkNumber);
+            HttpURLConnection connection = (HttpURLConnection) new URL(UPLOAD_URL).openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=---Boundary");
 
-        try (OutputStream outputStream = connection.getOutputStream()) {
-            outputStream.write(("-----Boundary\r\nContent-Disposition: form-data; name=\"fileChunk\"; filename=\"chunk" + chunkNumber + "\"\r\nContent-Type: application/octet-stream\r\n\r\n").getBytes());
-            outputStream.write(fileChunk);
-            outputStream.write(("\r\n-----Boundary\r\nContent-Disposition: form-data; name=\"fileId\"\r\n\r\n" + fileInputId + "\r\n").getBytes());
-            outputStream.write(("-----Boundary\r\nContent-Disposition: form-data; name=\"chunkNumber\"\r\n\r\n" + (chunkNumber + 1) + "\r\n").getBytes());
-            outputStream.write(("-----Boundary\r\nContent-Disposition: form-data; name=\"totalChunks\"\r\n\r\n" + totalChunks + "\r\n").getBytes());
-            outputStream.write("-----Boundary--\r\n".getBytes());
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                outputStream.write(("-----Boundary\r\nContent-Disposition: form-data; name=\"fileChunk\"; filename=\"chunk" + chunkNumber + "\"\r\nContent-Type: application/octet-stream\r\n\r\n").getBytes());
+                outputStream.write(fileChunk);
+                outputStream.write(("\r\n-----Boundary\r\nContent-Disposition: form-data; name=\"fileId\"\r\n\r\n" + fileInputId + "\r\n").getBytes());
+                outputStream.write(("-----Boundary\r\nContent-Disposition: form-data; name=\"chunkNumber\"\r\n\r\n" + (chunkNumber + 1) + "\r\n").getBytes());
+                outputStream.write(("-----Boundary\r\nContent-Disposition: form-data; name=\"totalChunks\"\r\n\r\n" + totalChunks + "\r\n").getBytes());
+                outputStream.write("-----Boundary--\r\n".getBytes());
+            }
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Fragment " + chunkNumber + " charge successful.");
+            } else {
+                System.out.println("Error to charge the fragment " + chunkNumber + ": " + responseCode);
+            }
+            connection.disconnect();
+        }
+    }
+
+    public void downloadFileInChunks(Long fileId, Path destination) throws Exception {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        long downloadedSize = 0;
+        boolean moreChunks = true;
+        Files.deleteIfExists(destination);
+        Files.createFile(destination);
+
+        while (moreChunks) {
+            HttpRequest request = buildDownloadRequest(fileId, downloadedSize);
+            HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+            if (response.statusCode() == 206 || response.statusCode() == 200) {
+                downloadedSize = writeFileChunk(response.body(), destination, downloadedSize);
+                moreChunks = checkMoreChunks(response, downloadedSize);
+            } else {
+                throw new Exception("Error downloading file chunk: " + response.statusCode());
+            }
         }
 
-        int responseCode = connection.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            System.out.println("Fragment " + chunkNumber + " charge successful.");
+        new Message().show(Alert.AlertType.INFORMATION, "File Download", "File downloaded successfully in chunks to " + destination);
+    }
+
+    private HttpRequest buildDownloadRequest(Long fileId, long downloadedSize) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/download/" + fileId))
+                .header("Authorization", "Bearer " + jwtToken)
+                .header("Range", "bytes=" + downloadedSize + "-")
+                .GET()
+                .build();
+    }
+
+    public Answer deleteFile(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + id))
+                .header("Authorization", "Bearer " + jwtToken)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 204) {
+            return new Answer(true, "The file was deleted", "", "file", null);
         } else {
-            System.out.println("Error to charge the fragment " + chunkNumber + ": " + responseCode);
-        }
-        connection.disconnect();
-    }
-}
-  public void downloadFileInChunks(Long fileId, Path destination) throws Exception {
-    HttpClient httpClient = HttpClient.newHttpClient();
-    long downloadedSize = 0;
-    boolean moreChunks = true;
-    Files.deleteIfExists(destination);
-    Files.createFile(destination);
-
-    while (moreChunks) {
-        HttpRequest request = buildDownloadRequest(fileId, downloadedSize);
-        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-
-        if (response.statusCode() == 206 || response.statusCode() == 200) {
-            downloadedSize = writeFileChunk(response.body(), destination, downloadedSize);
-            moreChunks = checkMoreChunks(response, downloadedSize);
-        } else {
-            throw new Exception("Error downloading file chunk: " + response.statusCode());
+            throw new Exception("Error deleting File: " + response.statusCode());
         }
     }
 
-    System.out.println("File downloaded successfully in chunks to " + destination);
-}
-
-private HttpRequest buildDownloadRequest(Long fileId, long downloadedSize) {
-    return HttpRequest.newBuilder()
-            .uri(URI.create(BASE_URL + "/download/" + fileId))
-            .header("Range", "bytes=" + downloadedSize + "-")
-            .GET()
-            .build();
-}
-public Answer deleteFile(Long id) throws Exception {
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(BASE_URL + "/" + id))
-            .DELETE()
-            .build();
-
-    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-    if (response.statusCode() == 204) {
-        return new Answer(true, "The file was deleted", "", "file", null);
-    } else {
-        throw new Exception("Error deleting File: " + response.statusCode());
-    }
-}
-private long writeFileChunk(InputStream inputStream, Path destination, long downloadedSize) throws IOException {
-    try (InputStream in = inputStream;
-         FileOutputStream out = new FileOutputStream(destination.toFile(), true)) {
-        byte[] buffer = new byte[8192];
-        int bytesRead;
-        while ((bytesRead = in.read(buffer)) != -1) {
-            out.write(buffer, 0, bytesRead);
-            downloadedSize += bytesRead;
+    private long writeFileChunk(InputStream inputStream, Path destination, long downloadedSize) throws IOException {
+        try (InputStream in = inputStream;
+             FileOutputStream out = new FileOutputStream(destination.toFile(), true)) {
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+                downloadedSize += bytesRead;
+            }
         }
+        return downloadedSize;
     }
-    return downloadedSize;
-}
 
-private boolean checkMoreChunks(HttpResponse<InputStream> response, long downloadedSize) {
-    String contentRange = response.headers().firstValue("Content-Range").orElse("");
-    if (contentRange.contains("/")) {
-        long totalSize = Long.parseLong(contentRange.split("/")[1]);
-        return downloadedSize < totalSize;
+    private boolean checkMoreChunks(HttpResponse<InputStream> response, long downloadedSize) {
+        String contentRange = response.headers().firstValue("Content-Range").orElse("");
+        if (contentRange.contains("/")) {
+            long totalSize = Long.parseLong(contentRange.split("/")[1]);
+            return downloadedSize < totalSize;
+        }
+        return true;
     }
-    return true;
-}
 
 }
