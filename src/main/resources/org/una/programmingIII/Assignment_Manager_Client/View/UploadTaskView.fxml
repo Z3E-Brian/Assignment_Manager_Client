@@ -54,7 +54,7 @@
             <!-- Content Section -->
             <HBox alignment="CENTER" spacing="5.0">
                <children>
-                  <MFXButton fx:id="btnUpload" buttonType="RAISED" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" onAction="#onAtionBtnUpload" prefHeight="30.0" prefWidth="30.0" styleClass="mfx-btn-Upload" text=" ">
+                  <MFXButton fx:id="btnUpload" buttonType="RAISED" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" onAction="#onActionBtnUpload" prefHeight="30.0" prefWidth="30.0" styleClass="mfx-btn-Upload" text=" ">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
                      </graphic>

@@ -68,16 +68,17 @@ public class UploadTaskViewController extends Controller implements Initializabl
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
-        // Method content
-        FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView", getStage(), true);
+getStage().close();
 
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
-        for (File file : uploadedFiles) {
-            System.out.println(file.getName());
+        if (uploadedFiles.isEmpty()) {
+            showError("Save Submission", "You must upload at least one file");
+            return;
         }
+        saveSubmission();
     }
 
     @FXML
@@ -86,7 +87,7 @@ public class UploadTaskViewController extends Controller implements Initializabl
     }
 
     @FXML
-    void onAtionBtnUpload(ActionEvent event) {
+    void onActionBtnUpload(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
 

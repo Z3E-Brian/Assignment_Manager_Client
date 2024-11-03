@@ -11,10 +11,12 @@ import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -52,7 +54,7 @@ public class AssignmentService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/getByCourseIdAndAddress/" + courseId + "/" + position))
+                    .uri(URI.create(BASE_URL + "/getByCourseIdAndAddress/" + courseId + "/" + URLEncoder.encode(position, StandardCharsets.UTF_8)))
                     .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .GET()
@@ -61,7 +63,7 @@ public class AssignmentService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                List<AssignmentDto> assignments = List.of(mapper.readValue(response.body(), AssignmentDto[].class));
+                List<AssignmentDto> assignments = mapper.readValue(response.body(), new TypeReference<List<AssignmentDto>>() {});
                 List<AssignmentInput> assignmentInputs = assignments.stream().map(AssignmentInput::new).toList();
                 return new Answer(true, "", "", "assignments", assignmentInputs);
             } else {

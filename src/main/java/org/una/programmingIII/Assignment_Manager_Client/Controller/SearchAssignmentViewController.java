@@ -6,6 +6,7 @@ import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,12 +14,10 @@ import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentType;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Format;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,16 +36,16 @@ public class SearchAssignmentViewController extends Controller {
     private MFXDatePicker dtpDueDateAssignment;
 
     @FXML
-    private TableColumn<AssignmentInput, String> tbcDescription;
+    private TableColumn<AssignmentDto, String> tbcDescription;
 
     @FXML
-    private TableColumn<AssignmentInput, LocalDate> tbcDueDate;
+    private TableColumn<AssignmentDto, LocalDate> tbcDueDate;
 
     @FXML
-    private TableColumn<AssignmentInput, String> tbcTitle;
+    private TableColumn<AssignmentDto, String> tbcTitle;
 
     @FXML
-    private TableColumn<AssignmentInput, String> tbcType;
+    private TableColumn<AssignmentDto, String> tbcType;
 
     @FXML
     private MFXTextField txfDescription;
@@ -54,9 +53,9 @@ public class SearchAssignmentViewController extends Controller {
     @FXML
     private MFXTextField txfTitle;
     @FXML
-    private TableView<AssignmentInput> tbvResults;
+    private TableView<AssignmentDto> tbvResults;
     @Getter
-    Object result;
+    Object result = null;
     private List<AssignmentInput> assignments;
 
     @FXML
@@ -86,29 +85,34 @@ public class SearchAssignmentViewController extends Controller {
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcType.setCellValueFactory(new PropertyValueFactory<>("type"));
         tbcDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-       // getAssignments();
+        getAssignments();
     }
 
     private void getAssignments() {
         AssignmentService service = new AssignmentService();
         String position = (String) AppContext.getInstance().get("position");
-        Long courseId = (Long) AppContext.getInstance().get("course");
-        Answer answer = service.getAllAssignmentsByCourseAndPosition(courseId,position);
-        if (answer != null) {
+        CourseDto courseDto = (CourseDto) AppContext.getInstance().get("course");
+        Answer answer = service.getAllAssignmentsByCourseAndPosition(courseDto.getId(),position);
+        if (answer.getState()) {
             assignments = (List<AssignmentInput>) answer.getResult("assignments");
-            filterList();
+            if (assignments.isEmpty()) {
+                new Message().show(Alert.AlertType.ERROR, "Error", "Error not have assignments");
+                getStage().close();
+            }else { filterList();}
+
         }
     }
 
-    private void filterList() {
-        List<AssignmentInput> filteredList = assignments.stream().filter(assignment -> {
-            boolean type = cbxType.getSelectionModel().getSelectedItem() == null || assignment.getType().equals(cbxType.getSelectionModel().getSelectedItem());
-            boolean title = txfTitle.getText().isBlank() || assignment.getTitle().get().contains(txfTitle.getText());
-            boolean description = txfDescription.getText().isBlank() || assignment.getDescription().get().contains(txfDescription.getText());
-            boolean dueDate = dtpDueDateAssignment.getValue() == null || assignment.getDueDate().equals(dtpDueDateAssignment.getValue());
-            return type && title && description && dueDate;
-        }).toList();
-        tbvResults.getItems().clear();
-        tbvResults.getItems().addAll(filteredList);
-    }
+private void filterList() {
+    List<AssignmentDto> assignmentDtos = assignments.stream()
+            .map(AssignmentDto::new)
+            .toList();
+    List<AssignmentDto> filteredList = assignmentDtos.stream()
+        .filter(assignment -> (cbxType.getSelectionModel().getSelectedItem() == null || assignment.getType().equals(cbxType.getSelectionModel().getSelectedItem())) &&
+                              (txfTitle.getText().isBlank() || assignment.getTitle().contains(txfTitle.getText())) &&
+                              (txfDescription.getText().isBlank() || assignment.getDescription().contains(txfDescription.getText())) &&
+                              (dtpDueDateAssignment.getValue() == null || assignment.getDueDate().equals(dtpDueDateAssignment.getValue())))
+        .toList();
+    tbvResults.getItems().setAll(filteredList);
+}
 }

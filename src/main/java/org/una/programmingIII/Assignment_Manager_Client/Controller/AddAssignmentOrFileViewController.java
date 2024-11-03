@@ -6,7 +6,6 @@ import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
@@ -68,7 +67,7 @@ public class AddAssignmentOrFileViewController extends Controller   {
     public void initialize() {
         txfTitleAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescriptionAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
-        cbxTypeAssignment.getItems().addAll(AssignmentType.values());
+        cbxTypeAssignment.getItems().setAll(AssignmentType.values());
         IndicateRequired();
         assignmentHandler = new FileDragAndDropHandler(uploadedAssignments, vbxFileListAssignment);
         assignmentHandler.setupDragAndDrop(vbxDropAreaAssignment);
@@ -145,11 +144,11 @@ public class AddAssignmentOrFileViewController extends Controller   {
     void onActionBtnSearch(ActionEvent event) {
         SearchAssignmentViewController searchAssignmentViewController = (SearchAssignmentViewController) FlowController.getInstance().getController("SearchAssignmentView");
         FlowController.getInstance().goViewInWindowModal("SearchAssignmentView", getStage(), true);
-        AssignmentInput assignmentInput1 = (AssignmentInput) searchAssignmentViewController.getResult();
-        if (assignmentInput1 != null) {
-            assignmentInput = assignmentInput1;
+        AssignmentDto assignmentDto = (AssignmentDto) searchAssignmentViewController.getResult();
+        if (assignmentDto!=null){
+            assignmentInput = new AssignmentInput(assignmentDto);
             unbindAssignment();
-            bindAssignment(false);
+            bindAssignment();
         }
     }
 
@@ -212,16 +211,16 @@ public class AddAssignmentOrFileViewController extends Controller   {
     private void newAssignment() {
         assignmentInput = new AssignmentInput();
         unbindAssignment();
-        bindAssignment(true);
+        bindAssignment();
         txfTitleAssignment.requestFocus();
         assignmentHandler.clearFiles();
     }
 
-    private void bindAssignment(Boolean newAssignment) {
+    private void bindAssignment( ) {
         txfTitleAssignment.textProperty().bindBidirectional(assignmentInput.title);
         txfDescriptionAssignment.textProperty().bindBidirectional(assignmentInput.description);
         dtpDueDateAssignment.valueProperty().bindBidirectional(assignmentInput.dueDate);
-        cbxTypeAssignment.setValue(assignmentInput.type);
+        cbxTypeAssignment.valueProperty().bindBidirectional(assignmentInput.typeProperty());
 
     }
 
