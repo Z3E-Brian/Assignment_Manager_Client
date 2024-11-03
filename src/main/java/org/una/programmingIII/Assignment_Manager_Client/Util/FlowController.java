@@ -16,6 +16,7 @@ import org.una.programmingIII.Assignment_Manager_Client.App;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
@@ -78,7 +79,7 @@ public class FlowController {
 
     public void goMain() {
         try {
-            Parent root = FXMLLoader.load(App.class.getResource("View/MainView.fxml"), this.idioma);
+            Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("View/MainView.fxml")), this.idioma);
             Scene scene = new Scene(root);
             MFXThemeManager.addOn(scene, Themes.DEFAULT, Themes.LEGACY);
             mainStage.setScene(scene);

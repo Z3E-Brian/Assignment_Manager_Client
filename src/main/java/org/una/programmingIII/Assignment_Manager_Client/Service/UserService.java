@@ -246,5 +246,18 @@ public class UserService {
         return null;
     }
 
+    public UserDto getUserById(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + id))
+                .GET()
+                .build();
 
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), UserDto.class);
+        } else {
+            throw new Exception("Error fetching user: " + response.statusCode());
+        }
+    }
 }

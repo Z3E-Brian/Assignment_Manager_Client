@@ -10,10 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseContentDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.FileDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseContentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
@@ -158,17 +155,28 @@ public class CourseViewController extends Controller {
         }
         AssignmentDto assignmentDto = getAssignmentDto(labelText);
         if (assignmentDto != null) {
-            AppContext.getInstance().set("assignment", assignmentDto);
-            //TODO: ADD functionality to go to assignment
-            System.out.println(assignmentDto.getDescription());
-            // FlowController.getInstance().goViewInWindowModal("AssignmentView", getStage(), false);
+            goToAssignment(assignmentDto);
         }
 
+
     }
-private void reloadView(){
+    private void goToAssignment(AssignmentDto assignmentDto) {
+        try {
+            AppContext.getInstance().set("user", SessionManager.getInstance().getLoginResponse().getUser());
+            AppContext.getInstance().set("assignment", assignmentDto);
+            if (SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+                FlowController.getInstance().goView("AssignmentSubmissionsView");
+            } else {
+                FlowController.getInstance().goView("AssignmentView");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    private void reloadView() {
         MainViewController mainViewController = (MainViewController) FlowController.getInstance().getController("MainView");
         mainViewController.deleteAndLoadView("CourseView");
-}
+    }
     private void deleteFile(ActionEvent event) {
         HBox parent = (HBox) ((Button) event.getSource()).getParent();
         String labelText = ((Label) parent.getChildren().getFirst()).getText();

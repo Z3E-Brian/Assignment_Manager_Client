@@ -23,5 +23,5 @@ public class SubmissionDto {
     private Double grade;
     private String feedback;
     private LocalDateTime createdAt;
-    private LocalDate reviewedAt;
+    private LocalDateTime reviewedAt;
 }

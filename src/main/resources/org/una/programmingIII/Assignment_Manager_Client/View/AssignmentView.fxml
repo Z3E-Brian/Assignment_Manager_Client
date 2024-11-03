@@ -1,57 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
-      <!-- Título del assignment -->
-      <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Add Assignment" />
+<ScrollPane style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
+    <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-padding: 20;" stylesheets="@../Style/Styles.css">
+        <!-- Título del assignment -->
+        <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Assignment Details"/>
 
-      <!-- Fechas de apertura y cierre -->
-      <VBox alignment="CENTER_LEFT" spacing="5">
-            <Label style="-fx-font-size: 14px;" text="Apertura: jueves, 26 de septiembre de 2024, 00:00" />
-            <Label style="-fx-font-size: 14px;" text="Cierre: jueves, 7 de noviembre de 2024, 00:00" />
-      </VBox>
+        <!-- Fechas de apertura y cierre -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label fx:id="lblAperture" style="-fx-font-size: 16px;" text="Apertura:"/>
+            <Label fx:id="lblClosure" style="-fx-font-size: 16px;" text="Cierre:"/>
+        </VBox>
 
-      <!-- Archivos subidos -->
-      <HBox alignment="CENTER_LEFT" spacing="10">
-            <Hyperlink style="-fx-font-size: 14px;" text="Proyecto Final SI 2024.docx" />
-            <Label text="26 de septiembre de 2024, 19:57" />
-      </HBox>
+        <!-- Archivos subidos -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Hyperlink style="-fx-font-size: 16px;" text="Documento de apoyo"/>
+            <Label fx:id="uploadDate" style="-fx-font-size: 14px;" text="fecha de subida"/>
+        </HBox>
 
-      <!-- Botón para agregar entrega -->
-      <Button fx:id="btnAddDelivery" onAction="#goToUploadFile" prefWidth="150" style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega" />
+        <!-- Botón para agregar entrega (visible solo para usuarios con permiso) -->
+        <MFXButton fx:id="btnAddDelivery" onAction="#goToUploadFile" prefWidth="150"
+                   style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega"/>
 
-      <!-- Estado de la entrega -->
-      <TitledPane style="-fx-background-color: #212121;" text="Estado de la entrega">
+        <!-- Sección de Respuesta Automática (IA) -->
+        <TitledPane style="-fx-background-color: white; -fx-font-size: 15px;" text="Respuesta Automática (IA)">
             <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
-                  <GridPane hgap="10" vgap="10">
-                        <Label text="Estado de la entrega:" />
-                        <Label text="Todavía no se han realizado envíos" GridPane.columnIndex="1" />
-
-                        <Label text="Estado de la calificación:" GridPane.rowIndex="1" />
-                        <Label text="Sin calificar" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-                        <Label text="Tiempo restante:" GridPane.rowIndex="2" />
-                        <Label text="34 días 5 horas restante" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-                        <Label text="Última modificación:" GridPane.rowIndex="3" />
-                        <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-                        <Label text="Comentarios de la entrega:" GridPane.rowIndex="4" />
-                        <Hyperlink text="Comentarios (0)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
-                  </GridPane>
+                <Label style="-fx-font-size: 16;" text="Respuesta automática de IA:"/>
+                <Label fx:id="aiResponseLabel" style="-fx-font-size: 14px; -fx-text-fill: #7a7a7a;" styleClass="label2"
+                       text="Aquí aparecerá la respuesta de la IA tras la entrega." wrapText="true"/>
             </VBox>
-      </TitledPane>
-</VBox>
+        </TitledPane>
+
+        <!-- Estado de la entrega -->
+        <TitledPane style="-fx-background-color: #212121; -fx-font-size: 15;" text="Estado de la entrega">
+            <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+                <GridPane hgap="10" vgap="10">
+                    <Label style="-fx-font-size: 16;" text="Estado de la entrega:"/>
+                    <Label style="-fx-font-size: 16;" text="Todavía no se han realizado envíos"
+                           GridPane.columnIndex="1"/>
+
+                    <Label style="-fx-font-size: 16;" text="Estado de la calificación:" GridPane.rowIndex="1"/>
+                    <Label style="-fx-font-size: 16;" text="Sin calificar" GridPane.columnIndex="1"
+                           GridPane.rowIndex="1"/>
+
+                    <Label style="-fx-font-size: 16;" text="Tiempo restante:" GridPane.rowIndex="2"/>
+                    <Label fx:id="lblRemainingTime" style="-fx-font-size: 16;" text="34 días 5 horas restante"
+                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label style="-fx-font-size: 16;" text="Última modificación:" GridPane.rowIndex="3"/>
+                    <Label fx:id="lblLastModification" style="-fx-font-size: 16;" text="-" GridPane.columnIndex="1"
+                           GridPane.rowIndex="3"/>
+
+                    <Label style="-fx-font-size: 16;" text="Comentarios de la entrega:" GridPane.rowIndex="4"/>
+                    <Hyperlink onAction="#openComments" text="Comentarios (0)" GridPane.columnIndex="1"
+                               GridPane.rowIndex="4"/>
+
+                    <!-- Sección de calificación y comentarios para el profesor -->
+                    <Label style="-fx-font-size: 16;" text="Calificación:" GridPane.rowIndex="5"/>
+                    <MFXTextField fx:id="gradeField" promptText="Ingresar calificación" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="5"/>
+
+                    <Label style="-fx-font-size: 16;" text="Comentario del profesor:" GridPane.rowIndex="6"/>
+                    <TextArea fx:id="commentField" prefRowCount="3" promptText="Agregar comentario"
+                              GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                    <MFXButton fx:id="btnSubmitFeedback" onAction="#submitFeedback"
+                               style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                               text="Guardar calificación y comentario" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+                    <!-- Sección para agregar archivos -->
+                    <Label style="-fx-font-size: 16;" text="Adjuntar archivos:" GridPane.rowIndex="8"/>
+                    <MFXButton fx:id="btnUploadFile" onAction="#uploadFile"
+                               style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Seleccionar archivo"
+                               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                    <Label fx:id="lblShowGrade" style="-fx-background-color: green; -fx-font-size: 16;" text="Label"
+                           GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                    <Label fx:id="lblComment" style="-fx-background-color: green; -fx-font-size: 16;" text="Label"
+                           GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                    <columnConstraints>
+                        <ColumnConstraints/>
+                        <ColumnConstraints/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                </GridPane>
+            </VBox>
+        </TitledPane>
+    </VBox>
+</ScrollPane>

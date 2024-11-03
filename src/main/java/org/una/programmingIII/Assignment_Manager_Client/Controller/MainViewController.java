@@ -10,10 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Interfaces.SessionObserver;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
@@ -143,9 +140,10 @@ public class MainViewController extends Controller implements SessionObserver {
 
         if (hasViewCoursesPermission) {
             System.out.println("El usuario tiene permiso para ver cursos.");
-            this.btnCoursesMenu.setDisable(true);
         } else {
             System.out.println("El usuario NO tiene permiso para ver cursos.");
+            this.btnCoursesMenu.setDisable(true);
+
         }
 
     }

@@ -15,7 +15,6 @@ module org.una.programmingIII.assignment_manager_client {
 
     opens org.una.programmingIII.Assignment_Manager_Client.Dto.Input to com.fasterxml.jackson.databind, javafx.base;
     opens org.una.programmingIII.Assignment_Manager_Client.Dto to com.fasterxml.jackson.databind, javafx.base;
-
     opens org.una.programmingIII.Assignment_Manager_Client to javafx.fxml;
     exports org.una.programmingIII.Assignment_Manager_Client;
     exports org.una.programmingIII.Assignment_Manager_Client.Controller;

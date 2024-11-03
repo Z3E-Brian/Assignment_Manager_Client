@@ -259,7 +259,7 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.setText(user.getLastName());
         txfSecondLastName.setText(user.getSecondLastName());
         txfEmail.setText(user.getEmail());
-        txfPassword.setText("********");
+//        txfPassword.setText("********");
         user.getPermissions().forEach(permission -> {
             for (Node node : fpPermissions.getChildren()) {
                 if (node instanceof MFXCheckbox checkBox && checkBox.getText().equals(permission.getName().toString().replace("_", " "))) {
