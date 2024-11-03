@@ -72,7 +72,8 @@ public class FileService {
             }
         }
         return chunks;
-    }public static void uploadFileInChunks(File file, Long fileInputId) throws IOException {
+    }
+    public static void uploadFileInChunks(File file, Long fileInputId) throws IOException {
     List<byte[]> chunks = splitFile(file);
     int totalChunks = chunks.size();
     for (int chunkNumber = 0; chunkNumber < chunks.size(); chunkNumber++) {

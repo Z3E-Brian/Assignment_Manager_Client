@@ -1,8 +1,11 @@
 package org.una.programmingIII.Assignment_Manager_Client.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.internal.objenesis.instantiator.android.AndroidSerializationInstantiator;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseContentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 
@@ -15,12 +18,17 @@ import java.util.logging.Logger;
 
 public class AssignmentService {
 
-    private static final String BASE_URL = "http://localhost:8080/api";  // URL de tu API
+    private static final String BASE_URL = "http://localhost:8080/api/assignments";  // URL de tu API
+    private final ObjectMapper mapper;
 
+    public AssignmentService() {
+        this.mapper = new ObjectMapper();
+        this.mapper.registerModule(new JavaTimeModule());
+    }
     public AssignmentDto getAssignmentById(Long id) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/assignments/" + id))
+                .uri(URI.create(BASE_URL + "/" + id))
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
@@ -28,7 +36,6 @@ public class AssignmentService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(response.body(), AssignmentDto.class);
         } else {
             throw new RuntimeException("Error: " + response.statusCode());
@@ -39,7 +46,7 @@ public class AssignmentService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/assignments/getByCourseIdAndAddress/" + courseId + "/" + position))
+                    .uri(URI.create(BASE_URL + "/getByCourseIdAndAddress/" + courseId + "/" + position))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -47,7 +54,6 @@ public class AssignmentService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                ObjectMapper mapper = new ObjectMapper();
                 List<AssignmentDto> assignments = List.of(mapper.readValue(response.body(), AssignmentDto[].class));
                 List<AssignmentInput> assignmentInputs = assignments.stream().map(AssignmentInput::new).toList();
                 return new Answer(true, "", "", "assignments", assignmentInputs);
@@ -63,7 +69,7 @@ public class AssignmentService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/assignments/" + id))
+                    .uri(URI.create(BASE_URL + "/" + id))
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
@@ -80,12 +86,10 @@ public class AssignmentService {
             return new Answer(false, e.getMessage(), "Error to delete the assignment");
         }
     }
-    public Answer saveAssignment(AssignmentInput assignmentInput) {
+    public Answer saveAssignment(AssignmentDto assignmentDto) {
         try {
             HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
-            AssignmentDto assignmentDtoInput = new AssignmentDto(assignmentInput);
-            String json = mapper.writeValueAsString(assignmentDtoInput);
+            String json = mapper.writeValueAsString(assignmentDto);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/create"))
                     .header("Content-Type", "application/json")
@@ -95,8 +99,8 @@ public class AssignmentService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 201) {
-                AssignmentDto assignmentDto = mapper.readValue(response.body(), AssignmentDto.class);
-                return new Answer(true, "", "Assignment created successfully", "assignment", new AssignmentInput(assignmentDto));
+                AssignmentDto assignmentDtoResult = mapper.readValue(response.body(), AssignmentDto.class);
+                return new Answer(true, "", "Assignment created successfully", "assignment", new AssignmentInput(assignmentDtoResult));
             } else {
                 return new Answer(false, response.body(), "Error : " + response.statusCode());
             }
@@ -109,7 +113,7 @@ public class AssignmentService {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/assignments/getByCourseId/" + courseId))
+                    .uri(URI.create(BASE_URL + "/getByCourseId/" + courseId))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -117,8 +121,7 @@ public class AssignmentService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                ObjectMapper mapper = new ObjectMapper();
-                List<AssignmentDto> assignments = List.of(mapper.readValue(response.body(), AssignmentDto[].class));
+                List<AssignmentDto> assignments = mapper.readValue(response.body(), new TypeReference<List<AssignmentDto>>() {});
                 return new Answer(true, "", "", "assignments", assignments);
             } else {
                 return new Answer(false, response.body(), "Error: " + response.statusCode());

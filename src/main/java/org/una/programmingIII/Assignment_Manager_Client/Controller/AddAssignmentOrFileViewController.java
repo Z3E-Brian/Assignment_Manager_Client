@@ -15,7 +15,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentType;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseContentInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
@@ -32,7 +34,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class AddAssignmentOrFileViewController extends Controller implements Initializable {
+public class AddAssignmentOrFileViewController extends Controller   {
 
     @FXML
     private MFXButton btnDelete, btnNew, btnSave, btnSearch, btnClear;
@@ -59,9 +61,11 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
     private final List<File> uploadedAssignments = new ArrayList<>();
     FileDragAndDropHandler assignmentHandler;
     FileDragAndDropHandler materialHandler;
-    Long courseId = (Long) AppContext.getInstance().get("courseId");
+    CourseDto courseDto;
+
+
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize() {
         txfTitleAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(150));
         txfDescriptionAssignment.delegateSetTextFormatter(Format.getInstance().textFormat(1000));
         cbxTypeAssignment.getItems().addAll(AssignmentType.values());
@@ -71,13 +75,8 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
 
         materialHandler = new FileDragAndDropHandler(uploadedMaterials, vbxFileListMaterial);
         materialHandler.setupDragAndDrop(vbxDropAreaMaterial);
-        courseId = (Long) AppContext.getInstance().get("courseId");
-    }
-
-
-    @Override
-    public void initialize() {
-
+        courseDto = (CourseDto) AppContext.getInstance().get("course");
+        newAssignment();
     }
 
 
@@ -95,7 +94,7 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
             if (assignmentInput.getId() == null) {
                 showError("Delete Assignment", "You must upload the assignment to be deleted");
             } else {
-                Answer answer = new AssignmentService().deleteAssignment(Long.parseLong(assignmentInput.getId().getValue()));
+                Answer answer = new AssignmentService().deleteAssignment(assignmentInput.getId());
                 if (!answer.getState()) {
                     showError("Delete Assignment", answer.getMessage());
                 } else {
@@ -240,17 +239,16 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
                 return;
             }
             assignmentInput.setAddress(AppContext.getInstance().get("position").toString());
-            assignmentInput.setCourseId(assignmentInput.getCourseId() == null ? courseId : assignmentInput.getCourseId());
-
-            Answer answer = new AssignmentService().saveAssignment(assignmentInput);
-            answer.setState(true);
+            assignmentInput.setCourseId(assignmentInput.getCourseId() == null ? courseDto.getId() : assignmentInput.getCourseId());
+            AssignmentDto assignmentDto = new AssignmentDto(assignmentInput);
+            Answer answer = new AssignmentService().saveAssignment(assignmentDto);
             if (!answer.getState()) {
                 showError("Save Assignment", answer.getMessage());
             } else {
-                showInfo("Save Assignment", answer.getMessage());
+                showInfo("Save Assignment", "Assignment saved successfully");
                 assignmentInput = (AssignmentInput) answer.getResult("assignment");
                 if (!uploadedAssignments.isEmpty()){
-                    saveFilesAssignments(Long.parseLong(assignmentInput.getId().getValue()));
+                    saveFilesAssignments(assignmentInput.getId());
                 }
                 newAssignment();
             }
@@ -265,7 +263,7 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
             if (!uploadedMaterials.isEmpty()) {
                 CourseContentInput courseContentInput = new CourseContentInput();
                 courseContentInput.setAddress(AppContext.getInstance().get("position").toString());
-                courseContentInput.setCourseId(courseId);
+                courseContentInput.setCourseId(courseDto.getId());
                 Answer answer = new CourseContentService().saveCourseContent(courseContentInput);
                 answer.setState(true);
                 if (!answer.getState()) {
@@ -274,7 +272,7 @@ public class AddAssignmentOrFileViewController extends Controller implements Ini
                     new Message().showModal(Alert.AlertType.INFORMATION, "Save Material", getStage(), answer.getMessage());
                     courseContentInput = (CourseContentInput) answer.getResult("courseContent");
                     saveFilesMaterials(courseContentInput.getId());
-                    newAssignment();
+                    materialHandler.clearFiles();
                 }
 
             } else {

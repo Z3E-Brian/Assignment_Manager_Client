@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,12 +8,14 @@ import lombok.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AssignmentDto {
 
     private Long id;
@@ -31,18 +34,22 @@ public class AssignmentDto {
 
     @NotNull(message = "Course cannot be null")
     private Long courseId;
-
+    private List<FileDto> files;
     @NotNull(message= "Address cannot be null")
     private String address;
     public AssignmentDto(AssignmentInput assignmentInput) {
         this();
-        this.id = Long.parseLong(assignmentInput.id.getValue());
+        this.id = assignmentInput.getId();
+        this.courseId = assignmentInput.getCourseId();
         this.title = assignmentInput.title.getValue();
-        this.type = assignmentInput.type;
+        this.type = assignmentInput.getType();
         this.description = assignmentInput.description.getValue();
         this.dueDate = assignmentInput.dueDate.getValue();
-        this.address = assignmentInput.address;
-        this.courseId = assignmentInput.courseId;
+        this.address = assignmentInput.getAddress();
+
     }
+
+
+
 
 }

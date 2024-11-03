@@ -184,6 +184,7 @@ public class FlowController {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.initOwner(parentStage);
         stage.centerOnScreen();
+        MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
         stage.showAndWait();
 
     }

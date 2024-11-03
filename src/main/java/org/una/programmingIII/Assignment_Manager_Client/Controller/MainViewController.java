@@ -1,6 +1,8 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -8,14 +10,13 @@ import javafx.scene.control.*;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Interfaces.SessionObserver;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
-import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
+import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,14 +46,13 @@ public class MainViewController extends Controller implements SessionObserver {
     private BorderPane root;
 
     private LoginResponse loginResponse;
-
+private List<CourseDto> courses;
 
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
-        List<String> courses = Arrays.asList("Course 1", "Course 2", "Course 3");
-        
-        for (String course : courses) {
-            MenuItem menuItem = new MenuItem(course);
+        loadCourses();
+        for (CourseDto course : courses) {
+            MenuItem menuItem = new MenuItem(course.getName());
             menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
             btnCoursesMenu.getItems().add(menuItem);
 
@@ -67,7 +67,13 @@ public class MainViewController extends Controller implements SessionObserver {
     @FXML
     void onActionBtnCoursesMenu(ActionEvent event) {
     }
-
+private void loadCourses(){
+    try {
+        courses = (new CourseService().getCoursesByCareerId(SessionManager.getInstance().getLoginResponse().getUser().getCareerId()));
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+}
     @FXML
     void onCustomUser(ActionEvent event) {
         FlowController.getInstance().goView("UserView");
@@ -75,20 +81,9 @@ public class MainViewController extends Controller implements SessionObserver {
 
     private void handleMenuItemAction(MenuItem menuItem) {
         String selectedCourse = menuItem.getText();
-        System.out.println("Selected course: " + selectedCourse);
-        switch (selectedCourse) {
-            case "Course 1":
-                FlowController.getInstance().goView("CourseView");
-                break;
-            case "Course 2":
-                FlowController.getInstance().goView("UploadTaskView");
-                break;
-            case "Course 3":
-                FlowController.getInstance().goView("AddAssignmentOrFileView");
-                break;
-            default:
-                throw new IllegalArgumentException("Unexpected value: " + selectedCourse);
-        }
+CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(selectedCourse)).findFirst().get();
+        AppContext.getInstance().set("course", courseDto);
+        FlowController.getInstance().goView("CourseView");
     }
 
     private void loadLoginResponse() {

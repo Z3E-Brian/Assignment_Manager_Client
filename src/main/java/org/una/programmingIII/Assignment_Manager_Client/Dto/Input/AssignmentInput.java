@@ -14,9 +14,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class AssignmentInput implements Serializable {
-    public SimpleStringProperty id;
+    public Long id;
     public SimpleStringProperty title;
     public AssignmentType type;
     public SimpleStringProperty description;
@@ -24,9 +23,18 @@ public class AssignmentInput implements Serializable {
     public String address;
     public Long courseId;
 
+    public AssignmentInput(){
+        this.id = null;
+        this.title = new SimpleStringProperty("");
+        this.type = AssignmentType.PROJECT;
+        this.description = new SimpleStringProperty("");
+        this.dueDate = new SimpleObjectProperty<>(LocalDate.now());
+        this.address = "";
+        this.courseId = null;
+    }
     public AssignmentInput(AssignmentDto assignmentDto){
         this();
-        this.id = new SimpleStringProperty(assignmentDto.getId().toString());
+        this.id = assignmentDto.getId();
         this.title = new SimpleStringProperty(assignmentDto.getTitle());
         this.type = assignmentDto.getType();
         this.description = new SimpleStringProperty(assignmentDto.getDescription());
