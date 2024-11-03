@@ -35,8 +35,7 @@ public class LogInController extends Controller {
         passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
         emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
         //emailField.setText("admin@admin.com");
-        //emailField.setText("justin77mendezmena@gmail.com");
-        emailField.setText("breinermunoz@gmail.com");
+        emailField.setText("justin77mendezmena@gmail.com");
         passwordField.setText("admin");
     }
 
@@ -48,10 +47,10 @@ public class LogInController extends Controller {
                 FlowController.getInstance().goMain();
                 //
                 //// RECORDAR PONER EL STUDENT DTO ANTES DE ENTRAR A MATRICLAR CURSOS PARA STUDENT EN LA VISTA DE ENROLLSTUDENTSCOURSE
-               // AppContext.getInstance().set("studentDto", loginResponse.getUser());
-               // FlowController.getInstance().goViewInWindow("SelectStudentToEnrollView");
-
-                getStage().close();
+                // AppContext.getInstance().set("studentDto", loginResponse.getUser());
+//                FlowController.getInstance().goViewInWindow("SelectStudentToEnrollView");
+//
+               getStage().close();
             }
         } catch (Exception exception) {
             new Message().showModal(Alert.AlertType.ERROR, "Inicio de sesion", getStage(), exception.getMessage());

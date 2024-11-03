@@ -213,4 +213,9 @@ public class FlowController {
         loaders.clear();
     }
 
+    public void deleteAndLoadView(String nameView) {
+        delete(nameView);
+        goView(nameView);
+    }
+
 }

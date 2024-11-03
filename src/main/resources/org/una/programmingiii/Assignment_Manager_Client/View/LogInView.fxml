@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
+<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
    <padding>
       <Insets bottom="30" left="30" right="30" top="30" />
    </padding>
@@ -43,6 +43,4 @@
    </HBox>
    <MFXButton fx:id="btnLogIn" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Iniciar Sesión" />
    <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Registrarse" />
-   <MFXButton layoutX="40.0" layoutY="292.0" onAction="#onActionBtnGoMain" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Go main" />
-   <MFXButton layoutX="40.0" layoutY="346.0" onAction="#onActionBtnMantenimientoUnis" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="mantenimiento unis dev pruebas" />
 </VBox>

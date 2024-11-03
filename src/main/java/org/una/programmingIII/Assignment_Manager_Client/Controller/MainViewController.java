@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
+import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +11,7 @@ import javafx.scene.control.*;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
@@ -21,6 +23,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Flow;
 
 public class MainViewController extends Controller implements SessionObserver {
 
@@ -45,8 +48,14 @@ public class MainViewController extends Controller implements SessionObserver {
     @FXML
     private BorderPane root;
 
+    @FXML
+    private VBox vboxCenterView;
+
+    @FXML
+    private MFXButton btnUniversitiesMaintenance;
+
     private LoginResponse loginResponse;
-private List<CourseDto> courses;
+    private List<CourseDto> courses;
 
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
@@ -62,26 +71,37 @@ private List<CourseDto> courses;
         SessionManager.getInstance().addObserver(this);
         SessionManager.getInstance().setRunningTokenValidationThread(true);
         SessionManager.getInstance().startTokenValidationTask();
+        restoreBackgroundImage();
     }
 
     @FXML
     void onActionBtnCoursesMenu(ActionEvent event) {
+
     }
-private void loadCourses(){
-    try {
-        courses = (new CourseService().getCoursesByCareerId(SessionManager.getInstance().getLoginResponse().getUser().getCareerId()));
-    } catch (Exception e) {
-        System.out.println(e);
+
+    private void loadCourses() {
+        try {
+            courses = (new CourseService().getCoursesByCareerId(SessionManager.getInstance().getLoginResponse().getUser().getCareerId()));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
-}
+
     @FXML
     void onCustomUser(ActionEvent event) {
+        removeBackgroundImage();
         FlowController.getInstance().goView("UserView");
+    }
+
+    @FXML
+    void OnActionBtnUniversitiesMaintenance(ActionEvent event) {
+        removeBackgroundImage();
+        FlowController.getInstance().goView("UniversityMaintenanceView");
     }
 
     private void handleMenuItemAction(MenuItem menuItem) {
         String selectedCourse = menuItem.getText();
-CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(selectedCourse)).findFirst().get();
+        CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(selectedCourse)).findFirst().get();
         AppContext.getInstance().set("course", courseDto);
         FlowController.getInstance().goView("CourseView");
     }
@@ -101,16 +121,16 @@ CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(
     private void loadPermisosUsers() {
         System.out.println("Permisos de uso");
         System.out.println(SessionManager.getInstance().getLoginResponse().getUser().getPermissions());
-            Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
-            boolean hasViewCoursesPermission = permissionDtos.stream()
-                    .anyMatch(permission -> permission.getName() == PermissionType.VIEW_COURSES);
+        Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
+        boolean hasViewCoursesPermission = permissionDtos.stream()
+                .anyMatch(permission -> permission.getName() == PermissionType.VIEW_COURSES);
 
-            if (hasViewCoursesPermission) {
-                System.out.println("El usuario tiene permiso para ver cursos.");
-                this.btnCoursesMenu.setDisable(true);
-            } else {
-                System.out.println("El usuario NO tiene permiso para ver cursos.");
-            }
+        if (hasViewCoursesPermission) {
+            System.out.println("El usuario tiene permiso para ver cursos.");
+            this.btnCoursesMenu.setDisable(true);
+        } else {
+            System.out.println("El usuario NO tiene permiso para ver cursos.");
+        }
 
     }
 
@@ -124,9 +144,22 @@ CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(
             new Message().showModal(Alert.AlertType.INFORMATION, "Tiempo de inicio de sesion agotado", getStage(), "Debes de volver a iniciar sesion");
         });
     }
-    public void deleteAndLoadView(String nameView){
+
+    public void deleteAndLoadView(String nameView) {
         FlowController.getInstance().delete(nameView);
         FlowController.getInstance().goView(nameView);
     }
+
+    public void removeBackgroundImage() {
+        vboxCenterView.getStyleClass().remove("vBox_Main");
+    }
+
+    public void restoreBackgroundImage() {
+        if (!vboxCenterView.getStyleClass().contains("vBox_Main")) {
+            vboxCenterView.getStyleClass().add("vBox_Main");
+        }
+    }
+
+
 }
 

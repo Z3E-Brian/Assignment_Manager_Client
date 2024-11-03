@@ -2,15 +2,12 @@ package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -22,7 +19,6 @@ import org.una.programmingIII.Assignment_Manager_Client.Service.FacultyService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,12 +54,8 @@ public class FacultyMaintenanceController extends Controller {
     @FXML
     private MFXTextField txfFacultyName;
 
-
     @FXML
     private ImageView imvBack;
-
-    @FXML
-    private ImageView imvClose;
 
     @FXML
     private ImageView imvSearch;
@@ -73,41 +65,41 @@ public class FacultyMaintenanceController extends Controller {
     private UniversityService universityService;
     private UniversityDto universityDto;
     private FacultyDto facultyDto;
-private RequiredFieldsValidator validator;
+    private RequiredFieldsValidator validator;
 
 
-  @Override
-public void initialize() {
-    initializeServices();
-    initializeDtos();
-    updateUniversityInputLabel();
-    setupTableColumns();
-    setupValidator();
-    loadUniversityFaculties();
-}
+    @Override
+    public void initialize() {
+        initializeServices();
+        initializeDtos();
+        updateUniversityInputLabel();
+        setupTableColumns();
+        setupValidator();
+        loadUniversityFaculties();
+    }
 
-private void initializeServices() {
-    facultyService = new FacultyService();
-    universityService = new UniversityService();
-}
+    private void initializeServices() {
+        facultyService = new FacultyService();
+        universityService = new UniversityService();
+    }
 
-private void initializeDtos() {
-    universityDto = new UniversityDto();
-    facultyDto = new FacultyDto();
-}
+    private void initializeDtos() {
+        universityDto = new UniversityDto();
+        facultyDto = new FacultyDto();
+    }
 
-private void setupTableColumns() {
-    clmnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    clmDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-    clmDelete.setCellFactory(p -> new ButtonCellDelete());
-    clmDepartment.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-    clmDepartment.setCellFactory(p -> new ButtonCellDepartment());
-    tbvFaculty.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-}
+    private void setupTableColumns() {
+        clmnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        clmDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        clmDelete.setCellFactory(p -> new ButtonCellDelete());
+        clmDepartment.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        clmDepartment.setCellFactory(p -> new ButtonCellDepartment());
+        tbvFaculty.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
 
-private void setupValidator() {
-    validator = new RequiredFieldsValidator(Arrays.asList(txfFacultyName));
-}
+    private void setupValidator() {
+        validator = new RequiredFieldsValidator(Arrays.asList(txfFacultyName));
+    }
 
     @FXML
     void onActionBtnAddFaculty(ActionEvent event) throws Exception {
@@ -133,13 +125,7 @@ private void setupValidator() {
 
     @FXML
     void onMouseClickedImvBack(MouseEvent event) {
-        FlowController.getInstance().goViewInWindow("UniversityMaintenanceView");
-        ((Stage) btnDepartments.getScene().getWindow()).close();
-    }
-
-    @FXML
-    void onMouseClickedImvClose(MouseEvent event) {
-        System.out.println("imvClose");
+        FlowController.getInstance().deleteAndLoadView("UniversityMaintenanceView");
     }
 
     @FXML
@@ -202,35 +188,34 @@ private void setupValidator() {
         tbvFaculty.getSelectionModel().clearSelection();
     }
 
-private class ButtonCellDepartment extends ButtonCellBase<FacultyDto> {
-    ButtonCellDepartment() {
-        super("Department", "mfx-btn-Enter");
-    }
+    private class ButtonCellDepartment extends ButtonCellBase<FacultyDto> {
+        ButtonCellDepartment() {
+            super("Department", "mfx-btn-Enter");
+        }
 
-    @Override
-    protected void handleAction(ActionEvent event) {
-        facultyDto = getTableView().getItems().get(getIndex());
-        AppContext.getInstance().set("facultyDto", facultyDto);
-        FlowController.getInstance().goViewInWindow("DepartmentMaintenanceView");
-        getStage().close();
+        @Override
+        protected void handleAction(ActionEvent event) {
+            facultyDto = getTableView().getItems().get(getIndex());
+            AppContext.getInstance().set("facultyDto", facultyDto);
+            FlowController.getInstance().deleteAndLoadView("DepartmentMaintenanceView");
+        }
     }
-}
 
     private class ButtonCellDelete extends ButtonCellBase<FacultyDto> {
-    ButtonCellDelete() {
-        super("Delete", "mfx-btn-Delete");
-    }
-
-    @Override
-    protected void handleAction(ActionEvent event) {
-        FacultyDto facultyDtoDelete = getTableView().getItems().get(getIndex());
-        try {
-            facultyService.deleteFaculty(facultyDtoDelete.getId());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        ButtonCellDelete() {
+            super("Delete", "mfx-btn-Delete");
         }
-        clean();
-        loadUniversityFaculties();
+
+        @Override
+        protected void handleAction(ActionEvent event) {
+            FacultyDto facultyDtoDelete = getTableView().getItems().get(getIndex());
+            try {
+                facultyService.deleteFaculty(facultyDtoDelete.getId());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            clean();
+            loadUniversityFaculties();
+        }
     }
-}
 }
