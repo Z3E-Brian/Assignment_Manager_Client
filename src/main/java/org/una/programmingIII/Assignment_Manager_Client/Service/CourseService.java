@@ -142,4 +142,41 @@ public class CourseService {
             throw new Exception("Error unenrolling student from course: " + response.statusCode());
         }
     }
+
+    public List<CourseDto> findAvailableCoursesByCareerIdUserIdAndProfessorId(Long professorId, Long studentId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/available/professor/" + professorId + "/student/" + studentId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<CourseDto>>() {
+            });
+        } else {
+            throw new Exception("Error fetching courses: " + response.statusCode());
+        }
+
+    }
+
+    public List<CourseDto> findCoursesEnrolledByStudentIdAAndProfessorIs(Long professorId, Long studentId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/enrolled/professor/" + professorId + "/student/" + studentId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<CourseDto>>() {
+            });
+        } else {
+            throw new Exception("Error fetching courses: " + response.statusCode());
+        }
+
+    }
+
+
+
 }

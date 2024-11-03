@@ -57,6 +57,7 @@ public class EnrollStudentCourseController extends Controller {
     private CareerDto careerDto;
     private CourseService courseService;
     private boolean isProfessorSession;
+    Long professorId;
 
     @Override
     public void initialize() {
@@ -116,9 +117,22 @@ public class EnrollStudentCourseController extends Controller {
     }
 
     private void loadCoursesStudentLogin() {
+        loadEnrolledCoursesStudentSession();
+        loadAvailableCoursesStudentSession();
+    }
+
+    private void loadCoursesProfessorLogin() {
+        loadAvailableCoursesProfessorSession();
+        loadEnrolledCoursesProfessorSession();
+    }
+
+    private void loadCourses() {
         clearTables();
-        cargarCursosMatriculadoUsuario();
-        cargarCursosDisponibles();
+        if (isProfessorSession) {
+            loadCoursesProfessorLogin();
+        } else {
+            loadCoursesStudentLogin();
+        }
     }
 
     private void clearTables() {
@@ -132,11 +146,10 @@ public class EnrollStudentCourseController extends Controller {
         tbcEnroll.setCellFactory((TableColumn<CourseDto, Boolean> p) -> new ButtonCellEnrollCourse());
     }
 
-
-    private void cargarCursosMatriculadoUsuario() {
+    private void loadEnrolledCoursesStudentSession() {
         try {
-            List<CourseDto> facultyDtoList = new CourseService().getEnrolledCoursesByStudentId(studentDto.getId());
-            ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(facultyDtoList);
+            List<CourseDto> coursesStudentDto = new CourseService().getEnrolledCoursesByStudentId(studentDto.getId());
+            ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
             tbvEnrollCourses.getItems().clear();
             tbvEnrollCourses.setItems(courseDtos);
         } catch (Exception e) {
@@ -144,10 +157,32 @@ public class EnrollStudentCourseController extends Controller {
         }
     }
 
-    private void cargarCursosDisponibles() {
+    private void loadAvailableCoursesStudentSession() {
         try {
-            List<CourseDto> facultyDtoList = new CourseService().getAvailableCoursesForAStudentInCareer(careerDto.getId(), studentDto.getId());
-            ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(facultyDtoList);
+            List<CourseDto> coursesStudentDto = new CourseService().getAvailableCoursesForAStudentInCareer(careerDto.getId(), studentDto.getId());
+            ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
+            tbvAvailableCourses.getItems().clear();
+            tbvAvailableCourses.setItems(courseDtos);
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Can't retrieve courses");
+        }
+    }
+
+    private void loadEnrolledCoursesProfessorSession() {
+        try {
+            List<CourseDto> coursesStudentDto = new CourseService().findCoursesEnrolledByStudentIdAAndProfessorIs(professorId, studentDto.getId());
+            ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
+            tbvEnrollCourses.getItems().clear();
+            tbvEnrollCourses.setItems(courseDtos);
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Can't retrieve courses");
+        }
+    }
+
+    private void loadAvailableCoursesProfessorSession() {
+        try {
+            List<CourseDto> coursesStudentDto = new CourseService().findAvailableCoursesByCareerIdUserIdAndProfessorId(professorId, studentDto.getId());
+            ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
             tbvAvailableCourses.getItems().clear();
             tbvAvailableCourses.setItems(courseDtos);
         } catch (Exception e) {
@@ -160,7 +195,7 @@ public class EnrollStudentCourseController extends Controller {
         lblStudentName.setText(studentDto.getName());
         checkProfessorSession();
         loadCareerInfo();
-        loadCoursesStudentLogin();
+        loadCourses();
     }
 
     private void checkProfessorSession() {
@@ -174,6 +209,7 @@ public class EnrollStudentCourseController extends Controller {
 
         if (hasProfessorPermission) {
             isProfessorSession = true;
+            this.professorId = SessionManager.getInstance().getLoginResponse().getUser().getId();
         }
     }
 
@@ -182,7 +218,7 @@ public class EnrollStudentCourseController extends Controller {
             Answer answer = courseService.enrollStudentInCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
                 new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Enrolled sucessfully");
-                loadCoursesStudentLogin();
+                loadCourses();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Enroll course", getStage(), "Something went wrong with course enrollment");
             }
@@ -197,7 +233,7 @@ public class EnrollStudentCourseController extends Controller {
             Answer answer = courseService.unenrollStudentFromCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
                 new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Unenrolled sucessfully");
-                loadCoursesStudentLogin();
+                loadCourses();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Uneroll course", getStage(), "Something went wrong with course unEnrollment");
             }
@@ -221,7 +257,6 @@ public class EnrollStudentCourseController extends Controller {
 
             cellButton.setOnAction((ActionEvent t) -> {
                 CourseDto courseDto = (CourseDto) EnrollStudentCourseController.ButtonCellEnrollCourse.this.getTableView().getItems().get(EnrollStudentCourseController.ButtonCellEnrollCourse.this.getIndex());
-                System.out.println(courseDto);
                 enrollStudentInCourse(courseDto.getId());
             });
         }
@@ -249,9 +284,7 @@ public class EnrollStudentCourseController extends Controller {
 
             cellButton.setOnAction((ActionEvent t) -> {
                 CourseDto courseDto = (CourseDto) EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getTableView().getItems().get(EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getIndex());
-                System.out.println(courseDto);
                 unEnrollStudentInCourse(courseDto.getId());
-                loadCoursesStudentLogin();
             });
         }
 
