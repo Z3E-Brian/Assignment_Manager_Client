@@ -52,7 +52,7 @@ public class MainViewController extends Controller implements SessionObserver {
     private MFXButton btnUniversitiesMaintenance;
 
     @FXML
-    private MFXButton btnRegisterStudents_Courses;
+    private MFXButton btnRegisterStudents_Courses,btnUserMaintenance;
 
 
     private LoginResponse loginResponse;
@@ -60,10 +60,11 @@ public class MainViewController extends Controller implements SessionObserver {
     private boolean isStudentSession;
 
     @Override
-    public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
-        checkSession();
+    public void initialize() {
         activateButton(btnRegisterStudents_Courses, false);
         activateButton(btnUniversitiesMaintenance, false);
+        activateButton(btnUserMaintenance, false);
+        checkSession();
         loadCourses();
         loadLoginResponse();
         lblUserName.setText(SessionManager.getInstance().getLoginResponse().getUser().getFullName());
@@ -103,9 +104,15 @@ public class MainViewController extends Controller implements SessionObserver {
     }
 
     @FXML
-    void onCustomUser(ActionEvent event) {
+    void onActionBtnModifyUsers(ActionEvent event) {
         removeBackgroundImage();
         FlowController.getInstance().goView("UserView");
+    }
+
+    @FXML
+    void onCustomUser(ActionEvent event) {
+        removeBackgroundImage();
+        FlowController.getInstance().goView("MyUserView");
     }
 
     @FXML
@@ -196,6 +203,13 @@ public class MainViewController extends Controller implements SessionObserver {
             btnRegisterStudents_Courses.setText("Enroll Student Courses");
             activateButton(btnRegisterStudents_Courses, true);
         }
+
+        boolean modifyUsers = loginUserPermissions.stream()
+                .anyMatch(permission -> PermissionType.MANAGE_USERS.equals(permission.getName()));
+        if (modifyUsers) {
+            activateButton(btnUserMaintenance, true);
+        }
+
 
         boolean hasGlobalMaintenacePermission = loginUserPermissions.stream()
                 .anyMatch(permission -> PermissionType.GLOBAL_MAINTENANCE.equals(permission.getName()));

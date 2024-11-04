@@ -6,8 +6,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
-    <TableView fx:id="userTable" prefHeight="400.0" prefWidth="639.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+<HBox prefHeight="450.0" prefWidth="773.0" spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
+    <TableView fx:id="userTable" prefHeight="420.0" prefWidth="429.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="numberIDColumn" prefWidth="50.0" text="ID Card" />
             <TableColumn fx:id="nameColumn" prefWidth="50.0" text="Name" />

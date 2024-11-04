@@ -5,11 +5,9 @@
 <?import javafx.scene.layout.*?>
 
 <ScrollPane pannable="true" style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
-    <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-padding: 20;" stylesheets="@../Style/Styles.css">
+    <VBox alignment="TOP_CENTER" prefHeight="450.0" prefWidth="800.0" spacing="15.0" style="-fx-padding: 20;" stylesheets="@../Style/Styles.css">
         <HBox>
-            <children>
                 <MFXButton fx:id="btnClose" mnemonicParsing="false" onAction="#close" text="Close" />
-            </children>
         </HBox>
         <!-- Título del assignment -->
         <Label fx:id="lblAssignmentTitle" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Assignment Details" />
