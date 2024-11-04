@@ -5,10 +5,7 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
@@ -34,11 +31,13 @@ public class AssignmentViewController extends Controller implements Initializabl
     @FXML
     private Label uploadDate, aiResponseLabel, lblRemainingTime, lblLastModification, lblShowGrade, lblComment, lblStudentName, lblAssignmentTitle, lblSubmission, lblIsQualified;
     @FXML
-    private MFXButton btnAddDelivery, btnSubmitFeedback, btnUploadFile;
+    private MFXButton btnAddDelivery, btnSubmitFeedback, btnUploadFile,btnClose;
     @FXML
     private MFXTextField txfGrade;
     @FXML
     private TextArea txfComment;
+
+    boolean isTeacher;
 
     private AssignmentDto assignment;
     private StudentsSubmissions submission;
@@ -51,8 +50,6 @@ public class AssignmentViewController extends Controller implements Initializabl
     }
 
     private void setupViewForRole() {
-        boolean isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
-                .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
         lblShowGrade.setVisible(!isTeacher);
         lblComment.setVisible(!isTeacher);
         txfGrade.setEditable(isTeacher);
@@ -62,6 +59,8 @@ public class AssignmentViewController extends Controller implements Initializabl
         lblStudentName.setVisible(isTeacher);
         btnSubmitFeedback.setVisible(isTeacher);
         btnUploadFile.setVisible(!isTeacher);
+        btnClose.setVisible(isTeacher);
+
         if (!isTeacher) {
             vbMain.getChildren().remove(lblStudentName);
         }
@@ -148,9 +147,20 @@ public class AssignmentViewController extends Controller implements Initializabl
     @Override
     public void initialize() {
         clearAll();
+        isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
+                .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
         assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
-        //TODO: cambiar para q haga distinto segun el rol
-        submission = (StudentsSubmissions) AppContext.getInstance().get("submission");
+
+        if (isTeacher){
+            submission = (StudentsSubmissions) AppContext.getInstance().get("submission");
+        } else {
+            try {
+                submission = submissionService.getSubmissionByAssignmentIdAndStudentId(assignment.getId(), SessionManager.getInstance().getLoginResponse().getUser().getId());
+            } catch (Exception e) {
+                submission = null;
+            }
+        }
+
         setupViewForRole();
         initializeAssignmentData();
         loadSubmissionData();

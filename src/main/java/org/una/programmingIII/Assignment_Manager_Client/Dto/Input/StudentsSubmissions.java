@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto.Input;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FileDto;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StudentsSubmissions {
 public Long id;
 public String studentName;

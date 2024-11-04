@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.SubmissionDto;
@@ -123,4 +124,20 @@ public class SubmissionService {
 
     }
 
+    public StudentsSubmissions getSubmissionByAssignmentIdAndStudentId(Long assignmentId, Long userId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/getByAssignmentIdAndStudentId/" + assignmentId + "/" + userId))
+                .header("Authorization", "Bearer " + jwtToken)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), StudentsSubmissions.class);
+        } else {
+            return null;
+        }
+
+    }
 }

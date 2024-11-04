@@ -126,6 +126,4 @@ public class AssignmentSubmissionsViewController extends Controller implements I
             throw new RuntimeException(e);
         }
     }
-
-
 }

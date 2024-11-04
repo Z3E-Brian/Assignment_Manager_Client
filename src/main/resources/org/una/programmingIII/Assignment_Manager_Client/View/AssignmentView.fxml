@@ -4,13 +4,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
+<ScrollPane pannable="true" style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
     <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-padding: 20;" stylesheets="@../Style/Styles.css">
-      <HBox>
-         <children>
-            <Button fx:id="btnClose" mnemonicParsing="false" onAction="#close" text="Close" />
-         </children>
-      </HBox>
+        <HBox>
+            <children>
+                <MFXButton fx:id="btnClose" mnemonicParsing="false" onAction="#close" text="Close" />
+            </children>
+        </HBox>
         <!-- Título del assignment -->
         <Label fx:id="lblAssignmentTitle" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Assignment Details" />
 
@@ -31,7 +31,7 @@
         <!-- Estado de la entrega -->
         <TitledPane style="-fx-background-color: #212121; -fx-font-size: 15;" text="Estado de la entrega">
             <VBox fx:id="vbMain" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
-            <Label fx:id="lblStudentName" style="-fx-font-size: 16;" text="Student" />
+                <Label fx:id="lblStudentName" style="-fx-font-size: 16;" text="Student" />
                 <GridPane hgap="10" vgap="10">
                     <Label style="-fx-font-size: 16;" text="Estado de la entrega:" />
                     <Label fx:id="lblSubmission" style="-fx-font-size: 16;" text="Todavía no se han realizado envíos" GridPane.columnIndex="1" />
