@@ -10,11 +10,15 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Interfaces.SessionObserver;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CourseService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -57,13 +61,9 @@ public class MainViewController extends Controller implements SessionObserver {
 
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
+        activateButton(btnRegisterStudents_Courses, false);
+        activateButton(btnUniversitiesMaintenance, false);
         loadCourses();
-        for (CourseDto course : courses) {
-            MenuItem menuItem = new MenuItem(course.getName());
-            menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
-            btnCoursesMenu.getItems().add(menuItem);
-
-        }
         loadLoginResponse();
         lblUserName.setText(SessionManager.getInstance().getLoginResponse().getUser().getFullName());
         SessionManager.getInstance().addObserver(this);
@@ -80,7 +80,18 @@ public class MainViewController extends Controller implements SessionObserver {
 
     private void loadCourses() {
         try {
-            courses = (new CourseService().getCoursesByCareerId(SessionManager.getInstance().getLoginResponse().getUser().getCareerId()));
+            Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
+            courses = (new CourseService().getCoursesByCareerId(careerId));
+            if (courses.isEmpty()) {
+                courses = new ArrayList<>();
+            }
+
+            for (CourseDto course : courses) {
+                MenuItem menuItem = new MenuItem(course.getName());
+                menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
+                btnCoursesMenu.getItems().add(menuItem);
+
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -126,27 +137,9 @@ public class MainViewController extends Controller implements SessionObserver {
             FlowController.getInstance().goView("LoginView");
             FlowController.getInstance().exitMain();
             FlowController.getInstance().clearLoarders();
-        } else {
-            loadPermisosUsers();
         }
     }
 
-    private void loadPermisosUsers() {
-        System.out.println("Permisos de uso");
-        System.out.println(SessionManager.getInstance().getLoginResponse().getUser().getPermissions());
-        Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
-        boolean hasViewCoursesPermission = permissionDtos.stream()
-                .anyMatch(permission -> permission.getName() == PermissionType.VIEW_COURSES);
-
-        if (hasViewCoursesPermission) {
-            System.out.println("El usuario tiene permiso para ver cursos.");
-        } else {
-            System.out.println("El usuario NO tiene permiso para ver cursos.");
-            this.btnCoursesMenu.setDisable(true);
-
-        }
-
-    }
 
     @Override
     public void onSessionExpired() {
@@ -180,13 +173,35 @@ public class MainViewController extends Controller implements SessionObserver {
                 .getUser()
                 .getPermissions();
 
-        boolean hasProfessorPermission = loginUserPermissions.stream()
+        boolean hasTakeClassesPermission = loginUserPermissions.stream()
                 .anyMatch(permission -> PermissionType.TAKE_CLASSES.equals(permission.getName()));
 
-        if (hasProfessorPermission) {
+        if (hasTakeClassesPermission) {
             isStudentSession = true;
             btnRegisterStudents_Courses.setText("Enroll Courses");
+            activateButton(btnRegisterStudents_Courses, true);
         }
+
+        boolean hasRegisterStudentCoursesPermission = loginUserPermissions.stream()
+                .anyMatch(permission -> PermissionType.REGISTER_STUDENT_COURSES.equals(permission.getName()));
+
+        if (hasRegisterStudentCoursesPermission) {
+            isStudentSession = false;
+            btnRegisterStudents_Courses.setText("Enroll Student Courses");
+            activateButton(btnRegisterStudents_Courses, true);
+        }
+
+        boolean hasGlobalMaintenacePermission = loginUserPermissions.stream()
+                .anyMatch(permission -> PermissionType.GLOBAL_MAINTENANCE.equals(permission.getName()));
+
+        if (hasGlobalMaintenacePermission) {
+            activateButton(btnUniversitiesMaintenance, true);
+        }
+    }
+
+    private void activateButton(MFXButton button, boolean value) {
+        button.setDisable(!value);
+        button.setVisible(value);
     }
 
 

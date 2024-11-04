@@ -208,7 +208,7 @@ public class EnrollStudentCourseController extends Controller {
                 .getPermissions();
 
         boolean hasProfessorPermission = loginUserPermissions.stream()
-                .anyMatch(permission -> PermissionType.PROFESSOR.equals(permission.getName()));
+                .anyMatch(permission -> PermissionType.TEACH_CLASSES.equals(permission.getName()));
 
         if (hasProfessorPermission) {
             isProfessorSession = true;
