@@ -7,11 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.SubmissionDto;
+import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.SubmissionService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.net.URL;
@@ -87,7 +87,7 @@ public class AssignmentViewController extends Controller implements Initializabl
         }
     }
 
-    private void initializeAssignmentData() {
+    private void  initializeAssignmentData() {
         lblRemainingTime.setText("Remaining Time: " + assignment.getDueDate().minusDays(LocalDate.now().toEpochDay()) + " days");
         lblDocument.setText("Document");
         lblAssignmentTitle.setText(assignment.getTitle());
@@ -134,15 +134,30 @@ public class AssignmentViewController extends Controller implements Initializabl
         newSubmission.setReviewedAt(LocalDate.now().atStartOfDay());
         newSubmission.setGrade(Double.parseDouble(txfGrade.getText()));
         newSubmission.setFeedback(txfComment.getText());
+        newSubmission.setReviewedById(SessionManager.getInstance().getLoginResponse().getUser().getId());
 
         Answer answer = submissionService.updateSubmission(newSubmission.getId(), newSubmission);
+
         if (!answer.getState()) {
             showError("Update Submission", answer.getMessage());
         } else {
             showInfo("Update Submission", "Submission updated successfully.");
+            sendEmailToStudent(newSubmission);
         }
     }
+    private void sendEmailToStudent(SubmissionDto submissionDto ){
+        EmailDto emailDto = new EmailDto();
+        emailDto.setSubject(assignment.getTitle());
+        try {
+            UserDto userDto = new UserService().getUserById(submissionDto.getStudentId());
+            emailDto.setEmail(userDto.getEmail());
+            emailDto.setMessage("Your submission has been reviewed again, your new grade is: " + submissionDto.getGrade());
+            new AssignmentService().sendEmail(emailDto);
+        }catch (Exception e){
+            showError("Error", "Error to get the student");
+        }
 
+    }
     @FXML
     private void uploadFile(ActionEvent actionEvent) {
         FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView", this.getStage(), false);

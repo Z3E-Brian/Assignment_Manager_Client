@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.internal.objenesis.instantiator.android.AndroidSerializationInstantiator;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseContentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.EmailDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
@@ -141,6 +142,29 @@ public class AssignmentService {
         } catch (Exception e) {
             Logger.getLogger("AssignmentService").severe(e.getMessage());
             return new Answer(false, e.getMessage(), "Error to get the list of assignments");
+        }
+    }
+    public Answer sendEmail(EmailDto emailDto){
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            String json = mapper.writeValueAsString(emailDto);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/sendEmail"))
+                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return new Answer(true, "", "Email sent successfully");
+            } else {
+                return new Answer(false, response.body(), "Error : " + response.statusCode());
+            }
+        } catch (Exception e) {
+            Logger.getLogger("AssignmentService").severe(e.getMessage());
+            return new Answer(false, e.getMessage(), "Error to send the email");
         }
     }
 }

@@ -175,8 +175,6 @@ public class CourseViewController extends Controller implements Initializable {
         if (assignmentDto != null) {
             goToAssignment(assignmentDto);
         }
-
-
     }
 
     private void goToAssignment(AssignmentDto assignmentDto) {

@@ -31,9 +31,11 @@ public class UserDto {
         return name + " " + lastName;
     }
 
-    public String getFullName() {
-        return name + " " + lastName + " " + secondLastName;
-    }
+public String getFullName() {
+    return (name != null ? name : "") + " " +
+           (lastName != null ? lastName : "") + " " +
+           (secondLastName != null ? secondLastName : "");
+}
 }
 
 
