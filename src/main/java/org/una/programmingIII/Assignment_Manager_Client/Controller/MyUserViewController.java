@@ -29,12 +29,6 @@ public class MyUserViewController extends Controller implements Initializable {
     @FXML
     public ListView<String> coursesListView;
     @FXML
-    public MFXTextField txfName;
-    @FXML
-    public MFXTextField txfLastName;
-    @FXML
-    public MFXTextField txfSecondLastName;
-    @FXML
     private Label careerLabel;
     @FXML
     private Label nameLabel;
@@ -48,19 +42,25 @@ public class MyUserViewController extends Controller implements Initializable {
     private Label identificationNumberLabel;
 
     private List<CourseDto> courses;
-    private boolean editable;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        editionMode(false);
         initialize();
     }
 
     @Override
     public void initialize() {
-        clearFields();
+        clear();
         loadUserInformation();
+    }
+    private void clear() {
+        nameLabel.setText("");
+        lastNameLabel.setText("");
+        secondLastNameLabel.setText("");
+        emailLabel.setText("");
+        identificationNumberLabel.setText("");
+        careerLabel.setText("");
+        coursesListView.getItems().clear();
     }
 
     private void loadUserInformation() {
@@ -117,57 +117,5 @@ public class MyUserViewController extends Controller implements Initializable {
         }
     }
 
-    private void editionMode(boolean mode) {
-        editable = mode;
-        txfName.setDisable(!mode);
-        txfLastName.setDisable(!mode);
-        txfSecondLastName.setDisable(!mode);
-        txfName.setEditable(mode);
-        txfLastName.setEditable(mode);
-        txfSecondLastName.setEditable(mode);
-        txfName.setVisible(mode);
-        txfLastName.setVisible(mode);
-        txfSecondLastName.setVisible(mode);
-        txfName.setText(nameLabel.getText());
-        txfLastName.setText(lastNameLabel.getText());
-        txfSecondLastName.setText(secondLastNameLabel.getText());
-        nameLabel.setVisible(!mode);
-        lastNameLabel.setVisible(!mode);
-        secondLastNameLabel.setVisible(!mode);
-        btnEdit.setText(mode ? "Save" : "Edit");
 
-    }
-
-    private void clearFields() {
-        txfName.setText("");
-        txfLastName.setText("");
-        txfSecondLastName.setText("");
-        coursesListView.getItems().clear();
-    }
-
-    @FXML
-    public void OnActionBtnEdit(ActionEvent actionEvent) {
-        editionMode(!editable);
-        if (editable) {
-            //guardar update de user
-            NewUserDto user = new NewUserDto();
-            user.setId(SessionManager.getInstance().getLoginResponse().getUser().getId());
-            user.setName(txfName.getText());
-            user.setLastName(txfLastName.getText());
-            user.setSecondLastName(txfSecondLastName.getText());
-            user.setPermissions(SessionManager.getInstance().getLoginResponse().getUser().getPermissions());
-            user.setCareerId(SessionManager.getInstance().getLoginResponse().getUser().getCareerId());
-            user.setEmail(SessionManager.getInstance().getLoginResponse().getUser().getEmail());
-            user.setIdentificationNumber(SessionManager.getInstance().getLoginResponse().getUser().getIdentificationNumber());
-            Answer answer = new UserService().updateUser(user.getId(), user);
-            if (answer.getState()) {
-                SessionManager.getInstance().getLoginResponse().setUser((UserDto) answer.getResult("userDto"));
-                loadUserInformation();
-            }
-
-
-        }
-        initialize();
-
-    }
 }
