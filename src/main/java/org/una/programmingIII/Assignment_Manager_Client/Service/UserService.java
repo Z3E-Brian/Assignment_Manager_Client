@@ -27,16 +27,16 @@ public class UserService {
     private static final String BASE_URL = "http://localhost:8080/api/users";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private final String jwtToken;
+    private  String jwtToken;
     public UserService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
     }
 
     public Answer getById(Long id) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
                 .header("Authorization", "Bearer " + jwtToken)
@@ -74,6 +74,8 @@ public class UserService {
     }
 
     public Answer getAllUsersByPermission(String permission) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getUsersByPermission?permission=" + permission))
                 .header("Authorization", "Bearer " + jwtToken)
@@ -92,6 +94,8 @@ public class UserService {
     }
 
     public Answer getAllStudentsByCareerId(Long careerId) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/students/byCareerId/" + careerId))
                 .header("Authorization", "Bearer " + jwtToken)
@@ -115,6 +119,7 @@ public class UserService {
     }
 
     static Map<String, Object> getStringObjectMap(int page, int size, int limit, HttpClient httpClient, ObjectMapper objectMapper) throws Exception {
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(UserService.BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit))
                 .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
@@ -132,6 +137,8 @@ public class UserService {
     }
 
     public UserDto getUserByEmail(String email) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/findByEmail?email=" + email))
                 .header("Authorization", "Bearer " + jwtToken)
@@ -154,7 +161,6 @@ public class UserService {
             String requestBody = objectMapper.writeValueAsString(user);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/create"))
-                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -232,6 +238,8 @@ public class UserService {
 
     // DELETE: Eliminar un usuario por ID
     public Answer deleteUser(Long id) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
                 .header("Authorization", "Bearer " + jwtToken)
@@ -247,8 +255,11 @@ public class UserService {
     }
 
     public UserDto getUserById(Long id) throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 

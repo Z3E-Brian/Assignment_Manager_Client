@@ -24,7 +24,7 @@
                      <Image url="@../Assets/UserIcon.png" />
                   </image>
                </ImageView>
-               <MFXTextField fx:id="txfLastName" floatMode="BORDER" promptText="Primer Apellido" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+               <MFXTextField fx:id="txfLastName" floatMode="BORDER" floatingText="Last Name" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
             </children>
          </HBox>
          <HBox spacing="10.0">
@@ -34,7 +34,7 @@
                      <Image url="@../Assets/UserIcon.png" />
                   </image>
                </ImageView>
-               <MFXTextField fx:id="txfSecondLastName" floatMode="BORDER" promptText="Segundo Apellido" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+               <MFXTextField fx:id="txfSecondLastName" floatMode="BORDER" floatingText=" Second Last Name" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
             </children>
          </HBox>
       </children>
@@ -48,7 +48,7 @@
                      <Image url="@../Assets/UserIcon.png" />
                   </image>
                </ImageView>
-                <MFXTextField fx:id="txfName" floatMode="BORDER" promptText="Nombre" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+                <MFXTextField fx:id="txfName" floatMode="BORDER" floatingText="Name" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
             </children>
          </HBox>
          <HBox spacing="10.0">
@@ -58,7 +58,7 @@
                      <Image url="@../Assets/UserID.png" />
                   </image>
                </ImageView>
-               <MFXTextField fx:id="identificationNumberField" floatMode="BORDER" promptText="Cedula:" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+               <MFXTextField fx:id="identificationNumberField" floatMode="BORDER" floatingText="ID Number" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
             </children>
          </HBox>
       </children>
@@ -70,7 +70,7 @@
                <Image url="@../Assets/correo.png" />
             </image>
          </ImageView>
-         <MFXTextField fx:id="emailField" floatMode="BORDER" promptText="Correo" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+         <MFXTextField fx:id="emailField" floatMode="BORDER" floatingText="Email" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
       </children>
    </HBox>
    <HBox layoutX="40.0" layoutY="546.0" spacing="10.0">
@@ -79,7 +79,7 @@
             <image>
                <Image url="@../Assets/candados.png" />
             </image></ImageView>
-          <MFXPasswordField fx:id="passwordField" floatMode="BORDER" promptText="Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+          <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
       </children>
    </HBox>
    <HBox layoutX="40.0" layoutY="546.0" spacing="10.0">
@@ -88,12 +88,12 @@
             <image>
                <Image url="@../Assets/candados.png" />
             </image></ImageView>
-         <MFXPasswordField fx:id="confirmPasswordField" floatMode="BORDER" promptText="Confirmar Contraseña" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
+         <MFXPasswordField fx:id="confirmPasswordField" floatMode="BORDER" floatingText="Confirm Password" style="-fx-pref-width: 300px; -fx-font-size: 16px;" HBox.hgrow="ALWAYS" />
       </children>
    </HBox>
    <HBox alignment="CENTER" layoutX="40.0" layoutY="420.0" spacing="10.0">
       <children>
-          <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-Save" text="Registrarse" HBox.hgrow="ALWAYS">
+          <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-Save" text="Register" HBox.hgrow="ALWAYS">
             <graphic>
                <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
             </graphic></MFXButton>

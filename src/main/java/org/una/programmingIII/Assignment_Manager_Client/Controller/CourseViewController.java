@@ -37,9 +37,11 @@ public class CourseViewController extends Controller {
     List<AssignmentDto> assignments;
     List<CourseContentDto> courseContents;
     CourseDto courseDto;
+    UserDto userDto;
 
     @Override
     public void initialize() {
+        userDto = SessionManager.getInstance().getLoginResponse().getUser();
         courseDto = (CourseDto) AppContext.getInstance().get("course");
         startDate = courseDto.getStartDate();
         endDate = courseDto.getEndDate();
@@ -48,6 +50,7 @@ public class CourseViewController extends Controller {
         acDates.prefHeightProperty().bind(scrollPane.heightProperty().subtract(5));
         acDates.prefWidthProperty().bind(scrollPane.widthProperty().subtract(15));
         addWeeklyTitledPanes(startDate, endDate);
+
     }
 
 
@@ -88,6 +91,7 @@ public class CourseViewController extends Controller {
         VBox content = new VBox();
         VBox.setVgrow(content, Priority.ALWAYS);
         content.setMaxHeight(Double.MAX_VALUE);
+        content.setSpacing(8);
         content.getStyleClass().add("vbox-Background-TitledPane");
 
         if (assignments != null) {
@@ -160,6 +164,7 @@ public class CourseViewController extends Controller {
 
 
     }
+
     private void goToAssignment(AssignmentDto assignmentDto) {
         try {
             AppContext.getInstance().set("user", SessionManager.getInstance().getLoginResponse().getUser());
@@ -173,10 +178,12 @@ public class CourseViewController extends Controller {
             System.out.println(e);
         }
     }
+
     private void reloadView() {
         MainViewController mainViewController = (MainViewController) FlowController.getInstance().getController("MainView");
         mainViewController.deleteAndLoadView("CourseView");
     }
+
     private void deleteFile(ActionEvent event) {
         HBox parent = (HBox) ((Button) event.getSource()).getParent();
         String labelText = ((Label) parent.getChildren().getFirst()).getText();
@@ -228,11 +235,15 @@ public class CourseViewController extends Controller {
     }
 
     private void createButtonToAddFile(HBox header) {
-        addButtonToHeader(header, "btn-AddFile", this::addFile);
+        if (userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+            addButtonToHeader(header, "btn-AddAssignment", this::addFile);
+        }
     }
 
     private void createDeleteButton(HBox header) {
-        addButtonToHeader(header, "btn-DeleteFile", this::deleteFile);
+        if (userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+            addButtonToHeader(header, "btn-DeleteFile", this::deleteFile);
+        }
     }
 
     private void addButtonToHeader(HBox header, String styleClass, EventHandler<ActionEvent> action) {
