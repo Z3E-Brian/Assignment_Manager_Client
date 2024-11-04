@@ -85,7 +85,17 @@ public class AssignmentSubmissionsViewController extends Controller implements I
         List<FileInput> files = submission.getFiles();
         String feedback = submission.getFeedback();
         Integer grade = submission.getGrade() != null ? submission.getGrade().intValue() : null;
-        return new StudentsSubmissions(submission.getId(), studentName, files, assignmentTitle, submission.getCreatedAt(), feedback, grade, submission.getReviewedAt(), submission.getAssignmentId(), submission.getReviewedById(), submission.getStudentId());
+        return new StudentsSubmissions(submission.getId(),
+                studentName,
+                files,
+                assignmentTitle,
+                submission.getCreatedAt(),
+                feedback,
+                grade,
+                submission.getReviewedAt(),
+                submission.getAssignmentId(),
+                submission.getReviewedById(),
+                submission.getStudentId());
     }
 
     private void openDetailsModal(StudentsSubmissions submission) {

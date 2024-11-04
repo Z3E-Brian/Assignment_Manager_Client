@@ -183,7 +183,7 @@ public class CourseViewController extends Controller implements Initializable {
         try {
             AppContext.getInstance().set("user", SessionManager.getInstance().getLoginResponse().getUser());
             AppContext.getInstance().set("assignment", assignmentDto);
-            if (SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+            if (SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.GRADE_ASSIGNMENTS)) {
                 FlowController.getInstance().goView("AssignmentSubmissionsView");
             } else {
                 FlowController.getInstance().goView("AssignmentView");

@@ -61,6 +61,7 @@ public class MainViewController extends Controller implements SessionObserver {
 
     @Override
     public void initialize() { //TODO: ADD EVERY STUFF DYNAMICALLY (COURSES, ETC)
+        checkSession();
         activateButton(btnRegisterStudents_Courses, false);
         activateButton(btnUniversitiesMaintenance, false);
         loadCourses();
@@ -70,7 +71,6 @@ public class MainViewController extends Controller implements SessionObserver {
         SessionManager.getInstance().setRunningTokenValidationThread(true);
         SessionManager.getInstance().startTokenValidationTask();
         restoreBackgroundImage();
-        checkSession();
     }
 
     @FXML
@@ -81,7 +81,12 @@ public class MainViewController extends Controller implements SessionObserver {
     private void loadCourses() {
         try {
             Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
-            courses = (new CourseService().getCoursesByCareerId(careerId));
+            if(isStudentSession){
+                courses = (new CourseService().getEnrolledCoursesByStudentId(SessionManager.getInstance().getLoginResponse().getUser().getId()));
+            }else{
+                courses = (new CourseService().getCoursesByCareerId(careerId));
+            }
+
             if (courses.isEmpty()) {
                 courses = new ArrayList<>();
             }
