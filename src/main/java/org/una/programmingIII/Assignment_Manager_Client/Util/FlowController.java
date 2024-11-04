@@ -143,6 +143,27 @@ public class FlowController {
         MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
     }
 
+    public void goViewInWindowUndecorated(String viewName) {
+        FXMLLoader loader = getLoader(viewName);
+        Controller controller = loader.getController();
+        Stage stage = new Stage();
+        InputStream inputStream = App.class.getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png");
+        stage.getIcons().add(new Image(inputStream));
+        stage.setTitle("Assignment Manager");
+        stage.setOnHidden((WindowEvent event) -> {
+            controller.getStage().getScene().setRoot(new Pane());
+            controller.setStage(null);
+        });
+        controller.setStage(stage);
+        Parent root = loader.getRoot();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.centerOnScreen();
+        MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
+        stage.show();
+    }
+
     public void goViewInWindow(String viewName) {
         FXMLLoader loader = getLoader(viewName);
         Controller controller = loader.getController();

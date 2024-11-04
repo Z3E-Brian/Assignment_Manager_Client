@@ -8,12 +8,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentType;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.FileDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.SubmissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.SubmissionService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
@@ -42,7 +39,6 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     @FXML
     private TableColumn<StudentsSubmissions, List<FileDto>> uploadedFileColumn;
 
-
     @FXML
     private TableColumn<StudentsSubmissions, MFXButton> detailsColumn;
 
@@ -52,7 +48,62 @@ public class AssignmentSubmissionsViewController extends Controller implements I
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Configuración de columnas
+        initialize();
+    }
+
+    private void configureTable() {
+        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        //TODO: necesito usar el fileservice para poner un label y poder desacargar el archivo correspondiente
+        uploadedFileColumn.setCellValueFactory(new PropertyValueFactory<>("files"));
+        gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        submissionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
+
+    private void loadSubmissions() throws Exception {
+        AssignmentDto assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
+        lblAssignmentTitle.setText(assignment.getTitle());
+        List<SubmissionDto> submissions = submissionService.getSubmissionByAssignmentId(assignment.getId());
+
+        if (submissions == null || submissions.isEmpty()) {
+            System.out.println("No hay nada aun");
+            return;
+        }
+
+        List<StudentsSubmissions> studentsSubmissionsList = new ArrayList<>();
+        for (SubmissionDto submission : submissions) {
+            UserDto user = userService.getUserById(submission.getStudentId());
+            StudentsSubmissions studentsSubmissions = getStudentsSubmissions(submission, user, assignment);
+            studentsSubmissionsList.add(studentsSubmissions);
+        }
+
+        submissionsTable.getItems().setAll(studentsSubmissionsList);
+    }
+
+    private static StudentsSubmissions getStudentsSubmissions(SubmissionDto submission, UserDto user, AssignmentDto assignment) {
+        String studentName = user.getName() + " " + user.getLastName() + " " + user.getSecondLastName();
+        String assignmentTitle = assignment.getTitle();
+        List<FileInput> files = submission.getFiles();
+        String feedback = submission.getFeedback();
+        Integer grade = submission.getGrade() != null ? submission.getGrade().intValue() : null;
+        return new StudentsSubmissions(submission.getId(), studentName, files, assignmentTitle, submission.getCreatedAt(), feedback, grade, submission.getReviewedAt(), submission.getAssignmentId(), submission.getReviewedById(), submission.getStudentId());
+    }
+
+    private void openDetailsModal(StudentsSubmissions submission) {
+        AppContext.getInstance().delete("submission");
+        AppContext.getInstance().set("submission", submission);
+        FlowController.getInstance().goViewInWindowUndecorated("AssignmentView");
+        FlowController.getInstance().getController("AssignmentView").initialize();
+
+    }
+
+    @FXML
+    public void updateTable() {
+        initialize();
+    }
+
+
+    @Override
+    public void initialize() {
         configureTable();
 
         detailsColumn.setCellFactory(col -> new TableCell<>() {
@@ -77,112 +128,4 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     }
 
 
-    private void configureTable() {
-        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
-        uploadedFileColumn.setCellValueFactory(new PropertyValueFactory<>("files"));
-        gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
-    }
-
-    private void loadSubmissions() throws Exception {
-        AssignmentDto assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
-
-        lblAssignmentTitle.setText(assignment.getTitle());
-
-        List<SubmissionDto> submissions = submissionService.getSubmissionByAssignmentId(assignment.getId());
-
-        if(submissions == null || submissions.isEmpty()) {
-            System.out.println("No hay nada aun");
-            return;
-        }
-
-        List<StudentsSubmissions> studentsSubmissionsList = new ArrayList<>();
-
-        for (SubmissionDto submission : submissions) {
-            String studentName = userService.getUserById(submission.getStudentId()).getName();
-            String assignmentTitle = assignment.getTitle();
-            List<FileInput> files = submission.getFiles();
-            String feedback = submission.getFeedback();
-            Integer grade = submission.getGrade() != null ? submission.getGrade().intValue() : null;
-            StudentsSubmissions studentsSubmissions = new StudentsSubmissions(submission.getId(), studentName, files, assignmentTitle, submission.getCreatedAt(), feedback, grade, submission.getReviewedAt(), submission.getAssignmentId(), submission.getReviewedById(), submission.getStudentId());
-            studentsSubmissionsList.add(studentsSubmissions);
-        }
-
-        submissionsTable.getItems().setAll(studentsSubmissionsList);
-
-
-
-
-
-
-
-
-
-//        // 4. Crear lista de StudentsSubmissions para la tabla
-//        List<StudentsSubmissions> studentsSubmissionsList = submissions.stream().map(submission -> {
-//            try {
-//                /***************************************************/
-//                String studentName = userService.getUserById(submission.getStudentId()).getName();
-//
-//                // Obtener el título de la asignación (aunque ya está en assignment)
-//                String assignmentTitle = assignment.getTitle();
-//
-//                // Mapeo del archivo (puedes ajustar según la estructura de tu FileDto y FileInput)
-//
-//                // Crear la instancia de StudentsSubmissions
-//                return new StudentsSubmissions(
-//                        submission.getId(),
-//                        studentName,
-//                        submission.getFiles(),
-//                        assignmentTitle,
-//                        submission.getCreatedAt(),
-//                        submission.getFeedback(),
-//                        submission.getGrade() != null ? submission.getGrade().intValue() : null,
-//                        submission.getReviewedAt(),
-//                        submission.getAssignmentId(),
-//                        submission.getReviewedById(),
-//                        submission.getStudentId()
-//                );
-//            } catch (Exception e) {
-//                throw new RuntimeException("Error loading submission data", e);
-//            }
-//        }).toList();
-//
-//        // 5. Configurar la tabla con la lista de StudentsSubmissions
-//        submissionsTable.getItems().setAll(studentsSubmissionsList);
-//
-//        // 6. Configurar el botón de detalles para cada fila de la tabla
-//        detailsColumn.setCellFactory(col -> new TableCell<>() {
-//            private final MFXButton detailsButton = new MFXButton("Ver Detalles");
-//
-//            @Override
-//            protected void updateItem(MFXButton item, boolean empty) {
-//                super.updateItem(item, empty);
-//                if (empty) {
-//                    setGraphic(null);
-//                } else {
-//                    setGraphic(detailsButton);
-//                    StudentsSubmissions currentSubmission = getTableView().getItems().get(getIndex());
-//                    detailsButton.setOnAction(event -> openDetailsModal(currentSubmission));
-//                }
-//            }
-//        });
-    }
-
-    // Método para abrir la vista de detalles con la información de StudentsSubmissions
-    private void openDetailsModal(StudentsSubmissions submission) {
-        AppContext.getInstance().set("submission", submission);
-        FlowController.getInstance().goViewInWindowModal("SubmissionDetailsView", getStage(), false);
-    }
-
-
-    private void openDetailsModal(SubmissionDto submission) {
-        AppContext.getInstance().set("submission", submission);
-        FlowController.getInstance().goViewInWindowModal("SubmissionDetailsView",getStage(),false);
-    }
-
-
-    @Override
-    public void initialize() {
-
-    }
 }

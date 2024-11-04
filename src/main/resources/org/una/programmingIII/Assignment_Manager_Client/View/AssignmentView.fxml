@@ -4,98 +4,75 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
+<ScrollPane style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
     <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-padding: 20;" stylesheets="@../Style/Styles.css">
+      <HBox>
+         <children>
+            <Button fx:id="btnClose" mnemonicParsing="false" onAction="#close" text="Close" />
+         </children>
+      </HBox>
         <!-- Título del assignment -->
-        <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Assignment Details"/>
-
-        <!-- Fechas de apertura y cierre -->
-        <VBox alignment="CENTER_LEFT" spacing="5">
-            <Label fx:id="lblAperture" style="-fx-font-size: 16px;" text="Apertura:"/>
-            <Label fx:id="lblClosure" style="-fx-font-size: 16px;" text="Cierre:"/>
-        </VBox>
+        <Label fx:id="lblAssignmentTitle" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Assignment Details" />
 
         <!-- Archivos subidos -->
         <HBox alignment="CENTER_LEFT" spacing="10">
-            <Hyperlink style="-fx-font-size: 16px;" text="Documento de apoyo"/>
-            <Label fx:id="uploadDate" style="-fx-font-size: 14px;" text="fecha de subida"/>
+            <Hyperlink fx:id="lblDocument" style="-fx-font-size: 16px;" text="Documento de apoyo" />
+            <Label fx:id="uploadDate" style="-fx-font-size: 14px;" text="fecha de subida" />
         </HBox>
-
-        <!-- Botón para agregar entrega (visible solo para usuarios con permiso) -->
-        <MFXButton fx:id="btnAddDelivery" onAction="#goToUploadFile" prefWidth="150"
-                   style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega"/>
 
         <!-- Sección de Respuesta Automática (IA) -->
         <TitledPane style="-fx-background-color: white; -fx-font-size: 15px;" text="Respuesta Automática (IA)">
             <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
-                <Label style="-fx-font-size: 16;" text="Respuesta automática de IA:"/>
-                <Label fx:id="aiResponseLabel" style="-fx-font-size: 14px; -fx-text-fill: #7a7a7a;" styleClass="label2"
-                       text="Aquí aparecerá la respuesta de la IA tras la entrega." wrapText="true"/>
+                <Label style="-fx-font-size: 16;" text="Respuesta automática de IA:" />
+                <Label fx:id="aiResponseLabel" style="-fx-font-size: 14px; -fx-text-fill: #7a7a7a;" styleClass="label2" text="Aquí aparecerá la respuesta de la IA tras la entrega." wrapText="true" />
             </VBox>
         </TitledPane>
 
         <!-- Estado de la entrega -->
         <TitledPane style="-fx-background-color: #212121; -fx-font-size: 15;" text="Estado de la entrega">
-            <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+            <VBox fx:id="vbMain" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+            <Label fx:id="lblStudentName" style="-fx-font-size: 16;" text="Student" />
                 <GridPane hgap="10" vgap="10">
-                    <Label style="-fx-font-size: 16;" text="Estado de la entrega:"/>
-                    <Label style="-fx-font-size: 16;" text="Todavía no se han realizado envíos"
-                           GridPane.columnIndex="1"/>
+                    <Label style="-fx-font-size: 16;" text="Estado de la entrega:" />
+                    <Label fx:id="lblSubmission" style="-fx-font-size: 16;" text="Todavía no se han realizado envíos" GridPane.columnIndex="1" />
 
-                    <Label style="-fx-font-size: 16;" text="Estado de la calificación:" GridPane.rowIndex="1"/>
-                    <Label style="-fx-font-size: 16;" text="Sin calificar" GridPane.columnIndex="1"
-                           GridPane.rowIndex="1"/>
+                    <Label style="-fx-font-size: 16;" text="Estado de la calificación:" GridPane.rowIndex="1" />
+                    <Label fx:id="lblIsQualified" style="-fx-font-size: 16;" text="Sin calificar" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                    <Label style="-fx-font-size: 16;" text="Tiempo restante:" GridPane.rowIndex="2"/>
-                    <Label fx:id="lblRemainingTime" style="-fx-font-size: 16;" text="34 días 5 horas restante"
-                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <Label style="-fx-font-size: 16;" text="Tiempo restante:" GridPane.rowIndex="2" />
+                    <Label fx:id="lblRemainingTime" style="-fx-font-size: 16;" text="34 días 5 horas restante" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                    <Label style="-fx-font-size: 16;" text="Última modificación:" GridPane.rowIndex="3"/>
-                    <Label fx:id="lblLastModification" style="-fx-font-size: 16;" text="-" GridPane.columnIndex="1"
-                           GridPane.rowIndex="3"/>
-
-                    <Label style="-fx-font-size: 16;" text="Comentarios de la entrega:" GridPane.rowIndex="4"/>
-                    <Hyperlink onAction="#openComments" text="Comentarios (0)" GridPane.columnIndex="1"
-                               GridPane.rowIndex="4"/>
+                    <Label style="-fx-font-size: 16;" text="Última modificación:" GridPane.rowIndex="3" />
+                    <Label fx:id="lblLastModification" style="-fx-font-size: 16;" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                     <!-- Sección de calificación y comentarios para el profesor -->
-                    <Label style="-fx-font-size: 16;" text="Calificación:" GridPane.rowIndex="5"/>
-                    <MFXTextField fx:id="gradeField" promptText="Ingresar calificación" GridPane.columnIndex="1"
-                                  GridPane.rowIndex="5"/>
+                    <Label style="-fx-font-size: 16;" text="Calificación:" GridPane.rowIndex="5" />
+                    <MFXTextField fx:id="txfGrade" promptText="Ingresar calificación" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                    <Label style="-fx-font-size: 16;" text="Comentario del profesor:" GridPane.rowIndex="6"/>
-                    <TextArea fx:id="commentField" prefRowCount="3" promptText="Agregar comentario"
-                              GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                    <Label style="-fx-font-size: 16;" text="Comentario del profesor:" GridPane.rowIndex="6" />
+                    <TextArea fx:id="txfComment" prefRowCount="3" promptText="Agregar comentario" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-                    <MFXButton fx:id="btnSubmitFeedback" onAction="#submitFeedback"
-                               style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
-                               text="Guardar calificación y comentario" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                    <MFXButton fx:id="btnSubmitFeedback" onAction="#submitFeedback" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Guardar calificación y comentario" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
                     <!-- Sección para agregar archivos -->
-                    <Label style="-fx-font-size: 16;" text="Adjuntar archivos:" GridPane.rowIndex="8"/>
-                    <MFXButton fx:id="btnUploadFile" onAction="#uploadFile"
-                               style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Seleccionar archivo"
-                               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-                    <Label fx:id="lblShowGrade" style="-fx-background-color: green; -fx-font-size: 16;" text="Label"
-                           GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                    <Label fx:id="lblComment" style="-fx-background-color: green; -fx-font-size: 16;" text="Label"
-                           GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                    <Label style="-fx-font-size: 16;" text="Adjuntar archivos:" GridPane.rowIndex="8" />
+                    <MFXButton fx:id="btnUploadFile" onAction="#goToUploadFile" style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Agregar entrega" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                    <Label fx:id="lblShowGrade" style=" -fx-font-size: 16;" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <Label fx:id="lblComment" style="-fx-font-size: 16;" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                     <columnConstraints>
-                        <ColumnConstraints/>
-                        <ColumnConstraints/>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
                     </rowConstraints>
                 </GridPane>
             </VBox>

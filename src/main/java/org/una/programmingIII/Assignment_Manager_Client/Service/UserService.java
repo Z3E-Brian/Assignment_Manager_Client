@@ -258,6 +258,7 @@ public class UserService {
         LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
         this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
+                .header("Authorization", "Bearer " + jwtToken)
                 .uri(URI.create(BASE_URL + "/" + id))
                 .header("Authorization", "Bearer " + jwtToken)
                 .GET()

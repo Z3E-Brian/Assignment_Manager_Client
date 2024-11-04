@@ -65,7 +65,8 @@ public class SubmissionService {
             String requestBody = objectMapper.writeValueAsString(submissionDto);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/" + id))
+                    .uri(URI.create(BASE_URL + "/" + id))  // Asegúrate de que el ID esté en la URL
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -87,6 +88,7 @@ public class SubmissionService {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
@@ -107,6 +109,7 @@ public class SubmissionService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/getByAssignmentId/" + id))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .GET()
                     .build();
 

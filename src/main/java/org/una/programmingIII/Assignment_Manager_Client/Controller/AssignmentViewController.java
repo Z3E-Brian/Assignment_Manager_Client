@@ -5,20 +5,20 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.SubmissionDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.UserRoleState;
-import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.SubmissionService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -27,65 +27,77 @@ import java.util.ResourceBundle;
 
 public class AssignmentViewController extends Controller implements Initializable {
 
+    @FXML
+    public VBox vbMain;
+    @FXML
+    public Hyperlink lblDocument;
+    @FXML
+    private Label uploadDate, aiResponseLabel, lblRemainingTime, lblLastModification, lblShowGrade, lblComment, lblStudentName, lblAssignmentTitle, lblSubmission, lblIsQualified;
+    @FXML
+    private MFXButton btnAddDelivery, btnSubmitFeedback, btnUploadFile;
+    @FXML
+    private MFXTextField txfGrade;
+    @FXML
+    private TextArea txfComment;
 
-    private final AppContext appContext = AppContext.getInstance();
-    public Label lblAperture;
-    public Label lblClosure;
-    public Label uploadDate;
-    public MFXButton btnAddDelivery;
-    public Label aiResponseLabel;
-    public Label lblRemainingTime;
-    public Label lblLastModification;
-    public MFXTextField gradeField;
-    public TextArea commentField;
-    public MFXButton btnSubmitFeedback;
-    public MFXButton btnUploadFile;
-    public Label lblShowGrade;
-    public Label lblComment;
     private AssignmentDto assignment;
-    private SubmissionDto selectedSubmission;
-    private final UserRoleState currentUserRole = UserRoleState.PROFESSOR; // TODO: Get from session
-    private AssignmentService assignmentService;
-    private SubmissionService submissionService;
+    private StudentsSubmissions submission;
+    private final SubmissionService submissionService = new SubmissionService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         initialize();
     }
 
-    @Override
-    public void initialize() {
-        assignment = (AssignmentDto) appContext.get("assignment");
-        setupViewForRole();
-        initializeAssignmentData();
-        loadSubmissionData();
-    }
-
     private void setupViewForRole() {
-        // TODO: get roles and permissions from session and set the view accordingly
-        boolean isTeacher = currentUserRole.equals(UserRoleState.PROFESSOR);
-        gradeField.setEditable(isTeacher);
-        commentField.setEditable(isTeacher);
+        boolean isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
+                .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
+        lblShowGrade.setVisible(!isTeacher);
+        lblComment.setVisible(!isTeacher);
+        txfGrade.setEditable(isTeacher);
+        txfComment.setEditable(isTeacher);
+        txfComment.setVisible(isTeacher);
+        txfGrade.setVisible(isTeacher);
+        lblStudentName.setVisible(isTeacher);
         btnSubmitFeedback.setVisible(isTeacher);
-    }
-
-    private void initializeAssignmentData() {
-        lblAperture.setText(lblAperture.getText() + " " + LocalDateTime.of(2024, 12, 1, 0, 0).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        lblClosure.setText(lblClosure.getText() + " " + assignment.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        lblRemainingTime.setText(lblRemainingTime.getText() + " " + assignment.getDueDate().minusDays(LocalDate.now().toEpochDay()) + " días");
-
-    }
-
-    private void loadSubmissionData() {
-        SubmissionDto submission = getSubmissionForCurrentUser();
-        if (submission != null) {
-            gradeField.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
-            commentField.setText(submission.getFeedback() != null ? submission.getFeedback() : "");
+        btnUploadFile.setVisible(!isTeacher);
+        if (!isTeacher) {
+            vbMain.getChildren().remove(lblStudentName);
         }
     }
 
-    private SubmissionDto getSubmissionForCurrentUser() {
-        return null; // Simulated logic to get the current user's submission
+    private void initializeAssignmentData() {
+        lblRemainingTime.setText("Remaining Time: " + assignment.getDueDate().minusDays(LocalDate.now().toEpochDay()) + " days");
+        lblLastModification.setText("Last Modification: " + submission.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        lblStudentName.setText(submission.getStudentName());
+        //TODO: Cambiar para q muestre el archivo y permita descargarlo
+        lblDocument.setText("Document");
+
+        lblComment.setText(submission.getFeedback());
+        lblAssignmentTitle.setText(assignment.getTitle());
+        //Cambiar para q muestre el archivo
+        if (submission.getFiles() != null) {
+            lblSubmission.setText("Submission made");
+            lblSubmission.setStyle("-fx-text-fill: green");
+        } else {
+            lblSubmission.setText("No submission");
+            lblSubmission.setStyle("-fx-text-fill: red");
+        }
+        if (submission.getGrade() != null) {
+            lblShowGrade.setText("Grade: " + submission.getGrade());
+            lblShowGrade.setStyle("-fx-text-fill: green");
+        } else {
+            lblShowGrade.setText("Not graded");
+            lblShowGrade.setStyle("-fx-text-fill: red");
+        }
+    }
+
+    private void loadSubmissionData() {
+        if (submission != null) {
+            txfGrade.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
+            txfComment.setText(submission.getFeedback() != null ? submission.getFeedback() : "");
+        }
     }
 
     @FXML
@@ -105,20 +117,21 @@ public class AssignmentViewController extends Controller implements Initializabl
 
     @FXML
     private void submitFeedback(ActionEvent event) {
-        if (selectedSubmission != null) {
-            selectedSubmission.setGrade(Double.parseDouble(gradeField.getText()));
-            selectedSubmission.setFeedback(commentField.getText());
-            selectedSubmission.setReviewedAt(LocalDateTime.now());
-            saveSubmissionFeedback(selectedSubmission);
+        SubmissionDto newSubmission = new SubmissionDto();
+        newSubmission.setId(this.submission.getId());
+        newSubmission.setAssignmentId(this.submission.getAssignmentId());
+        newSubmission.setStudentId(this.submission.getStudentId());
+        newSubmission.setCreatedAt(this.submission.getCreatedAt());
+        newSubmission.setReviewedAt(LocalDate.now().atStartOfDay());
+
+        newSubmission.setGrade(Double.parseDouble(txfGrade.getText()));
+        newSubmission.setFeedback(txfComment.getText());
+        Answer answer = submissionService.updateSubmission(newSubmission.getId(), newSubmission);
+        if (!answer.getState()) {
+            showError("Update Submission", answer.getMessage());
+        } else {
+            showInfo("Update Submission", "Submission updated successfully.");
         }
-    }
-
-    private void saveSubmissionFeedback(SubmissionDto submission) {
-        submissionService.updateSubmission(submission.getId(), submission);
-    }
-
-    @FXML
-    private void openComments(ActionEvent actionEvent) {
     }
 
     @FXML
@@ -130,5 +143,51 @@ public class AssignmentViewController extends Controller implements Initializabl
     @FXML
     private void goToUploadFile(ActionEvent actionEvent) {
         FlowController.getInstance().goViewInWindowModal("UploadTaskView", this.getStage(), false);
+    }
+
+    @Override
+    public void initialize() {
+        clearAll();
+        assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
+        //TODO: cambiar para q haga distinto segun el rol
+        submission = (StudentsSubmissions) AppContext.getInstance().get("submission");
+        setupViewForRole();
+        initializeAssignmentData();
+        loadSubmissionData();
+
+
+    }
+
+    private void clearAll(){
+        lblRemainingTime.setText("");
+        lblLastModification.setText("");
+        lblStudentName.setText("");
+        lblAssignmentTitle.setText("");
+        lblSubmission.setText("");
+        lblShowGrade.setText("");
+        lblIsQualified.setText("");
+        txfGrade.setText("");
+        txfComment.setText("");
+    }
+
+    @FXML
+    public void close(ActionEvent actionEvent) {
+        this.getStage().close();
+    }
+
+    private void showError(String title, String message) {
+        new Message().showModal(Alert.AlertType.ERROR, title, getStage(), message);
+    }
+
+    private void showInfo(String title, String message) {
+        new Message().showModal(Alert.AlertType.INFORMATION, title, getStage(), message);
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setHeaderText(title);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
