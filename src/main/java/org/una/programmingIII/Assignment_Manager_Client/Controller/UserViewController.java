@@ -28,7 +28,7 @@ public class UserViewController extends Controller implements Initializable {
     @FXML
     private MFXButton btnNew, btnSearch, btnSave, btnDelete, btnClear;
     @FXML
-    private MFXTextField txfNumberID, txfName, txfLastName, txfSecondLastName, txfEmail, txfPassword;
+    private MFXTextField txfNumberID, txfName, txfLastName, txfSecondLastName, txfEmail, txfPassword, txfCareerId;
     @FXML
     private FlowPane fpPermissions;
     @FXML
@@ -107,6 +107,7 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.textProperty().bindBidirectional(userInput.lastName);
         txfSecondLastName.textProperty().bindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().bindBidirectional(userInput.password);
+        txfCareerId.textProperty().bindBidirectional(userInput.careerId);
 
         for (Node node : fpPermissions.getChildren()) {
             if (node instanceof MFXCheckbox checkBox) {
@@ -129,6 +130,7 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.textProperty().unbindBidirectional(userInput.lastName);
         txfSecondLastName.textProperty().unbindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().unbindBidirectional(userInput.password);
+        txfCareerId.textProperty().unbindBidirectional(userInput.careerId);
     }
 
     private void newUser() {
@@ -147,6 +149,7 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.setText("");
         txfSecondLastName.setText("");
         txfPassword.setText("");
+        txfCareerId.setText("");
         for (Node node : fpPermissions.getChildren()) {
             if (node instanceof MFXCheckbox checkBox) {
                 checkBox.setSelected(false);
@@ -265,6 +268,7 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.setText(user.getLastName());
         txfSecondLastName.setText(user.getSecondLastName());
         txfEmail.setText(user.getEmail());
+        txfCareerId.setText(user.getCareerId().toString());
         user.getPermissions().forEach(permission -> {
             for (Node node : fpPermissions.getChildren()) {
                 if (node instanceof MFXCheckbox checkBox && checkBox.getText().equals(permission.getName().toString().replace("_", " "))) {
