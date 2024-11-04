@@ -71,7 +71,7 @@ private void setupTextFormatters() {
     txfLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
     txfSecondLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
     passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
-    identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(8));
+    identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(9));
     emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
     confirmPasswordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
 }
