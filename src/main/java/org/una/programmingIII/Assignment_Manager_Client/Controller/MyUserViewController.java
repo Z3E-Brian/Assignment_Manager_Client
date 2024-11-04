@@ -53,6 +53,7 @@ public class MyUserViewController extends Controller implements Initializable {
         clear();
         loadUserInformation();
     }
+
     private void clear() {
         nameLabel.setText("");
         lastNameLabel.setText("");
@@ -113,7 +114,7 @@ public class MyUserViewController extends Controller implements Initializable {
             });
 
         } catch (Exception e) {
-            System.out.println(e);
+            new Message().showModal(Alert.AlertType.ERROR, "Load Courses", getStage(), "Can't load the courses list correctly");
         }
     }
 

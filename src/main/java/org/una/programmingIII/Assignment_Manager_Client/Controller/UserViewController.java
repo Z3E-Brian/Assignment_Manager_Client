@@ -169,7 +169,6 @@ public class UserViewController extends Controller implements Initializable {
 
     private void createUser() throws Exception {
         bindUser();
-        System.out.println(getPermissions());
 
         NewUserDto newUserDto = new NewUserDto(userInput);
         newUserDto.setPermissions(getPermissions());
@@ -186,7 +185,6 @@ public class UserViewController extends Controller implements Initializable {
 
     private void updateUser() throws Exception {
         UserDto selectedUser = userTable.getSelectionModel().getSelectedItem();
-        System.out.println(getPermissions());
         if (selectedUser != null) {
             userInput.setId(selectedUser.getId());
             NewUserDto newUserDto = new NewUserDto(userInput);
