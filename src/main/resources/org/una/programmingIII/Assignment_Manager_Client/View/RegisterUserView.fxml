@@ -93,10 +93,15 @@
    </HBox>
    <HBox alignment="CENTER" layoutX="40.0" layoutY="420.0" spacing="10.0">
       <children>
-          <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-Save" text="Register" HBox.hgrow="ALWAYS">
+          <MFXButton fx:id="btnBack" onAction="#onActionBtnBack" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-Back" text="Back" HBox.hgrow="ALWAYS">
             <graphic>
                <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
             </graphic></MFXButton>
+         <MFXButton fx:id="btnRegister" layoutX="140.0" layoutY="10.0" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-Save" text="Register">
+            <graphic>
+               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+            </graphic>
+         </MFXButton>
       </children>
    </HBox>
    <padding>

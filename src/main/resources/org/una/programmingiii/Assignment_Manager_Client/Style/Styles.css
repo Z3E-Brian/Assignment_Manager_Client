@@ -252,6 +252,18 @@
     -fx-background-color: #16126a;
 }
 
+.mfx-btn-Back, .mfx-btn-Back:armed, .mfx-btn-Back:focused {
+    -fx-background-color: #bd1515;
+}
+
+.mfx-btn-Back> ImageView {
+    -fx-image: url("../Assets/Back.png");
+}
+
+.mfx-btn-Back:hover {
+    -fx-background-color: #760202;
+}
+
 .icon-image {
     -fx-min-width: 10px;
     -fx-min-height: 15px;

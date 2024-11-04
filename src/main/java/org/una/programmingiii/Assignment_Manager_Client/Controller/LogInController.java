@@ -47,11 +47,6 @@ public class LogInController extends Controller {
             if (authenticateUser()) {
                 SessionManager.getInstance().setLoginResponse(loginResponse);
                 FlowController.getInstance().goMain();
-                //
-                //// RECORDAR PONER EL STUDENT DTO ANTES DE ENTRAR A MATRICLAR CURSOS PARA STUDENT EN LA VISTA DE ENROLLSTUDENTSCOURSE
-                // AppContext.getInstance().set("studentDto", loginResponse.getUser());
-//                FlowController.getInstance().goViewInWindow("SelectStudentToEnrollView");
-//
                getStage().close();
             }
         } catch (Exception exception) {
@@ -63,7 +58,6 @@ public class LogInController extends Controller {
     void onActionBtnRegister(ActionEvent event) {
         FlowController.getInstance().goViewInWindow("RegisterUserView");
         getStage().close();
-
     }
 
     @FXML

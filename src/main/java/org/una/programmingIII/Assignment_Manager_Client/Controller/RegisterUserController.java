@@ -40,47 +40,47 @@ public class RegisterUserController extends Controller {
     private MFXTextField txfSecondLastName;
 
     @FXML
-    private MFXButton btnSendEmail;
+    private MFXButton btnBack;
 
     private UserService userService;
     private UserInput userInput;
     private NewUserDto newUserDto;
     private RequiredFieldsValidator validator;
 
-@Override
-public void initialize() {
-    initializeDto();
-    initializeServices();
-    setupTextFormatters();
-    setupValidator();
-    clean();
-    bind();
-}
+    @Override
+    public void initialize() {
+        initializeDto();
+        initializeServices();
+        setupTextFormatters();
+        setupValidator();
+        clean();
+        bind();
+    }
 
-private void initializeDto() {
-    newUserDto = new NewUserDto();
-    userInput = new UserInput();
-}
+    private void initializeDto() {
+        newUserDto = new NewUserDto();
+        userInput = new UserInput();
+    }
 
-private void initializeServices() {
-    userService = new UserService();
-}
+    private void initializeServices() {
+        userService = new UserService();
+    }
 
-private void setupTextFormatters() {
-    txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
-    txfLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
-    txfSecondLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
-    passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
-    identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(9));
-    emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
-    confirmPasswordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
-}
+    private void setupTextFormatters() {
+        txfName.delegateSetTextFormatter(Format.getInstance().textFormat(80));
+        txfLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
+        txfSecondLastName.delegateSetTextFormatter(Format.getInstance().textFormat(50));
+        passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
+        identificationNumberField.delegateSetTextFormatter(Format.getInstance().idFormat(9));
+        emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
+        confirmPasswordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
+    }
 
-private void setupValidator() {
-    validator = new RequiredFieldsValidator(Arrays.asList(
-        txfName, txfLastName, txfSecondLastName, passwordField, emailField, confirmPasswordField
-    ));
-}
+    private void setupValidator() {
+        validator = new RequiredFieldsValidator(Arrays.asList(
+                txfName, txfLastName, txfSecondLastName, passwordField, emailField, confirmPasswordField
+        ));
+    }
 
     private void bind() {
         txfName.textProperty().bindBidirectional(userInput.name);
@@ -100,7 +100,7 @@ private void setupValidator() {
                 Answer response = userService.createUser(newUserDto);
 
                 if (response.getState()) {
-                    new Message().showModal(Alert.AlertType.CONFIRMATION, "Authentication", getStage(),
+                    new Message().showModal(Alert.AlertType.INFORMATION, "Authentication", getStage(),
                             "Your account has been created, please activate your account and login.");
                     FlowController.getInstance().goViewInWindow("LoginView");
                     getStage().close();
@@ -114,6 +114,12 @@ private void setupValidator() {
         } else {
             new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), req);
         }
+    }
+
+    @FXML
+    void onActionBtnBack(ActionEvent event) throws Exception {
+        FlowController.getInstance().goViewInWindow("LogInView");
+        getStage().close();
     }
 
 
