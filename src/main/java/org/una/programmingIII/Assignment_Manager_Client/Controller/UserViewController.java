@@ -40,6 +40,7 @@ public class UserViewController extends Controller implements Initializable {
 
     private final UserService userService = new UserService();
     private UserInput userInput = new UserInput();
+    private List<PermissionDto> permissions;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,6 +49,7 @@ public class UserViewController extends Controller implements Initializable {
 
     @Override
     public void initialize() {
+        getServerPermissions();
         configureTable();
         initializePermissions();
         bindUser();
@@ -64,6 +66,7 @@ public class UserViewController extends Controller implements Initializable {
 
         userTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && userTable.getSelectionModel().getSelectedItem() != null) {
+                clearForm();
                 bindUserToForm(userTable.getSelectionModel().getSelectedItem());
                 setFieldsEditable(false);
             }
@@ -162,8 +165,11 @@ public class UserViewController extends Controller implements Initializable {
 
     private void createUser() throws Exception {
         bindUser();
+        System.out.println(getPermissions());
+
         NewUserDto newUserDto = new NewUserDto(userInput);
         newUserDto.setPermissions(getPermissions());
+
         Answer answer = userService.createUser(newUserDto);
         if (!answer.getState()) {
             showError("Create User", answer.getMessage());
@@ -176,6 +182,7 @@ public class UserViewController extends Controller implements Initializable {
 
     private void updateUser() throws Exception {
         UserDto selectedUser = userTable.getSelectionModel().getSelectedItem();
+        System.out.println(getPermissions());
         if (selectedUser != null) {
             userInput.setId(selectedUser.getId());
             NewUserDto newUserDto = new NewUserDto(userInput);
@@ -202,16 +209,27 @@ public class UserViewController extends Controller implements Initializable {
         }
     }
 
+    private void getServerPermissions() {
+        try {
+            permissions = userService.getAllPermissions();
+        } catch (Exception e) {
+            showAlert("Error Loading Permissions", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+
     private Set<PermissionDto> getPermissions() {
-        return null;
-//        return fpPermissions.getChildren().stream()
-//                .filter(node -> node instanceof MFXCheckbox && ((MFXCheckbox) node).isSelected())
-//                .map(node -> {
-//                    PermissionDto permissionDto = new PermissionDto();
-//                    permissionDto.setName(PermissionType.valueOf(((MFXCheckbox) node).getText().replace(" ", "_")));
-//                    return permissionDto;
-//                })
-//                .collect(Collectors.toSet());
+        return fpPermissions.getChildren().stream()
+                .filter(node -> node instanceof MFXCheckbox && ((MFXCheckbox) node).isSelected())
+                .map(node -> {
+                    return permissions.stream()
+                            .filter(permission -> permission.getName().toString().equals(((MFXCheckbox) node).getText().replace(" ", "_")))
+                            .findFirst()
+                            .orElse(null);
+
+
+                })
+                .collect(Collectors.toSet());
     }
 
     private void showError(String title, String message) {
@@ -239,36 +257,6 @@ public class UserViewController extends Controller implements Initializable {
             showAlert("Warning", "Select a user from table.", Alert.AlertType.WARNING);
         }
         updateTable();
-    }
-
-    @FXML
-    private void onActionBtnClear(ActionEvent actionEvent) {
-        clearForm();
-    }
-
-    @FXML
-    private void onActionBtnSearch(ActionEvent actionEvent) {
-        loadUserByEmail();
-    }
-
-    private void loadUserByEmail() {
-        String enteredEmail = txfEmail.getText();
-        if (enteredEmail.isEmpty()) {
-            showAlert("Validation Error", "Please enter an Email.", Alert.AlertType.ERROR);
-            return;
-        }
-
-        try {
-            UserDto user = userService.getUserByEmail(enteredEmail);
-            if (user != null) {
-                bindUserToForm(user);
-                setFieldsEditable(false);
-            } else {
-                showAlert("User Not Found", "No user found with the provided ID.", Alert.AlertType.WARNING);
-            }
-        } catch (Exception e) {
-            showAlert("Error", "An error occurred while loading the user: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
     }
 
     private void bindUserToForm(UserDto user) {

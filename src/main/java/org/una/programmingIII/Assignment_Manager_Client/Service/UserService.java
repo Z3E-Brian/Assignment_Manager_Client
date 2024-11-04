@@ -17,6 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
@@ -255,4 +256,24 @@ public class UserService {
             throw new Exception("Error fetching user: " + response.statusCode());
         }
     }
+
+    public List<PermissionDto> getAllPermissions() throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
+        String URL= "http://localhost:8080/api/permissions/";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URL))
+                .header("Authorization", "Bearer " + jwtToken)
+                .GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<PermissionDto>>() {
+            });
+        } else {
+            throw new Exception("Error fetching users: " + response.statusCode());
+        }
+
+    }
+
 }
