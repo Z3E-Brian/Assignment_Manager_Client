@@ -81,9 +81,9 @@ public class MainViewController extends Controller implements SessionObserver {
     private void loadCourses() {
         try {
             Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
-            if(isStudentSession){
+            if (isStudentSession) {
                 courses = (new CourseService().getEnrolledCoursesByStudentId(SessionManager.getInstance().getLoginResponse().getUser().getId()));
-            }else{
+            } else {
                 courses = (new CourseService().getCoursesByCareerId(careerId));
             }
 
@@ -210,6 +210,13 @@ public class MainViewController extends Controller implements SessionObserver {
         button.setVisible(value);
     }
 
+    @FXML
+    void OnActionBtnLogOut(ActionEvent event) {
+        FlowController.getInstance().goViewInWindow("LogInView");
+        FlowController.getInstance().exitMain();
+        SessionManager.getInstance().removeObserver(this);
+        FlowController.getInstance().clearLoarders();
+    }
 
 }
 

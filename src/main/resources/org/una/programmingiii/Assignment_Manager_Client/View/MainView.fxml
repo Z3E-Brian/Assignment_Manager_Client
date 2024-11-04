@@ -24,6 +24,7 @@
                 </MenuButton>
                   <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" />
                   <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" text="Enroll Student Courses" />
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="mfx-btn-Back" text="Exit" />
                   <VBox alignment="CENTER">
                      <children>
                             <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
