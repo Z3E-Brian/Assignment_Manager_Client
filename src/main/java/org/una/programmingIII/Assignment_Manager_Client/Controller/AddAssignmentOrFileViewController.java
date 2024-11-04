@@ -133,10 +133,8 @@ public class AddAssignmentOrFileViewController extends Controller   {
     void onActionBtnSave(ActionEvent event) {
         if (tbpAssignment.isSelected()) {
             saveAssignment();
-            System.out.println("Save assignment logic here");
         } else if (tbpMaterial.isSelected()) {
             saveMaterial();
-            System.out.println("Save material logic here");
         }
     }
 
@@ -268,7 +266,7 @@ public class AddAssignmentOrFileViewController extends Controller   {
                 if (!answer.getState()) {
                     new Message().showModal(Alert.AlertType.ERROR, "Save Material", getStage(), answer.getMessage());
                 } else {
-                    new Message().showModal(Alert.AlertType.INFORMATION, "Save Material", getStage(), answer.getMessage());
+                    new Message().showModal(Alert.AlertType.INFORMATION, "Save Material", getStage(), "Material saved successfully");
                     courseContentInput = (CourseContentInput) answer.getResult("courseContent");
                     saveFilesMaterials(courseContentInput.getId());
                     materialHandler.clearFiles();

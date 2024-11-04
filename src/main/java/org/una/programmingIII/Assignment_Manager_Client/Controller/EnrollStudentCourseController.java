@@ -114,7 +114,7 @@ public class EnrollStudentCourseController extends Controller {
             }
         } catch (
                 Exception e) {
-            new Message().showModal(Alert.AlertType.WARNING, "Error de conexion", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
+ new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
 
         }
     }
@@ -220,7 +220,7 @@ public class EnrollStudentCourseController extends Controller {
         try {
             Answer answer = courseService.enrollStudentInCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
-                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Enrolled sucessfully");
+                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Enrolled successfully");
                 loadCourses();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Enroll course", getStage(), "Something went wrong with course enrollment");
@@ -235,10 +235,10 @@ public class EnrollStudentCourseController extends Controller {
         try {
             Answer answer = courseService.unenrollStudentFromCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
-                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Unenrolled sucessfully");
+                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Uncontrolled successfully");
                 loadCourses();
             } else {
-                new Message().showModal(Alert.AlertType.ERROR, "Uneroll course", getStage(), "Something went wrong with course unEnrollment");
+                new Message().showModal(Alert.AlertType.ERROR, "Unroll course", getStage(), "Something went wrong with course unEnrollment");
             }
 
         } catch (Exception e) {

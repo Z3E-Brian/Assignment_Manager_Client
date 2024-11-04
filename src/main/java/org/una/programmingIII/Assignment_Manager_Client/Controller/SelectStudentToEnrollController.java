@@ -77,7 +77,7 @@ public class SelectStudentToEnrollController extends Controller {
                 tbvStudents.getItems().clear();
                 tbvStudents.setItems(studentsDtoObservableList);
             } else {
-                new Message().showModal(Alert.AlertType.ERROR, "Error inicio sesion", getStage(), "Ha ocurrido un error al iniciar sesion");
+                new Message().showModal(Alert.AlertType.ERROR, "Login Error", getStage(), "An error occurred during login");
             }
         } catch (Exception e) {
             new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Can't retrieve courses");

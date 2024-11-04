@@ -116,7 +116,7 @@ public class CareerMaintenanceViewController extends Controller {
             tbvCareer.getItems().clear();
             tbvCareer.setItems(careerDtoObservableList);
         } catch (Exception e) {
-            new Message().showModal(Alert.AlertType.WARNING, "Error de conexion", getStage(), "Debe selecionar una de las universidades en la tabla para poder eliminarla.");
+            new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
 
         }
     }

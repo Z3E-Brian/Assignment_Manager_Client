@@ -122,7 +122,7 @@ public class MainViewController extends Controller implements SessionObserver {
     private void loadLoginResponse() {
         this.loginResponse = SessionManager.getInstance().getLoginResponse();
         if (loginResponse == null) {
-            new Message().showModal(Alert.AlertType.ERROR, "Error inicio sesion", getStage(), "Ha ocurrido un error al iniciar sesion");
+            new Message().showModal(Alert.AlertType.ERROR, "Login Error", getStage(), "An error occurred during login");
             FlowController.getInstance().goView("LoginView");
             FlowController.getInstance().exitMain();
             FlowController.getInstance().clearLoarders();
@@ -155,7 +155,7 @@ public class MainViewController extends Controller implements SessionObserver {
             FlowController.getInstance().exitMain();
             SessionManager.getInstance().removeObserver(this);
             FlowController.getInstance().clearLoarders();
-            new Message().showModal(Alert.AlertType.INFORMATION, "Tiempo de inicio de sesion agotado", getStage(), "Debes de volver a iniciar sesion");
+            new Message().showModal(Alert.AlertType.INFORMATION, "Session Timeout", getStage(), "You need to log in again");
         });
     }
 

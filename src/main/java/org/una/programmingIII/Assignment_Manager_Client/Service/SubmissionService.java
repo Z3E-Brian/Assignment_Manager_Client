@@ -65,14 +65,14 @@ public class SubmissionService {
             String requestBody = objectMapper.writeValueAsString(submissionDto);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/" + id))  // Asegúrate de que el ID esté en la URL
+                    .uri(URI.create(BASE_URL + "/" + id))
                     .header("Content-Type", "application/json")
-                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody)) // Cambia a PUT
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) { // HTTP 200 OK para actualizaciones exitosas
+            if (response.statusCode() == 200) {
                 SubmissionDto submissionDtoResult = objectMapper.readValue(response.body(), SubmissionDto.class);
                 return new Answer(true, "The submission updated successfully", "", "submission", submissionDtoResult);
             } else {
@@ -93,7 +93,7 @@ public class SubmissionService {
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 204) { // HTTP 204 No Content para eliminaciones exitosas
+            if (response.statusCode() == 204) {
                 return new Answer(true, "The submission deleted successfully", "", "submission", null);
             } else {
                 return new Answer(false, response.body(), "Error : " + response.statusCode());

@@ -53,7 +53,7 @@ public class LogInController extends Controller {
                getStage().close();
             }
         } catch (Exception exception) {
-            new Message().showModal(Alert.AlertType.ERROR, "Inicio de sesion", getStage(), exception.getMessage());
+            new Message().showModal(Alert.AlertType.ERROR, "Log In", getStage(), exception.getMessage());
         }
     }
 

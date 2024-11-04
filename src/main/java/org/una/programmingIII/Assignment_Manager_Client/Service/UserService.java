@@ -170,7 +170,7 @@ public class UserService {
             if (response.statusCode() == 201) {
                 return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
             } else if (response.statusCode() == 401) {
-                return new Answer(false, "Usuario actualmente registrado, por favor intente con otro correo.", "Error: " + response.statusCode());
+     return new Answer(false, "User already registered, please try with another email.", "Error: " + response.statusCode());
             } else {
                 String errorMessage = response.body();
                 return new Answer(false, errorMessage, "Error: " + response.statusCode());

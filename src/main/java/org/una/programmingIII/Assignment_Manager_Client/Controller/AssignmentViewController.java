@@ -70,7 +70,7 @@ public class AssignmentViewController extends Controller implements Initializabl
     }
 
     private void initializeAssignmentData() {
-        lblAperture.setText(lblAperture.getText() + " " + LocalDateTime.of(2024,12,1,0,0).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        lblAperture.setText(lblAperture.getText() + " " + LocalDateTime.of(2024, 12, 1, 0, 0).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         lblClosure.setText(lblClosure.getText() + " " + assignment.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         lblRemainingTime.setText(lblRemainingTime.getText() + " " + assignment.getDueDate().minusDays(LocalDate.now().toEpochDay()) + " días");
 
@@ -95,10 +95,10 @@ public class AssignmentViewController extends Controller implements Initializabl
 
     private String getRandomAIResponse() {
         List<String> responses = Arrays.asList(
-                "Excelente trabajo, sigue así.",
-                "Revisa las instrucciones para mejorar la presentación.",
-                "Buen esfuerzo, pero puedes mejorar en los detalles.",
-                "Tu entrega se ve completa, bien hecho."
+                "Excellent work, keep it up.",
+                "Review the instructions to improve the presentation.",
+                "Good effort, but you can improve on the details.",
+                "Your submission looks complete, well done."
         );
         return responses.get(new Random().nextInt(responses.size()));
     }
