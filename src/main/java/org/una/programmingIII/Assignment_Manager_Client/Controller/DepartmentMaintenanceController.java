@@ -123,7 +123,6 @@ public class DepartmentMaintenanceController extends Controller {
 
     @FXML
     void onMouseClickedImvSearch(MouseEvent event) {
-        System.out.println("imvSearch");
     }
 
     private void createDepartment() throws Exception {

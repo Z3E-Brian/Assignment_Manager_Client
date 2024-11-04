@@ -130,7 +130,6 @@ public class FacultyMaintenanceController extends Controller {
 
     @FXML
     void onMouseClickedImvSearch(MouseEvent event) {
-        System.out.println("imvSearch");
     }
 
     private void loadUniversityFaculties() {
@@ -171,7 +170,6 @@ public class FacultyMaintenanceController extends Controller {
     private void updateFaculty() throws Exception {
         String invalids = validator.validate();
         if (!(invalids.isBlank())) {
-            System.out.println(invalids);
             new Message().showModal(Alert.AlertType.ERROR, "Update Faculty", getStage(), invalids);
         } else {
             facultyDto.setName(txfFacultyName.getText());

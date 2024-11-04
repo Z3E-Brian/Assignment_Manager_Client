@@ -253,7 +253,6 @@ public class CreateCourseViewController extends Controller {
     private void loanProfessors() {
         try {
             Answer answer = (Answer) new UserService().getAllUsersByPermission(String.valueOf(PermissionType.TEACH_CLASSES));
-            System.out.println(answer.getResult("users"));
             if (!answer.getState()) {
                 showError("Load Professors", answer.getMessage());
             } else {

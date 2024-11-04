@@ -41,9 +41,7 @@ public class SessionManager {
                 this.isRunningTokenValidationThread = false;
                 notifySessionExpired();
             } else if (!(isValidToken(loginResponse.getAccessToken()))) {
-                System.out.println(loginResponse.getAccessToken());
                 loginResponse.setAccessToken(setNewRefreshToken());
-                System.out.println(loginResponse.getAccessToken());
             }
         }
     }

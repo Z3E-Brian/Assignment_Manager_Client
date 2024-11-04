@@ -103,11 +103,9 @@ public class FileService {
             }
 
             int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Fragment " + chunkNumber + " charge successful.");
-            } else {
-                System.out.println("Error to charge the fragment " + chunkNumber + ": " + responseCode);
-            }
+if (responseCode != HttpURLConnection.HTTP_OK){
+    new Message().show(Alert.AlertType.ERROR,"Save File","Error to upload fragment " + chunkNumber );
+}
             connection.disconnect();
         }
     }

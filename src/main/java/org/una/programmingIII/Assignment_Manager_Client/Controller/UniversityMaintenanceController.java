@@ -116,7 +116,6 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         if (event.isPrimaryButtonDown() && event.getClickCount() == 1 && universityTable.getSelectionModel().getSelectedItem() != null) {
             universityDto = universityTable.getSelectionModel().getSelectedItem();
             bind();
-            System.out.println(universityDto);
         }
     }
 
@@ -193,11 +192,8 @@ public class UniversityMaintenanceController extends Controller implements Sessi
                 .anyMatch(permission -> permission.getName() == PermissionType.VIEW_COURSES);
 
         if (hasViewCoursesPermission) {
-            // Código para habilitar las funcionalidades relacionadas con ver cursos
-            System.out.println("El usuario tiene permiso para ver cursos.");
+
         } else {
-            // Código para deshabilitar o manejar la ausencia del permiso
-            System.out.println("El usuario NO tiene permiso para ver cursos.");
         }
     }
 
