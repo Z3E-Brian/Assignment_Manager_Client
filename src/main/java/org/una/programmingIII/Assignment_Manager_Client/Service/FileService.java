@@ -38,7 +38,7 @@ public class FileService {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
+        this.jwtToken = loginResponse.getRefreshToken();
     }
 
     public Answer createFile(FileInput fileInput, File file) throws Exception {
@@ -90,6 +90,7 @@ public class FileService {
             HttpURLConnection connection = (HttpURLConnection) new URL(UPLOAD_URL).openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
+            connection.setRequestProperty("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken());
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=---Boundary");
 
             try (OutputStream outputStream = connection.getOutputStream()) {

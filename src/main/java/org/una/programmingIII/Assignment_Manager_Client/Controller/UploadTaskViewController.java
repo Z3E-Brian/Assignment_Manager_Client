@@ -26,49 +26,26 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class UploadTaskViewController extends Controller implements Initializable {
+public class UploadTaskViewController extends Controller {
     @FXML
-    private MFXButton btnCancel;
+    private MFXButton btnCancel, btnPrevious, btnSave, btnUpload;
 
     @FXML
-    private MFXButton btnPrevious;
+    private Label lblClosingDate, lblOpeningDate, lblTitle;
 
     @FXML
-    private MFXButton btnSave;
+    private VBox vbxFileList, vbxDropArea;
 
-    @FXML
-    private MFXButton btnUpload;
-
-    @FXML
-    private Label lblClosingDate;
-
-    @FXML
-    private Label lblOpeningDate;
-
-    @FXML
-    private Label lblTitle;
-
-    @FXML
-    private VBox vbxFileList;
-    @FXML
-    private VBox vbxDropArea;
     private final List<File> uploadedFiles = new ArrayList<>();
-    FileDragAndDropHandler fileHandler;
-    UserDto userDto;
-    SubmissionDto submissionDto;
-    AssignmentDto assignmentDto;
+    private FileDragAndDropHandler fileHandler;
+    private UserDto userDto;
+    private SubmissionDto submissionDto;
+    private AssignmentDto assignmentDto;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        fileHandler = new FileDragAndDropHandler(uploadedFiles, vbxFileList);
-        fileHandler.setupDragAndDrop(vbxDropArea);
-        userDto = (UserDto) AppContext.getInstance().get("User");
-        assignmentDto = (AssignmentDto) AppContext.getInstance().get("Assignment");
-    }
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
-getStage().close();
+        getStage().close();
 
     }
 
@@ -79,18 +56,18 @@ getStage().close();
             return;
         }
         saveSubmission();
+        getStage().close();
     }
 
     @FXML
     void onActionPrevious(ActionEvent event) {
-        // Method content
+        getStage().close();
     }
 
     @FXML
     void onActionBtnUpload(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
-
         if (selectedFiles != null) {
             selectedFiles.forEach(file -> fileHandler.addFileToList(file));
         }
@@ -98,7 +75,12 @@ getStage().close();
 
     @Override
     public void initialize() {
-
+        fileHandler = new FileDragAndDropHandler(uploadedFiles, vbxFileList);
+        fileHandler.setupDragAndDrop(vbxDropArea);
+        userDto =  SessionManager.getInstance().getLoginResponse().getUser();
+        assignmentDto = (AssignmentDto) AppContext.getInstance().get("assignment");
+        lblTitle.setText(assignmentDto.getTitle());
+        lblClosingDate.setText(assignmentDto.getDueDate().toString());
     }
 
     private void saveSubmission() {
@@ -116,8 +98,6 @@ getStage().close();
                 submissionDto = (SubmissionDto) answer.getResult("submission");
                 saveFile();
             }
-
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

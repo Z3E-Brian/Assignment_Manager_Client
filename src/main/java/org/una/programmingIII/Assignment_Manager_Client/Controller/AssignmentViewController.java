@@ -123,6 +123,7 @@ public class AssignmentViewController extends Controller implements Initializabl
 
     @FXML
     private void uploadFile(ActionEvent actionEvent) {
+
         FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView", this.getStage(), false);
     }
 
