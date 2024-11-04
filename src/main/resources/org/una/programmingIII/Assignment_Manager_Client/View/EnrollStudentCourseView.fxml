@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="5.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.EnrollStudentCourseController">
+   <children>
+      <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" styleClass="tool-bar">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="385.0" spacing="15.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="lblStudentName" styleClass="Titles" text="Student Label" />
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Assets/Assignment-Manager.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="25.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ImageView fx:id="imvBack" fitHeight="25.0" fitWidth="25.0" layoutX="159.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvBack" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Assets/Back.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="imvSearch" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#onMouseClickedImvSearch" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Assets/lupa.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="lblCourses" styleClass="lbl-Subtitle" text="Courses" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="75.0" />
+                           </padding>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <Label fx:id="lblCareerName" styleClass="lbl-Subtitle" text="Courses">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="tbvAvailableCourses" onMousePressed="#OnMousePressedTbvCourses" HBox.hgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="tbcAvailableCourses" prefWidth="150" text="Cursos Disponibles" />
+                              <TableColumn fx:id="tbcEnroll" prefWidth="79.0" text="Matricular" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                        <TableView fx:id="tbvEnrollCourses" onMousePressed="#OnMousePressedTbvEnrollCourses" HBox.hgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="tbcEnrolledCourses" prefWidth="237.0" text="Cursos Matriculados" />
+                              <TableColumn fx:id="tbcUnenroll" prefWidth="79.0" text="Desmatricular" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

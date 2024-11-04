@@ -1,0 +1,355 @@
+/* General background */
+.root {
+    -fx-background-color: #2E3440;
+}
+
+* {
+    /*-fx-font-family: Arial Rounded;*/
+}
+
+/* Top tab (navigation bar or header) */
+.menu-bar {
+    -fx-background-color: #3B4252;
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 18px;
+    -fx-padding: 10px;
+}
+.vBox_Main{
+-fx-background-image: url("../Assets/Main_Background.png");
+-fx-background-size: 100% 100%;
+}
+.context-menu {
+    -fx-background-color: #464a55;
+    -fx-border-color: #04495e;
+    -fx-border-width: 2px;
+}
+
+.label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #ffffff;
+}
+.lbl-Subtitle {
+    -fx-font-size: 22px;
+    -fx-text-fill: #ffffff;
+}
+.label2 {
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+}
+
+.Titles {
+    -fx-font-size: 30px;
+    -fx-text-fill: white;
+}
+.table-cell {
+    -fx-alignment: CENTER;
+}
+/* Main action buttons */
+.mfx-button {
+    -fx-background-color: #D32F2F;
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+}
+
+.mfx-button:pressed {
+    -fx-background-color: #600a0a;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.mfx-button:hover {
+    -fx-background-color: #610606;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+}
+
+.mfx-button:focused {
+    -fx-border-color: #ECEFF4;
+    -fx-background-color: #D32F2F;
+}
+
+
+/* Secondary buttons / icons */
+.button-secondary {
+    -fx-background-color: #1565C0;
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #42A5F5;
+}
+
+.column-header {
+    -fx-background-color: #1d2027;
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+}
+
+/* Work sections / forms */
+.form-section {
+    -fx-background-color: #ECEFF4;
+    -fx-padding: 15px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1px;
+}
+
+/* Main text */
+.text-primary {
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+}
+
+/* Borders or dividing lines */
+.divider {
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 0 0 2px 0;
+}
+
+/* Hover over links or buttons */
+.link:hover {
+    -fx-text-fill: #42A5F5;
+}
+
+/*UploadTask style*/
+.vbox-Dates {
+    -fx-background-color: #b0b0b0;
+    -fx-padding: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1px;
+}
+
+.label-AddDelivery {
+    -fx-background-color: #b0b0b0;
+    -fx-padding: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #b0b0b0;
+    -fx-border-width: 1px;
+}
+
+.vbox-DragAndDrop {
+    -fx-background-color: #464f5e;
+    -fx-padding: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #BDBDBD;
+    -fx-border-width: 1px;
+}
+
+.mfx-btn-SaveChanges, .mfx-btn-SaveChanges:armed, .mfx-btn-SaveChanges:focused {
+    -fx-background-color: #8997f4;
+}
+
+.mfx-btn-SaveChanges:hover {
+    -fx-background-color: #a2affd;
+}
+
+.mfx-btn-Cancel, .mfx-btn-Cancel:armed, .mfx-btn-Cancel:focused {
+    -fx-background-color: #800000;
+}
+
+.mfx-btn-Cancel:hover {
+    -fx-background-color: #e71e1e;
+}
+
+.mfx-btn-Previous, .mfx-btn-Previous:armed, .mfx-btn-Previous:focused {
+    -fx-background-color: #bbbaba;
+}
+
+.mfx-btn-Previous > ImageView {
+    -fx-image: url("../Assets/Back.png");
+}
+
+.mfx-btn-Previous:hover {
+    -fx-background-color: #bbb1b1;
+}
+
+.mfx-btn-Upload, .mfx-btn-Upload:armed, .mfx-btn-Upload:focused {
+    -fx-background-color: #bbbaba;
+}
+
+.mfx-btn-Upload > ImageView {
+    -fx-image: url("../Assets/Upload.png");
+}
+
+.mfx-btn-Upload:hover {
+    -fx-background-color: #bbb1b1;
+}
+
+.btn-delete, .btn-delete:armed, .btn-delete:focused {
+    -fx-background-color: #800000;
+    -fx-background-image: url("../Assets/Delete.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 25px 25px;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #e71e1e;
+}
+
+/*CoursesView*/
+.titledPane {
+    -fx-font: 14px "Roboto";
+    /*-fx-font-style: bold;*/
+    -fx-padding: 2px;
+}
+
+.vbox-Background-TitledPane {
+    -fx-background-color: #2E3440;
+    -fx-padding: 5px;
+}
+
+.hBox-TitledPane {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 5px;
+}
+
+.mfx-text-field {
+    -fx-pref-width: 100%; /* Forzar que ocupe el 100% del ancho del padre */
+    -fx-max-width: Infinity; /* Para asegurar que no tenga límites de crecimiento */
+}
+
+.btn-AddFile {
+    -fx-background-color: #babbba;
+    -fx-background-image: url("../Assets/AddFile.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 25px 25px;
+    -fx-pref-width: 26px;
+    -fx-pref-height: 26px;
+}
+
+.btn-AddFile:hover {
+    -fx-background-color: #cecccc;
+}
+
+.btn-DeleteFile {
+
+    -fx-background-color: transparent;
+    -fx-background-image: url("../Assets/DeleteFile.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 75%;
+    -fx-background-position: center;
+    -fx-pref-width: 20px;
+    -fx-pref-height: 20px;
+}
+
+.btn-DeleteFile:hover {
+    -fx-background-color: #cb7676;
+}
+
+
+/*JMDZ*/
+.tool-bar {
+    -fx-background-color: #16126a;
+}
+
+.mfx-btn-Back, .mfx-btn-Back:armed, .mfx-btn-Back:focused {
+    -fx-background-color: #bd1515;
+}
+
+.mfx-btn-Back> ImageView {
+    -fx-image: url("../Assets/Back.png");
+}
+
+.mfx-btn-Back:hover {
+    -fx-background-color: #760202;
+}
+
+.icon-image {
+    -fx-min-width: 10px;
+    -fx-min-height: 15px;
+    -fx-pref-width: 10px;
+    -fx-pref-height: 15px;
+    -fx-max-width: 10px;
+    -fx-max-height: 15px;
+}
+
+/*General buttons*/
+.mfx-btn-new, .mfx-btn-new:armed, .mfx-btn-new:focused {
+    -fx-background-color: #2196F3;
+}
+
+.mfx-btn-new > ImageView {
+    -fx-image: url("../Assets/AddFile.png");
+}
+
+.mfx-btn-new:hover {
+    -fx-background-color: #00ffcc;
+}
+
+.mfx-btn-Search, .mfx-btn-Search:armed, .mfx-btn-Search:focused {
+    -fx-background-color: #00bcd4;
+}
+
+.mfx-btn-Search > ImageView {
+    -fx-image: url("../Assets/Search.png");
+}
+
+.mfx-btn-Search:hover {
+    -fx-background-color: #006666;
+}
+
+.mfx-btn-Delete, .mfx-btn-Delete:armed, .mfx-btn-Delete:focused {
+    -fx-background-color: #f44336;
+}
+
+.mfx-btn-Delete > ImageView {
+    -fx-image: url("../Assets/DeleteFile.png");
+}
+
+.mfx-btn-Delete:hover {
+    -fx-background-color: #ff0000;
+}
+
+.mfx-btn-Save, .mfx-btn-Save:armed, .mfx-btn-Save:focused {
+    -fx-background-color: #00C853;
+}
+
+.mfx-btn-Save:hover {
+    -fx-background-color: #25ff7d;
+}
+
+.mfx-btn-Save > ImageView {
+    -fx-image: url("../Assets/Save.png");
+}
+
+.mfx-btn-Enroll, .mfx-btn-Enroll:armed, .mfx-btn-Enroll:focused {
+    -fx-background-color: #ffeb00;
+}
+
+.mfx-btn-Enroll > ImageView {
+    -fx-image: url("../Assets/enroll.png");
+}
+
+.mfx-btn-Enroll:hover {
+    -fx-background-color: #0eefd5;
+}
+
+.mfx-btn-Enter, .mfx-btn-Enter:armed, .mfx-btn-Enter:focused {
+    -fx-background-color: #00bcd4;
+}
+
+.mfx-btn-Enter > ImageView {
+    -fx-image: url("../Assets/Enter.png");
+}
+
+.mfx-btn-Enter:hover {
+    -fx-background-color: #006666;
+}
+
+.mfx-text-field {
+    -fx-text-fill: #000000; /* Color negro para el texto */
+}
+
+.mfx-text-field .floating-text {
+    -fx-text-fill: #000000; /* Color negro para el texto */
+}

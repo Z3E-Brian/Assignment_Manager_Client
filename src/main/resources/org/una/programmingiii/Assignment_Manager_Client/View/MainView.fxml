@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
+    <top>
+        <VBox>
+         <VBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
+                      <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
+                      <Region HBox.hgrow="ALWAYS" />
+                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" text="Courses">
+                </MenuButton>
+                  <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" />
+                  <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" text="Enroll Student Courses" />
+                  <MFXButton fx:id="btnUserMaintenance" layoutX="553.0" layoutY="38.0" onAction="#onActionBtnModifyUsers" styleClass="mfx-btn-Save" text="Modify Users" />
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="mfx-btn-Back" text="Exit" />
+                  <VBox alignment="CENTER">
+                     <children>
+                            <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
+                                <graphic>
+                                    <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
+                                        <Image url="@../Assets/UserIcon.png" />
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        <Label fx:id="lblUserName" text="User Name" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </VBox>
+                      <opaqueInsets>
+                          <Insets />
+                      </opaqueInsets>
+                      <padding>
+                          <Insets left="15.0" right="15.0" />
+                      </padding>
+                  </HBox>
+         </VBox>
+        </VBox>
+    </top>
+   <center>
+      <VBox fx:id="vboxCenterView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="vBox_Main" BorderPane.alignment="BOTTOM_CENTER" />
+   </center>
+</BorderPane>

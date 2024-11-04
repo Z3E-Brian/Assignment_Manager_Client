@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
+   <padding>
+      <Insets bottom="30" left="30" right="30" top="30" />
+   </padding>
+   <ImageView fitHeight="150.0" fitWidth="125.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@../Assets/Assignment-Manager.png" />
+      </image>
+   </ImageView>
+
+   <Label styleClass="Titles" text="Assignment Manager" />
+   <HBox layoutX="40.0" layoutY="378.0" spacing="10.0">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+            <image>
+               <Image url="@../Assets/UserIcon.png" />
+            </image>
+         </ImageView>
+         <MFXTextField fx:id="emailField" floatMode="BORDER" floatingText="Email" style="-fx-pref-width: 300px; -fx-font-size: 16px;" />
+      </children>
+   </HBox>
+   <HBox spacing="10.0">
+      <children>
+         <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
+            <image>
+               <Image url="@../Assets/candados.png" />
+            </image>
+         </ImageView>
+         <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" style="-fx-pref-width: 300px; -fx-font-size: 16px;" />
+      </children>
+   </HBox>
+   <MFXButton fx:id="btnLogIn" buttonType="RAISED" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Login" />
+   <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Register" />
+</VBox>

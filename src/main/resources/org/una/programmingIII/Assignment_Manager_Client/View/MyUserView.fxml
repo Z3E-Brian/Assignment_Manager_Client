@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" prefHeight="476.0" prefWidth="800.0" spacing="15.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MyUserViewController">
+    <Label styleClass="Titles" text="User Profile" />
+
+    <!-- Identification Number -->
+    <HBox alignment="TOP_CENTER" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Identification Number:" />
+        <Label fx:id="identificationNumberLabel" style="-fx-font-size: 16;" />
+    </HBox>
+
+    <!-- Name -->
+    <HBox alignment="TOP_CENTER" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Name:" />
+        <Label fx:id="nameLabel" style="-fx-font-size: 16;" />
+
+    </HBox>
+
+    <!-- Last Name -->
+    <HBox alignment="TOP_CENTER" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Last Name:" />
+        <Label fx:id="lastNameLabel" style="-fx-font-size: 16;" />
+
+    </HBox>
+
+    <!-- Second Last Name -->
+    <HBox alignment="TOP_CENTER" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Second Last Name:" />
+        <Label fx:id="secondLastNameLabel" style="-fx-font-size: 16;" />
+
+    </HBox>
+
+    <!-- Email -->
+    <HBox alignment="TOP_CENTER" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Email:" />
+        <Label fx:id="emailLabel" style="-fx-font-size: 16;" />
+    </HBox>
+
+    <!-- Career ID -->
+    <HBox alignment="TOP_CENTER" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Career:" />
+        <Label fx:id="careerLabel" style="-fx-font-size: 16;" />
+    </HBox>
+
+    <!-- Courses -->
+    <HBox alignment="TOP_CENTER" prefHeight="131.0" prefWidth="580.0" spacing="10">
+        <Label style="-fx-font-size: 16;" text="Courses:" />
+        <ListView fx:id="coursesListView" prefHeight="157.0" prefWidth="554.0" style="-fx-font-size: 16;" />
+    </HBox>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets left="20.0" top="15.0" />
+   </padding>
+
+</VBox>

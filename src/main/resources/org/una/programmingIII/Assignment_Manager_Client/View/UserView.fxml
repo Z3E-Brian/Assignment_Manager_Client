@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="476.0" prefWidth="1104.0" spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
+    <TableView fx:id="userTable" prefHeight="400.0" prefWidth="639.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="numberIDColumn" prefWidth="50.0" text="ID Card" />
+            <TableColumn fx:id="nameColumn" prefWidth="50.0" text="Name" />
+            <TableColumn fx:id="lastNameColumn" prefWidth="50.0" text="Lastname" />
+            <TableColumn fx:id="secondLastNameColumn" prefWidth="50.0" text="Second Lastname" />
+            <TableColumn fx:id="emailColumn" prefWidth="50.0" text="Email" />
+         <TableColumn fx:id="clmAction" prefWidth="50.0" text="Action" />
+        </columns>
+        <HBox.margin>
+            <Insets />
+        </HBox.margin>
+    </TableView>
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #2E3440; -fx-border-color: #2E3440;">
+        <VBox prefHeight="307.0" prefWidth="416.0" spacing="15.0">
+         <HBox spacing="15.0">
+            <children>
+                  <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios" />
+                   <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
+                       <graphic>
+                           <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                       </graphic>
+                   </MFXButton>
+            </children>
+         </HBox>
+            <MFXTextField fx:id="txfNumberID" floatMode="ABOVE" promptText="Identity Card Number (Exmp. 112341234)" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </MFXTextField>
+            <MFXTextField fx:id="txfName" floatMode="ABOVE" prefHeight="29.0" prefWidth="636.0" promptText="Name (Exmp. example example example)" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </MFXTextField>
+            <MFXTextField fx:id="txfLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Lastname">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </MFXTextField>
+            <MFXTextField fx:id="txfSecondLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Second Lastname">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </MFXTextField>
+            <MFXTextField fx:id="txfEmail" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" promptText="Email (Exmp. example@example.com)" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </MFXTextField>
+         <MFXTextField fx:id="txfCareerId" floatMode="ABOVE" layoutX="10.0" layoutY="288.0" promptText="CareerId" />
+            <MFXTextField fx:id="txfPassword" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </MFXTextField>
+            <Accordion>
+                <panes>
+                    <TitledPane fx:id="tpPermission" animated="false" style="-fx-background-color: white;" text="Permissions">
+                        <FlowPane fx:id="fpPermissions" hgap="15.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" />
+                    </TitledPane>
+                </panes>
+            </Accordion>
+
+            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="590.0" spacing="10.0">
+                <MFXButton fx:id="btnSave" onAction="#onActionBtnSave" prefWidth="95.0" styleClass="mfx-btn-Save" text="Save">
+                    <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                    </graphic>
+                </MFXButton>
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+</HBox>

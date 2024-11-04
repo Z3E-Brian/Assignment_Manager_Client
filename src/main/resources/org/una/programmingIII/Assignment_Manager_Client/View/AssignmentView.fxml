@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+
+<ScrollPane pannable="true" style="-fx-background: #2E3440; -fx-border-color: #2E3440;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentViewController">
+    <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-padding: 20;" stylesheets="@../Style/Styles.css">
+        <HBox>
+                <MFXButton fx:id="btnClose" mnemonicParsing="false" onAction="#close" text="Close" />
+        </HBox>
+        <!-- Título del assignment -->
+        <Label fx:id="lblAssignmentTitle" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Assignment Details" />
+
+        <!-- Archivos subidos -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label fx:id="lblDocument" onMouseClicked="#onMouseClickedDocument" styleClass="lbl-Subtitle" text="File" />
+        </HBox>
+
+        <!-- Estado de la entrega -->
+        <TitledPane style="-fx-background-color: #212121; -fx-font-size: 15;" text="Status">
+            <VBox fx:id="vbMain" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10;">
+            <HBox spacing="90.0">
+               <children>
+                      <Label styleClass="lbl-Subtitle" text="Student:" />
+                  <Label fx:id="lblStudentName" styleClass="lbl-Subtitle" text="Student Name" />
+               </children>
+            </HBox>
+                <GridPane hgap="10" vgap="10">
+                    <Label styleClass="lbl-Subtitle" text="Work Status:" />
+                    <Label fx:id="lblSubmission" styleClass="lbl-Subtitle" text="Empty" GridPane.columnIndex="1" />
+
+                    <Label styleClass="lbl-Subtitle" text="Qualification Status:" GridPane.rowIndex="1" />
+                    <Label fx:id="lblIsQualified" styleClass="lbl-Subtitle" text="Unrated" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                    <Label styleClass="lbl-Subtitle" text="Remaining Time:" GridPane.rowIndex="2" />
+                    <Label fx:id="lblRemainingTime" styleClass="lbl-Subtitle" text="34 días 5 horas restante" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                    <Label styleClass="lbl-Subtitle" text="Last Modified:" GridPane.rowIndex="3" />
+                    <Label fx:id="lblLastModification" style="-fx-font-size: 16;" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.rowIndex="5">
+                  <children>
+      
+                          <!-- Sección de calificación y comentarios para el profesor -->
+                          <Label styleClass="lbl-Subtitle" text="Grade:" />
+                          <Label fx:id="lblShowGrade" styleClass="lbl-Subtitle" text="Label" />
+                  </children>
+               </HBox>
+                    <MFXTextField fx:id="txfGrade" floatMode="BORDER" floatingText="Add Grade" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <TextArea fx:id="txfComment" prefRowCount="3" promptText="Add Comment" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                    <MFXButton fx:id="btnSubmitFeedback" onAction="#submitFeedback" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Submit Feedback" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                    <!-- Sección para agregar archivos -->
+                    <Label style="-fx-font-size: 16;" text="Upload Files:" GridPane.rowIndex="8" />
+                    <MFXButton fx:id="btnUploadFile" onAction="#goToUploadFile" style="-fx-background-color: #2a73ff; -fx-text-fill: white;" text="Add Work" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                    <Label fx:id="lblComment" styleClass="lbl-Subtitle" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               <Label styleClass="lbl-Subtitle" text="Comment:" GridPane.rowIndex="6" />
+                    <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
+            </VBox>
+        </TitledPane>
+    </VBox>
+</ScrollPane>

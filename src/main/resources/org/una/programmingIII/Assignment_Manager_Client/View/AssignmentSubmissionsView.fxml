@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentSubmissionsViewController">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <children>
+             <Label fx:id="lblAssignmentTitle" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Submissions for Assignment" />
+            <Button mnemonicParsing="false" onAction="#updateTable" text="Actualizar" />
+         </children>
+      </HBox>
+   
+       <!-- Tabla de entregas -->
+       <TableView fx:id="submissionsTable" prefHeight="350.0" prefWidth="502.0" style="-fx-background-color: #FFFFFF;">
+           <columns>
+               <TableColumn fx:id="studentNameColumn" prefWidth="150" text="Student Name" />
+               <TableColumn fx:id="uploadedFileColumn" prefWidth="150" text="Uploaded File" />
+               <TableColumn fx:id="gradeColumn" prefWidth="100" text="Grade" />
+               <TableColumn fx:id="detailsColumn" prefWidth="100" text="Actions" />
+           </columns>
+       </TableView>
+   </children>
+</VBox>
