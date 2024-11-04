@@ -206,6 +206,8 @@ public class CreateCourseViewController extends Controller {
         txfName.textProperty().bindBidirectional(courseInput.name);
         txfDescription.textProperty().bindBidirectional(courseInput.description);
         cbxProfessor.valueProperty().bindBidirectional(courseInput.professor);
+        dtpEndDate.valueProperty().bindBidirectional(courseInput.endDate);
+        dtpStartDate.valueProperty().bindBidirectional(courseInput.startDate);
     }
 
     private void unbindCourse() {
@@ -213,6 +215,8 @@ public class CreateCourseViewController extends Controller {
         txfDescription.textProperty().unbindBidirectional(courseInput.description);
         cbxProfessor.valueProperty().unbindBidirectional(courseInput.professor);
         cbxProfessor.clear();
+        dtpEndDate.valueProperty().unbindBidirectional(courseInput.endDate);
+        dtpStartDate.valueProperty().unbindBidirectional(courseInput.startDate);
     }
 
 
@@ -248,7 +252,7 @@ public class CreateCourseViewController extends Controller {
 
     private void loanProfessors() {
         try {
-            Answer answer = (Answer) new UserService().getAllUsersByPermission("PROFESSOR");
+            Answer answer = (Answer) new UserService().getAllUsersByPermission(String.valueOf(PermissionType.TEACH_CLASSES));
             System.out.println(answer.getResult("users"));
             if (!answer.getState()) {
                 showError("Load Professors", answer.getMessage());

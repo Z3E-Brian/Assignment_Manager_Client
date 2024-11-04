@@ -1,6 +1,7 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -25,7 +27,7 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class CourseViewController extends Controller {
+public class CourseViewController extends Controller implements Initializable {
 
     @FXML
     private Accordion acDates;
@@ -41,6 +43,12 @@ public class CourseViewController extends Controller {
 
     @Override
     public void initialize() {
+
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        clearComponents();
         userDto = SessionManager.getInstance().getLoginResponse().getUser();
         courseDto = (CourseDto) AppContext.getInstance().get("course");
         startDate = courseDto.getStartDate();
@@ -50,7 +58,13 @@ public class CourseViewController extends Controller {
         acDates.prefHeightProperty().bind(scrollPane.heightProperty().subtract(5));
         acDates.prefWidthProperty().bind(scrollPane.widthProperty().subtract(15));
         addWeeklyTitledPanes(startDate, endDate);
+    }
 
+
+    private void clearComponents() {
+        acDates.getPanes().clear();
+        assignments = new ArrayList<>();
+        courseContents = new ArrayList<>();
     }
 
 

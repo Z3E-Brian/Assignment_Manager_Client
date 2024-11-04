@@ -22,7 +22,7 @@
                       <Region HBox.hgrow="ALWAYS" />
                       <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" text="Courses">
                 </MenuButton>
-                  <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" text="UniversitiesMaintenance" />
+                  <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" />
                   <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" text="Enroll Student Courses" />
                   <VBox alignment="CENTER">
                      <children>

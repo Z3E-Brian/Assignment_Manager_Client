@@ -111,6 +111,7 @@ public class MainViewController extends Controller implements SessionObserver {
 
     @FXML
     void OnActionBtnRegisterStudents_Courses(ActionEvent event) {
+        removeBackgroundImage();
         checkStudentLogin();
     }
 
@@ -127,7 +128,7 @@ public class MainViewController extends Controller implements SessionObserver {
         String selectedCourse = menuItem.getText();
         CourseDto courseDto = courses.stream().filter(course -> course.getName().equals(selectedCourse)).findFirst().get();
         AppContext.getInstance().set("course", courseDto);
-        FlowController.getInstance().goView("CourseView");
+        FlowController.getInstance().deleteAndLoadView("CourseView");
     }
 
     private void loadLoginResponse() {
