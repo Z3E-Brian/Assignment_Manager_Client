@@ -72,6 +72,7 @@ public class MainViewController extends Controller implements SessionObserver {
         SessionManager.getInstance().setRunningTokenValidationThread(true);
         SessionManager.getInstance().startTokenValidationTask();
         restoreBackgroundImage();
+        checkSession();
     }
 
     @FXML

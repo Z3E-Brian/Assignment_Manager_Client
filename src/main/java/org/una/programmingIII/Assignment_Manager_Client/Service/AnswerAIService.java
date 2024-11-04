@@ -3,7 +3,9 @@ package org.una.programmingIII.Assignment_Manager_Client.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.AnswerAIDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -15,11 +17,13 @@ import java.util.logging.Logger;
 public class AnswerAIService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private static final String BASE_URL = "http://localhost:8080/api/anwersAI";
+    private static final String BASE_URL = "http://localhost:8080/api/answerAI";
     String jwtToken;
     public AnswerAIService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
     }
     public Answer getAllAnswerAI() {
         try {

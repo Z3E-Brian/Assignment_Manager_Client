@@ -6,15 +6,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.SubmissionService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
+import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -27,9 +33,7 @@ public class AssignmentViewController extends Controller implements Initializabl
     @FXML
     private VBox vbMain;
     @FXML
-    private Hyperlink lblDocument;
-    @FXML
-    private Label uploadDate, aiResponseLabel, lblRemainingTime, lblLastModification, lblShowGrade, lblComment, lblStudentName, lblAssignmentTitle, lblSubmission, lblIsQualified;
+    private Label   lblDocument,uploadDate, aiResponseLabel, lblRemainingTime, lblLastModification, lblShowGrade, lblComment, lblStudentName, lblAssignmentTitle, lblSubmission, lblIsQualified;
     @FXML
     private MFXButton btnSubmitFeedback, btnUploadFile, btnClose;
     @FXML
@@ -43,7 +47,7 @@ public class AssignmentViewController extends Controller implements Initializabl
     private final SubmissionService submissionService = new SubmissionService();
 
     @Override
-    public void initialize(){
+    public void initialize() {
         clearAll();
         isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
                 .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
@@ -55,6 +59,15 @@ public class AssignmentViewController extends Controller implements Initializabl
         } else {
             try {
                 submission = submissionService.getSubmissionByAssignmentIdAndStudentId(assignment.getId(), SessionManager.getInstance().getLoginResponse().getUser().getId());
+                loadSubmissionData();
+                if (submission.getStudentId() != null){
+                    loadStudent(submission.getStudentId());
+                }
+
+                if (submission.getGrade() != null) {
+                    lblIsQualified.setText("Qualified");
+                }
+
             } catch (Exception e) {
                 submission = new StudentsSubmissions();
             }
@@ -64,10 +77,24 @@ public class AssignmentViewController extends Controller implements Initializabl
         initializeAssignmentData();
     }
 
+    private void loadStudent(Long id) {
+        try {
+            UserDto userDto = new UserService().getUserById(id);
+            lblStudentName.setText(userDto.getFullName());
+        } catch (Exception e) {
+            showError("Error", "Error to get the student");
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initialize();
     }
+    @FXML
+    void onMouseClickedDocument(MouseEvent event) {
+        downloadFile(lblDocument.getText());
+    }
+
 
     private void setupViewForRole() {
         boolean isStudent = !isTeacher;
@@ -77,36 +104,70 @@ public class AssignmentViewController extends Controller implements Initializabl
         txfComment.setEditable(isTeacher);
         txfComment.setVisible(isTeacher);
         txfGrade.setVisible(isTeacher);
-        lblStudentName.setVisible(isTeacher);
         btnSubmitFeedback.setVisible(isTeacher);
         btnUploadFile.setVisible(isStudent);
         btnClose.setVisible(isTeacher);
 
-        if (isStudent) {
-            vbMain.getChildren().remove(lblStudentName);
-        }
     }
 
-    private void  initializeAssignmentData() {
-        lblRemainingTime.setText("Remaining Time: " + assignment.getDueDate().minusDays(LocalDate.now().toEpochDay()) + " days");
-        lblDocument.setText("Document");
+    private void initializeAssignmentData() {
+        LocalDate dueDate = assignment.getDueDate();
+        LocalDate actualDate = LocalDate.now();
+        String timeForSubmission = String.valueOf(dueDate.toEpochDay() - actualDate.toEpochDay());
+        lblRemainingTime.setText(timeForSubmission + " days remaining");
+
         lblAssignmentTitle.setText(assignment.getTitle());
-
-
     }
 
     private void loadSubmissionData() {
-        lblLastModification.setText("Last Modification: " + (submission.getCreatedAt() != null ? submission.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A"));
-        lblStudentName.setText(submission.getStudentName());
-        lblComment.setText(submission.getFeedback());
-        lblSubmission.setText(submission.getFiles() != null ? "Submission made" : "No submission");
-        lblSubmission.setStyle(submission.getFiles() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
-        lblShowGrade.setText(submission.getGrade() != null ? "Grade: " + submission.getGrade() : "Not graded");
-        lblShowGrade.setStyle(submission.getGrade() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
-        txfGrade.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
-        txfComment.setText(submission.getFeedback() != null ? submission.getFeedback() : "");
-        lblSubmission.setText("Submission made");
+      if (submission!=null) {
+          lblLastModification.setText((submission.getCreatedAt() != null ? submission.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A"));
+          lblStudentName.setText(submission.getStudentName());
+          lblComment.setText(submission.getFeedback());
+          lblSubmission.setText(submission.getFiles() != null ? "Submission made" : "No submission");
+          lblSubmission.setStyle(submission.getFiles() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
+          lblShowGrade.setText(submission.getGrade() != null ? String.valueOf(submission.getGrade()) : "Not graded");
+          lblShowGrade.setStyle(submission.getGrade() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
+          txfGrade.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
+          txfComment.setText(submission.getFeedback() != null ? submission.getFeedback() : "");
+      }
+      else{
+          submission = new StudentsSubmissions();
+          lblLastModification.setText("N/A");
+          lblStudentName.setText("N/A");
+          lblComment.setText("N/A");
+          lblSubmission.setText("No submission");
+          lblSubmission.setStyle("-fx-text-fill: red");
+          lblShowGrade.setText("Not graded");
+          lblShowGrade.setStyle("-fx-text-fill: red");
+          txfGrade.setText("");
+          txfComment.setText("");
+      lblSubmission.setText("Submission made");}
 
+FileDto fileDto = assignment.getFiles().getFirst();
+if (fileDto != null) {
+    lblDocument.setText(fileDto.getName());
+} else {
+    lblDocument.setText("No file uploaded");
+}
+    }
+
+    private void downloadFile(String labelText) {
+        List<FileDto> files = assignment.getFiles();
+        FileDto fileDto = files.stream().filter(file -> file.getName().equals(labelText)).findFirst().orElse(null);
+        if (fileDto != null) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialFileName(fileDto.getName());
+            fileChooser.setTitle("Save File");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                try {
+                    new FileService().downloadFileInChunks(fileDto.getId(), Paths.get(file.getAbsolutePath()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     @FXML
@@ -145,7 +206,8 @@ public class AssignmentViewController extends Controller implements Initializabl
             sendEmailToStudent(newSubmission);
         }
     }
-    private void sendEmailToStudent(SubmissionDto submissionDto ){
+
+    private void sendEmailToStudent(SubmissionDto submissionDto) {
         EmailDto emailDto = new EmailDto();
         emailDto.setSubject(assignment.getTitle());
         try {
@@ -153,11 +215,12 @@ public class AssignmentViewController extends Controller implements Initializabl
             emailDto.setEmail(userDto.getEmail());
             emailDto.setMessage("Your submission has been reviewed again, your new grade is: " + submissionDto.getGrade());
             new AssignmentService().sendEmail(emailDto);
-        }catch (Exception e){
+        } catch (Exception e) {
             showError("Error", "Error to get the student");
         }
 
     }
+
     @FXML
     private void uploadFile(ActionEvent actionEvent) {
         FlowController.getInstance().goViewInWindowModal("AddAssignmentOrFileView", this.getStage(), false);
