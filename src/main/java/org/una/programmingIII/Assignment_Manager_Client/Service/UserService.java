@@ -57,6 +57,8 @@ public class UserService {
 
 
     public List<UserDto> getAllUsers() throws Exception {
+        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
+        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getAllUsers"))//TODO: remove "/getAllUsers" from URI
                 .header("Authorization", "Bearer " + jwtToken)
@@ -161,6 +163,7 @@ public class UserService {
             String requestBody = objectMapper.writeValueAsString(user);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/create"))
+                    .header("Authorization", "Bearer " + jwtToken)
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -260,7 +263,6 @@ public class UserService {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + jwtToken)
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
 

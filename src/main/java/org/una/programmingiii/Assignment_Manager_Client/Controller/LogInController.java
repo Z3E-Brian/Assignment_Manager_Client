@@ -35,8 +35,10 @@ public class LogInController extends Controller {
         passwordField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
         emailField.delegateSetTextFormatter(Format.getInstance().textFormat(40));
         //emailField.setText("admin@admin.com");
-        emailField.setText("justin77mendezmena@gmail.com");
-        passwordField.setText("admin");
+//        emailField.setText("justin77mendezmena@gmail.com");
+//        passwordField.setText("admin");
+        emailField.setText("bjzele03@gmail.com");
+        passwordField.setText("brian");
     }
 
     @FXML

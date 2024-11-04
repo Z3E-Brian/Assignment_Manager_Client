@@ -35,6 +35,8 @@ public class UserViewController extends Controller implements Initializable {
     private TableView<UserDto> userTable;
     @FXML
     private TableColumn<UserDto, String> nameColumn, lastNameColumn, secondLastNameColumn, emailColumn, numberIDColumn;
+    @FXML
+    private TableColumn<UserDto, MFXButton> clmAction;
 
     private final UserService userService = new UserService();
     private UserInput userInput = new UserInput();
@@ -59,9 +61,34 @@ public class UserViewController extends Controller implements Initializable {
         secondLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("secondLastName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        userTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && userTable.getSelectionModel().getSelectedItem() != null) {
+                bindUserToForm(userTable.getSelectionModel().getSelectedItem());
+                setFieldsEditable(false);
+            }
+        });
+
+        clmAction.setCellFactory(col -> new TableCell<>() {
+            private final MFXButton detailsButton = new MFXButton("Delete");
+
+            @Override
+            protected void updateItem(MFXButton item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(detailsButton);
+                    detailsButton.setOnAction(event -> deleteUser(getTableView().getItems().get(getIndex())));
+                }
+            }
+        });
     }
 
     private void initializePermissions() {
+        if (!fpPermissions.getChildren().isEmpty()) {
+            return;
+        }
         for (PermissionType permission : PermissionType.values()) {
             MFXCheckbox checkBox = new MFXCheckbox(permission.toString().replace("_", " "));
             checkBox.setPrefWidth(180);
@@ -77,15 +104,15 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.textProperty().bindBidirectional(userInput.lastName);
         txfSecondLastName.textProperty().bindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().bindBidirectional(userInput.password);
-        //bindear los checkboxes
+
         for (Node node : fpPermissions.getChildren()) {
             if (node instanceof MFXCheckbox checkBox) {
                 checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                    PermissionType permissionDto = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
                     if (newValue) {
-                        PermissionType permissionDto = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
                         userInput.role.add(permissionDto);
                     } else {
-                        userInput.role.removeIf(permissionDto -> permissionDto.name().equals(checkBox.getText().replace(" ", "_")));
+                        userInput.role.remove(permissionDto);
                     }
                 });
             }
@@ -99,28 +126,29 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.textProperty().unbindBidirectional(userInput.lastName);
         txfSecondLastName.textProperty().unbindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().unbindBidirectional(userInput.password);
-        //unbind checkboxes
-        for (Node node : fpPermissions.getChildren()) {
-            if (node instanceof MFXCheckbox checkBox) {
-                checkBox.selectedProperty().removeListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        PermissionType permissionDto = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
-                        userInput.role.add(permissionDto);
-                    } else {
-                        userInput.role.removeIf(permissionDto -> permissionDto.name().equals(checkBox.getText().replace(" ", "_")));
-                    }
-                });
-            }
-        }
     }
 
     private void newUser() {
         userInput = new UserInput();
         unbindUser();
         bindUser();
-//        clearForm();
+        clearForm();
         setFieldsEditable(true);
         txfName.requestFocus();
+    }
+
+    private void clearForm() {
+        txfName.setText("");
+        txfEmail.setText("");
+        txfNumberID.setText("");
+        txfLastName.setText("");
+        txfSecondLastName.setText("");
+        txfPassword.setText("");
+        for (Node node : fpPermissions.getChildren()) {
+            if (node instanceof MFXCheckbox checkBox) {
+                checkBox.setSelected(false);
+            }
+        }
     }
 
     @FXML
@@ -199,34 +227,24 @@ public class UserViewController extends Controller implements Initializable {
         userTable.setItems(FXCollections.observableArrayList(users));
     }
 
-    @FXML
-    private void onActionBtnDelete(ActionEvent actionEvent) {
-        deleteUser();
-    }
-
-    private void deleteUser() {
-        UserDto selectedUser = userTable.getSelectionModel().getSelectedItem();
+    private void deleteUser(UserDto selectedUser) {
         if (selectedUser != null) {
             try {
                 userService.deleteUser(selectedUser.getId());
                 loadUsers();
-//                clearForm();
             } catch (Exception e) {
                 showAlert("Error deleting user", e.getMessage(), Alert.AlertType.ERROR);
             }
         } else {
             showAlert("Warning", "Select a user from table.", Alert.AlertType.WARNING);
         }
+        updateTable();
     }
 
     @FXML
     private void onActionBtnClear(ActionEvent actionEvent) {
-//        clearForm();
+        clearForm();
     }
-
-//    private void clearForm() {
-//        // Clear form logic if needed
-//    }
 
     @FXML
     private void onActionBtnSearch(ActionEvent actionEvent) {
@@ -259,7 +277,6 @@ public class UserViewController extends Controller implements Initializable {
         txfLastName.setText(user.getLastName());
         txfSecondLastName.setText(user.getSecondLastName());
         txfEmail.setText(user.getEmail());
-//        txfPassword.setText("********");
         user.getPermissions().forEach(permission -> {
             for (Node node : fpPermissions.getChildren()) {
                 if (node instanceof MFXCheckbox checkBox && checkBox.getText().equals(permission.getName().toString().replace("_", " "))) {
@@ -274,8 +291,16 @@ public class UserViewController extends Controller implements Initializable {
         prepareForNewUser();
     }
 
+    private void updateTable() {
+        try {
+            loadUsers();
+        } catch (Exception e) {
+            showAlert("Error", "An error occurred while loading the users: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     private void prepareForNewUser() {
-//        clearForm();
+        newUser();
         setFieldsEditable(true);
     }
 
