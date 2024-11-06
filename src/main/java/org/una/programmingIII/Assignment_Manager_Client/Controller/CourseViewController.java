@@ -135,6 +135,11 @@ public class CourseViewController extends Controller implements Initializable {
                         }
                     });
         }
+        if (content.getChildren().isEmpty()) {
+            Label label = new Label("No files or assignments");
+            label.getStyleClass().add("label");
+            content.getChildren().add(label);
+        }
 
         weekPane.setContent(content);
     }
