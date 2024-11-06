@@ -44,17 +44,17 @@ public class UserViewController extends Controller implements Initializable {
     private List<PermissionDto> permissions;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        initialize();
-    }
-
-    @Override
     public void initialize() {
         getServerPermissions();
         configureTable();
         initializePermissions();
         bindUser();
         loadUsers();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initialize();
     }
 
     private void configureTable() {
@@ -90,9 +90,7 @@ public class UserViewController extends Controller implements Initializable {
     }
 
     private void initializePermissions() {
-        if (!fpPermissions.getChildren().isEmpty()) {
-            return;
-        }
+        if (!fpPermissions.getChildren().isEmpty()) return;
         for (PermissionType permission : PermissionType.values()) {
             MFXCheckbox checkBox = new MFXCheckbox(permission.toString().replace("_", " "));
             checkBox.setPrefWidth(180);
@@ -114,11 +112,8 @@ public class UserViewController extends Controller implements Initializable {
             if (node instanceof MFXCheckbox checkBox) {
                 checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                     PermissionType permissionDto = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
-                    if (newValue) {
-                        userInput.role.add(permissionDto);
-                    } else {
-                        userInput.role.remove(permissionDto);
-                    }
+                    if (newValue) userInput.role.add(permissionDto);
+                    else userInput.role.remove(permissionDto);
                 });
             }
         }
@@ -136,7 +131,6 @@ public class UserViewController extends Controller implements Initializable {
 
     private void newUser() {
         userInput = new UserInput();
-        unbindUser();
         bindUser();
         clearForm();
         setFieldsEditable(true);
@@ -152,31 +146,23 @@ public class UserViewController extends Controller implements Initializable {
         txfPassword.setText("");
         txfCareerId.setText("");
         for (Node node : fpPermissions.getChildren()) {
-            if (node instanceof MFXCheckbox checkBox) {
-                checkBox.setSelected(false);
-            }
+            if (node instanceof MFXCheckbox checkBox) checkBox.setSelected(false);
         }
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
-        if (txfNumberID.isDisabled()) {
-            updateUser();
-        } else {
-            createUser();
-        }
+        if (txfNumberID.isDisabled()) updateUser();
+        else createUser();
     }
 
     private void createUser() throws Exception {
         bindUser();
-
         NewUserDto newUserDto = new NewUserDto(userInput);
         newUserDto.setPermissions(getPermissions());
-
         Answer answer = userService.createUser(newUserDto);
-        if (!answer.getState()) {
-            showError("Create User", answer.getMessage());
-        } else {
+        if (!answer.getState()) showError("Create User", answer.getMessage());
+        else {
             showInfo("Create User", "User created successfully.");
             newUser();
             refreshTable();
@@ -190,16 +176,13 @@ public class UserViewController extends Controller implements Initializable {
             NewUserDto newUserDto = new NewUserDto(userInput);
             newUserDto.setPermissions(getPermissions());
             Answer answer = userService.updateUser(selectedUser.getId(), newUserDto);
-            if (!answer.getState()) {
-                showError("Update User", answer.getMessage());
-            } else {
+            if (!answer.getState()) showError("Update User", answer.getMessage());
+            else {
                 showInfo("Update User", "User updated successfully.");
                 newUser();
                 refreshTable();
             }
-        } else {
-            showError("Update User", "Please select a user to update.");
-        }
+        } else showError("Update User", "Please select a user to update.");
     }
 
     private void loadUsers() {
@@ -219,18 +202,12 @@ public class UserViewController extends Controller implements Initializable {
         }
     }
 
-
     private Set<PermissionDto> getPermissions() {
         return fpPermissions.getChildren().stream()
                 .filter(node -> node instanceof MFXCheckbox && ((MFXCheckbox) node).isSelected())
-                .map(node -> {
-                    return permissions.stream()
-                            .filter(permission -> permission.getName().toString().equals(((MFXCheckbox) node).getText().replace(" ", "_")))
-                            .findFirst()
-                            .orElse(null);
-
-
-                })
+                .map(node -> permissions.stream()
+                        .filter(permission -> permission.getName().toString().equals(((MFXCheckbox) node).getText().replace(" ", "_")))
+                        .findFirst().orElse(null))
                 .collect(Collectors.toSet());
     }
 
@@ -250,14 +227,17 @@ public class UserViewController extends Controller implements Initializable {
     private void deleteUser(UserDto selectedUser) {
         if (selectedUser != null) {
             try {
-                userService.deleteUser(selectedUser.getId());
+                Answer answer = userService.deleteUser(selectedUser.getId());
+                if (!answer.getState()) showAlert("Error Deleting User", answer.getMessage(), Alert.AlertType.ERROR);
+                else {
+                    showAlert("Delete User", "User deleted successfully.", Alert.AlertType.INFORMATION);
+                    refreshTable();
+                }
                 loadUsers();
             } catch (Exception e) {
                 showAlert("Error deleting user", e.getMessage(), Alert.AlertType.ERROR);
             }
-        } else {
-            showAlert("Warning", "Select a user from table.", Alert.AlertType.WARNING);
-        }
+        } else showAlert("Warning", "Select a user from table.", Alert.AlertType.WARNING);
         updateTable();
     }
 

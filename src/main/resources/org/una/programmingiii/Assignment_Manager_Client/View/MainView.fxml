@@ -6,17 +6,17 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
     <top>
         <VBox>
          <VBox>
                   <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
                       <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
                       <Region HBox.hgrow="ALWAYS" />
-                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" text="Courses">
+                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" styleClass="mfx-btn-Save" text="Courses">
                 </MenuButton>
                   <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" />
-                  <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" text="Enroll Student Courses" />
+                  <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" styleClass="mfx-btn-Save" text="Enroll Student Courses" />
                   <MFXButton fx:id="btnUserMaintenance" layoutX="553.0" layoutY="38.0" onAction="#onActionBtnModifyUsers" styleClass="mfx-btn-Save" text="Modify Users" />
                   <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="mfx-btn-Back" text="Exit" />
                   <VBox alignment="CENTER">

@@ -58,11 +58,11 @@
                 </HBox.margin>
             </MFXTextField>
          <MFXTextField fx:id="txfCareerId" floatMode="ABOVE" layoutX="10.0" layoutY="288.0" promptText="CareerId" />
-            <MFXTextField fx:id="txfPassword" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS">
+            <MFXPasswordField fx:id="txfPassword" caretVisible="false" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS">
                 <HBox.margin>
                     <Insets />
                 </HBox.margin>
-            </MFXTextField>
+            </MFXPasswordField>
             <Accordion>
                 <panes>
                     <TitledPane fx:id="tpPermission" animated="false" style="-fx-background-color: white;" text="Permissions">

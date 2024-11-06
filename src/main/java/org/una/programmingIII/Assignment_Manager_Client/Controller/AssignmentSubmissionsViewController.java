@@ -8,6 +8,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
@@ -101,7 +102,7 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     private void openDetailsModal(StudentsSubmissions submission) {
         AppContext.getInstance().delete("submission");
         AppContext.getInstance().set("submission", submission);
-        FlowController.getInstance().goViewInWindowUndecorated("AssignmentView");
+        FlowController.getInstance().goViewInWindowModal("AssignmentView", getStage(), false);
         FlowController.getInstance().getController("AssignmentView").initialize();
 
     }

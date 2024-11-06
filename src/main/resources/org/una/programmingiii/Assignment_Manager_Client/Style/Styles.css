@@ -3,10 +3,6 @@
     -fx-background-color: #2E3440;
 }
 
-* {
-    /*-fx-font-family: Arial Rounded;*/
-}
-
 /* Top tab (navigation bar or header) */
 .menu-bar {
     -fx-background-color: #3B4252;
@@ -14,10 +10,12 @@
     -fx-font-size: 18px;
     -fx-padding: 10px;
 }
-.vBox_Main{
--fx-background-image: url("../Assets/Main_Background.png");
--fx-background-size: 100% 100%;
+
+.vBox_Main {
+    -fx-background-image: url("../Assets/Main_Background.png");
+    -fx-background-size: 100% 100%;
 }
+
 .context-menu {
     -fx-background-color: #464a55;
     -fx-border-color: #04495e;
@@ -28,10 +26,12 @@
     -fx-font-size: 12px;
     -fx-text-fill: #ffffff;
 }
+
 .lbl-Subtitle {
     -fx-font-size: 22px;
     -fx-text-fill: #ffffff;
 }
+
 .label2 {
     -fx-font-size: 16px;
     -fx-text-fill: #000000;
@@ -41,9 +41,11 @@
     -fx-font-size: 30px;
     -fx-text-fill: white;
 }
+
 .table-cell {
     -fx-alignment: CENTER;
 }
+
 /* Main action buttons */
 .mfx-button {
     -fx-background-color: #D32F2F;
@@ -69,7 +71,6 @@
     -fx-border-color: #ECEFF4;
     -fx-background-color: #D32F2F;
 }
-
 
 /* Secondary buttons / icons */
 .button-secondary {
@@ -117,17 +118,8 @@
     -fx-text-fill: #42A5F5;
 }
 
-/*UploadTask style*/
-.vbox-Dates {
-    -fx-background-color: #b0b0b0;
-    -fx-padding: 5px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-border-color: #BDBDBD;
-    -fx-border-width: 1px;
-}
-
-.label-AddDelivery {
+/* UploadTask style */
+.vbox-Dates, .label-AddDelivery {
     -fx-background-color: #b0b0b0;
     -fx-padding: 5px;
     -fx-border-radius: 8px;
@@ -196,10 +188,9 @@
     -fx-background-color: #e71e1e;
 }
 
-/*CoursesView*/
+/* CoursesView */
 .titledPane {
     -fx-font: 14px "Roboto";
-    /*-fx-font-style: bold;*/
     -fx-padding: 2px;
 }
 
@@ -214,8 +205,8 @@
 }
 
 .mfx-text-field {
-    -fx-pref-width: 100%; /* Forzar que ocupe el 100% del ancho del padre */
-    -fx-max-width: Infinity; /* Para asegurar que no tenga límites de crecimiento */
+    -fx-pref-width: 100%;
+    -fx-max-width: Infinity;
 }
 
 .btn-AddFile {
@@ -232,7 +223,6 @@
 }
 
 .btn-DeleteFile {
-
     -fx-background-color: transparent;
     -fx-background-image: url("../Assets/DeleteFile.png");
     -fx-background-repeat: no-repeat;
@@ -246,8 +236,7 @@
     -fx-background-color: #cb7676;
 }
 
-
-/*JMDZ*/
+/* JMDZ */
 .tool-bar {
     -fx-background-color: #16126a;
 }
@@ -256,7 +245,7 @@
     -fx-background-color: #bd1515;
 }
 
-.mfx-btn-Back> ImageView {
+.mfx-btn-Back > ImageView {
     -fx-image: url("../Assets/Back.png");
 }
 
@@ -273,7 +262,7 @@
     -fx-max-height: 15px;
 }
 
-/*General buttons*/
+/* General buttons */
 .mfx-btn-new, .mfx-btn-new:armed, .mfx-btn-new:focused {
     -fx-background-color: #2196F3;
 }
@@ -311,7 +300,7 @@
 }
 
 .mfx-btn-Save, .mfx-btn-Save:armed, .mfx-btn-Save:focused {
-    -fx-background-color: #00C853;
+    -fx-background-color: #008f36;
 }
 
 .mfx-btn-Save:hover {
@@ -347,9 +336,9 @@
 }
 
 .mfx-text-field {
-    -fx-text-fill: #000000; /* Color negro para el texto */
+    -fx-text-fill: #000000;
 }
 
 .mfx-text-field .floating-text {
-    -fx-text-fill: #000000; /* Color negro para el texto */
+    -fx-text-fill: #000000;
 }

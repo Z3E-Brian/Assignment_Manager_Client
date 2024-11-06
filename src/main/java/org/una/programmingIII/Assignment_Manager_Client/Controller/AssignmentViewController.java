@@ -49,6 +49,7 @@ public class AssignmentViewController extends Controller implements Initializabl
     @Override
     public void initialize() {
         clearAll();
+        System.out.println(SessionManager.getInstance().getLoginResponse().getUser().getPermissions());
         isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
                 .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
         assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
