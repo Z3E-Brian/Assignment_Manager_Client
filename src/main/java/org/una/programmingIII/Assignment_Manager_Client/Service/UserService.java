@@ -62,7 +62,8 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {});
+            return objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+            });
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
@@ -74,7 +75,8 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return new Answer(true, "", "Users fetched successfully", "users", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {}));
+            return new Answer(true, "", "Users fetched successfully", "users", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+            }));
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
@@ -86,19 +88,28 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return new Answer(true, "", "students fetched successfully", "students", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {}));
+            return new Answer(true, "", "students fetched successfully", "students", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+            }));
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
     }
 
-    public Map<String, Object> getUsers(int page, int size, int limit) throws Exception {
+    public Answer getUsers(int page, int size) throws Exception {
         setJwtToken();
-        HttpRequest request = createRequestBuilder(BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit).GET().build();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/getPageable?page=" + page + "&size=" + size)
+                .header("Authorization", "Bearer " + jwtToken)
+                .GET()
+                .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {});
+            Map<String, Object> result = objectMapper.readValue(response.body(), new TypeReference<>() {
+            });
+            List<UserDto> users = objectMapper.convertValue(result.get("content"), new TypeReference<>() {
+            });
+            long totalElements = objectMapper.convertValue(result.get("totalElements"), Long.class);
+            return new Answer(true, "Users fetched successfully", "", "", Map.of("users", users, "totalElements", totalElements));
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
@@ -201,7 +212,8 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<PermissionDto>>() {});
+            return objectMapper.readValue(response.body(), new TypeReference<List<PermissionDto>>() {
+            });
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }

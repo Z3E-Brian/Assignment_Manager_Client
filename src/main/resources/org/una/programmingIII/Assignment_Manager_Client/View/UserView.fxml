@@ -7,62 +7,40 @@
 <?import javafx.scene.layout.*?>
 
 <HBox prefHeight="476.0" prefWidth="1104.0" spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
-    <TableView fx:id="userTable" prefHeight="400.0" prefWidth="639.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-        <columns>
-            <TableColumn fx:id="numberIDColumn" prefWidth="50.0" text="ID Card" />
-            <TableColumn fx:id="nameColumn" prefWidth="50.0" text="Name" />
-            <TableColumn fx:id="lastNameColumn" prefWidth="50.0" text="Lastname" />
-            <TableColumn fx:id="secondLastNameColumn" prefWidth="50.0" text="Second Lastname" />
-            <TableColumn fx:id="emailColumn" prefWidth="50.0" text="Email" />
-         <TableColumn fx:id="clmAction" prefWidth="50.0" text="Action" />
-        </columns>
-        <HBox.margin>
-            <Insets />
-        </HBox.margin>
-    </TableView>
+    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+        <TableView fx:id="userTable" prefHeight="400.0" prefWidth="639.0" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="numberIDColumn" prefWidth="50.0" text="ID Card" />
+                <TableColumn fx:id="nameColumn" prefWidth="50.0" text="Name" />
+                <TableColumn fx:id="lastNameColumn" prefWidth="50.0" text="Lastname" />
+                <TableColumn fx:id="secondLastNameColumn" prefWidth="50.0" text="Second Lastname" />
+                <TableColumn fx:id="emailColumn" prefWidth="50.0" text="Email" />
+                <TableColumn fx:id="clmAction" prefWidth="50.0" text="Action" />
+            </columns>
+        </TableView>
+
+        <!-- Control de Paginación -->
+        <Pagination fx:id="pagination" maxPageIndicatorCount="5" pageCount="0" prefWidth="639.0" VBox.vgrow="ALWAYS" />
+    </VBox>
+
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #2E3440; -fx-border-color: #2E3440;">
         <VBox prefHeight="307.0" prefWidth="416.0" spacing="15.0">
-         <HBox spacing="15.0">
-            <children>
-                  <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios" />
-                   <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
-                       <graphic>
-                           <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
-                       </graphic>
-                   </MFXButton>
-            </children>
-         </HBox>
-            <MFXTextField fx:id="txfNumberID" floatMode="ABOVE" promptText="Identity Card Number (Exmp. 112341234)" HBox.hgrow="ALWAYS">
-                <HBox.margin>
-                    <Insets />
-                </HBox.margin>
-            </MFXTextField>
-            <MFXTextField fx:id="txfName" floatMode="ABOVE" prefHeight="29.0" prefWidth="636.0" promptText="Name (Exmp. example example example)" HBox.hgrow="ALWAYS">
-                <HBox.margin>
-                    <Insets />
-                </HBox.margin>
-            </MFXTextField>
-            <MFXTextField fx:id="txfLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Lastname">
-                <HBox.margin>
-                    <Insets />
-                </HBox.margin>
-            </MFXTextField>
-            <MFXTextField fx:id="txfSecondLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Second Lastname">
-                <HBox.margin>
-                    <Insets />
-                </HBox.margin>
-            </MFXTextField>
-            <MFXTextField fx:id="txfEmail" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" promptText="Email (Exmp. example@example.com)" HBox.hgrow="ALWAYS">
-                <HBox.margin>
-                    <Insets />
-                </HBox.margin>
-            </MFXTextField>
-         <MFXTextField fx:id="txfCareerId" floatMode="ABOVE" layoutX="10.0" layoutY="288.0" promptText="CareerId" />
-            <MFXPasswordField fx:id="txfPassword" caretVisible="false" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS">
-                <HBox.margin>
-                    <Insets />
-                </HBox.margin>
-            </MFXPasswordField>
+            <HBox spacing="15.0">
+                <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios" />
+                <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
+                    <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                    </graphic>
+                </MFXButton>
+            </HBox>
+            <!-- Resto de los campos de usuario -->
+            <MFXTextField fx:id="txfNumberID" floatMode="ABOVE" promptText="Identity Card Number (Exmp. 112341234)" HBox.hgrow="ALWAYS" />
+            <MFXTextField fx:id="txfName" floatMode="ABOVE" prefHeight="29.0" prefWidth="636.0" promptText="Name (Exmp. example example example)" HBox.hgrow="ALWAYS" />
+            <MFXTextField fx:id="txfLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Lastname" />
+            <MFXTextField fx:id="txfSecondLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Second Lastname" />
+            <MFXTextField fx:id="txfEmail" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" promptText="Email (Exmp. example@example.com)" HBox.hgrow="ALWAYS" />
+            <MFXTextField fx:id="txfCareerId" floatMode="ABOVE" layoutX="10.0" layoutY="288.0" promptText="CareerId" />
+            <MFXPasswordField fx:id="txfPassword" caretVisible="false" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS" />
             <Accordion>
                 <panes>
                     <TitledPane fx:id="tpPermission" animated="false" style="-fx-background-color: white;" text="Permissions">

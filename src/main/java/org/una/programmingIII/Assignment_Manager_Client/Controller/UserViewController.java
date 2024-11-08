@@ -1,5 +1,8 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.palexdev.materialfx.controls.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -9,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
@@ -18,7 +22,6 @@ import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
-import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URL;
 import java.util.*;
@@ -38,18 +41,24 @@ public class UserViewController extends Controller implements Initializable {
     private TableColumn<UserDto, String> nameColumn, lastNameColumn, secondLastNameColumn, emailColumn, numberIDColumn;
     @FXML
     private TableColumn<UserDto, MFXButton> clmAction;
+    @FXML
+    private Pagination pagination;
 
     private final UserService userService = new UserService();
     private UserInput userInput = new UserInput();
     private List<PermissionDto> permissions;
+    private static final int PAGE_SIZE = 25;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void initialize() {
+        objectMapper.registerModule(new JavaTimeModule());
         getServerPermissions();
         configureTable();
         initializePermissions();
         bindUser();
-        loadUsers();
+        pagination.setPageFactory(this::createPage);
+        loadUsers(0);
     }
 
     @Override
@@ -288,5 +297,34 @@ public class UserViewController extends Controller implements Initializable {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void loadUsers(int page) {
+        try {
+            Answer response = userService.getUsers(page, PAGE_SIZE);
+
+            if (response.getState()) {
+                Map<String, Object> rootData = response.getResult();
+                Map<String, Object> data = (Map<String, Object>) rootData.get("");
+
+                List<UserDto> users = objectMapper.convertValue(data.get("users"), new TypeReference<List<UserDto>>() {
+                });
+                long totalElements = objectMapper.convertValue(data.get("totalElements"), Long.class);
+
+                userTable.getItems().setAll(users);
+
+                int totalPages = (int) Math.ceil((double) totalElements / PAGE_SIZE);
+                pagination.setPageCount(totalPages);
+            } else {
+                throw new Exception(response.getMessage());
+            }
+        } catch (Exception e) {
+            showError("Error", "An error occurred while loading the users: " + e.getMessage());
+        }
+    }
+
+    private Node createPage(int pageIndex) {
+        loadUsers(pageIndex);
+        return new VBox(userTable);
     }
 }
