@@ -21,6 +21,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
+import org.una.programmingIII.Assignment_Manager_Client.Util.Format;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 
 import java.net.URL;
@@ -48,22 +49,21 @@ public class UserViewController extends Controller implements Initializable {
     private UserInput userInput = new UserInput();
     private List<PermissionDto> permissions;
     private static final int PAGE_SIZE = 25;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Override
-    public void initialize() {
-        objectMapper.registerModule(new JavaTimeModule());
-        getServerPermissions();
-        configureTable();
-        initializePermissions();
-        bindUser();
-        pagination.setPageFactory(this::createPage);
-        loadUsers(0);
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initialize();
+    }
+
+    @Override
+    public void initialize() {
+        getServerPermissions();
+        configureTable();
+        configureTextFields();
+        initializePermissions();
+        bindUser();
+        configurePagination();
     }
 
     private void configureTable() {
@@ -73,7 +73,6 @@ public class UserViewController extends Controller implements Initializable {
         secondLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("secondLastName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-
         userTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && userTable.getSelectionModel().getSelectedItem() != null) {
                 clearForm();
@@ -81,10 +80,8 @@ public class UserViewController extends Controller implements Initializable {
                 setFieldsEditable(false);
             }
         });
-
         clmAction.setCellFactory(col -> new TableCell<>() {
             private final MFXButton detailsButton = new MFXButton("Delete");
-
             @Override
             protected void updateItem(MFXButton item, boolean empty) {
                 super.updateItem(item, empty);
@@ -96,6 +93,15 @@ public class UserViewController extends Controller implements Initializable {
                 }
             }
         });
+    }
+
+    private void configureTextFields() {
+        txfCareerId.delegateSetTextFormatter(Format.getInstance().integerFormat());
+        txfName.delegateSetTextFormatter(Format.getInstance().maxLengthFormat(50));
+        txfLastName.delegateSetTextFormatter(Format.getInstance().maxLengthFormat(50));
+        txfSecondLastName.delegateSetTextFormatter(Format.getInstance().maxLengthFormat(50));
+        txfEmail.delegateSetTextFormatter(Format.getInstance().maxLengthFormat(100));
+        txfNumberID.delegateSetTextFormatter(Format.getInstance().maxLengthFormat(12));
     }
 
     private void initializePermissions() {
@@ -116,7 +122,6 @@ public class UserViewController extends Controller implements Initializable {
         txfSecondLastName.textProperty().bindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().bindBidirectional(userInput.password);
         txfCareerId.textProperty().bindBidirectional(userInput.careerId);
-
         for (Node node : fpPermissions.getChildren()) {
             if (node instanceof MFXCheckbox checkBox) {
                 checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -302,17 +307,12 @@ public class UserViewController extends Controller implements Initializable {
     private void loadUsers(int page) {
         try {
             Answer response = userService.getUsers(page, PAGE_SIZE);
-
             if (response.getState()) {
                 Map<String, Object> rootData = response.getResult();
                 Map<String, Object> data = (Map<String, Object>) rootData.get("");
-
-                List<UserDto> users = objectMapper.convertValue(data.get("users"), new TypeReference<List<UserDto>>() {
-                });
+                List<UserDto> users = objectMapper.convertValue(data.get("users"), new TypeReference<List<UserDto>>() {});
                 long totalElements = objectMapper.convertValue(data.get("totalElements"), Long.class);
-
                 userTable.getItems().setAll(users);
-
                 int totalPages = (int) Math.ceil((double) totalElements / PAGE_SIZE);
                 pagination.setPageCount(totalPages);
             } else {
@@ -326,5 +326,10 @@ public class UserViewController extends Controller implements Initializable {
     private Node createPage(int pageIndex) {
         loadUsers(pageIndex);
         return new VBox(userTable);
+    }
+
+    private void configurePagination() {
+        pagination.setPageFactory(this::createPage);
+        loadUsers(0);
     }
 }
