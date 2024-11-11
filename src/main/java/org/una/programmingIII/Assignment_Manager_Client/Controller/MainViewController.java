@@ -52,8 +52,7 @@ public class MainViewController extends Controller implements SessionObserver {
     private MFXButton btnUniversitiesMaintenance;
 
     @FXML
-    private MFXButton btnRegisterStudents_Courses,btnUserMaintenance;
-
+    private MFXButton btnRegisterStudents_Courses, btnUserMaintenance;
 
     private LoginResponse loginResponse;
     private List<CourseDto> courses;
@@ -61,18 +60,19 @@ public class MainViewController extends Controller implements SessionObserver {
 
     @Override
     public void initialize() {
+        System.out.println("Entro main view");
         activateButton(btnRegisterStudents_Courses, false);
         activateButton(btnUniversitiesMaintenance, false);
         activateButton(btnUserMaintenance, false);
+        btnCoursesMenu.setVisible(false);
         checkSession();
-        loadCourses();
         loadLoginResponse();
+        loadCourses();
         lblUserName.setText(SessionManager.getInstance().getLoginResponse().getUser().getFullName());
         SessionManager.getInstance().addObserver(this);
         SessionManager.getInstance().setRunningTokenValidationThread(true);
         SessionManager.getInstance().startTokenValidationTask();
         restoreBackgroundImage();
-        checkSession();
     }
 
     @FXML
@@ -84,13 +84,14 @@ public class MainViewController extends Controller implements SessionObserver {
         try {
             Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
             if (isStudentSession) {
-                courses = (new CourseService().getEnrolledCoursesByStudentId(SessionManager.getInstance().getLoginResponse().getUser().getId()));
+                courses = (new CourseService().getAssociateCourses(SessionManager.getInstance().getLoginResponse().getUser().getId()));
             } else {
                 courses = (new CourseService().getCoursesByCareerId(careerId));
             }
 
             if (courses.isEmpty()) {
                 courses = new ArrayList<>();
+                btnCoursesMenu.setVisible(false);
             }
 
             for (CourseDto course : courses) {
@@ -103,6 +104,7 @@ public class MainViewController extends Controller implements SessionObserver {
             System.out.println(e);
         }
     }
+
 
     @FXML
     void onActionBtnModifyUsers(ActionEvent event) {

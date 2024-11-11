@@ -151,7 +151,7 @@ public class EnrollStudentCourseController extends Controller {
 
     private void loadEnrolledCoursesStudentSession() {
         try {
-            List<CourseDto> coursesStudentDto = new CourseService().getEnrolledCoursesByStudentId(studentDto.getId());
+            List<CourseDto> coursesStudentDto = new CourseService().getAssociateCourses(studentDto.getId());
             ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
             tbvEnrollCourses.getItems().clear();
             tbvEnrollCourses.setItems(courseDtos);

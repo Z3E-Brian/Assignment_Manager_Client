@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
@@ -37,7 +38,7 @@ public class UserViewController extends Controller implements Initializable {
     @FXML
     private FlowPane fpPermissions;
     @FXML
-    private TableView<UserDto> userTable;
+    private TableView<UserDto> tbvUser;
     @FXML
     private TableColumn<UserDto, String> nameColumn, lastNameColumn, secondLastNameColumn, emailColumn, numberIDColumn;
     @FXML
@@ -72,16 +73,10 @@ public class UserViewController extends Controller implements Initializable {
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         secondLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("secondLastName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        userTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && userTable.getSelectionModel().getSelectedItem() != null) {
-                clearForm();
-                bindUserToForm(userTable.getSelectionModel().getSelectedItem());
-                setFieldsEditable(false);
-            }
-        });
+        tbvUser.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         clmAction.setCellFactory(col -> new TableCell<>() {
             private final MFXButton detailsButton = new MFXButton("Delete");
+
             @Override
             protected void updateItem(MFXButton item, boolean empty) {
                 super.updateItem(item, empty);
@@ -184,7 +179,7 @@ public class UserViewController extends Controller implements Initializable {
     }
 
     private void updateUser() throws Exception {
-        UserDto selectedUser = userTable.getSelectionModel().getSelectedItem();
+        UserDto selectedUser = tbvUser.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             userInput.setId(selectedUser.getId());
             NewUserDto newUserDto = new NewUserDto(userInput);
@@ -202,7 +197,7 @@ public class UserViewController extends Controller implements Initializable {
     private void loadUsers() {
         try {
             List<UserDto> users = userService.getAllUsers();
-            userTable.setItems(FXCollections.observableArrayList(users));
+            tbvUser.setItems(FXCollections.observableArrayList(users));
         } catch (Exception e) {
             showAlert("Error Loading Users", e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -235,7 +230,7 @@ public class UserViewController extends Controller implements Initializable {
 
     private void refreshTable() throws Exception {
         List<UserDto> users = userService.getAllUsers();
-        userTable.setItems(FXCollections.observableArrayList(users));
+        tbvUser.setItems(FXCollections.observableArrayList(users));
     }
 
     private void deleteUser(UserDto selectedUser) {
@@ -255,25 +250,22 @@ public class UserViewController extends Controller implements Initializable {
         updateTable();
     }
 
-    private void bindUserToForm(UserDto user) {
-        txfNumberID.setText(user.getIdentificationNumber());
-        txfName.setText(user.getName());
-        txfLastName.setText(user.getLastName());
-        txfSecondLastName.setText(user.getSecondLastName());
-        txfEmail.setText(user.getEmail());
-        txfCareerId.setText(user.getCareerId().toString());
-        user.getPermissions().forEach(permission -> {
-            for (Node node : fpPermissions.getChildren()) {
-                if (node instanceof MFXCheckbox checkBox && checkBox.getText().equals(permission.getName().toString().replace("_", " "))) {
-                    checkBox.setSelected(true);
-                }
-            }
-        });
-    }
-
     @FXML
     private void onActionBtnNew(ActionEvent actionEvent) {
         prepareForNewUser();
+    }
+
+    @FXML
+    void OnMouseClickedTbvUser(MouseEvent event) {
+        if (event.getClickCount() == 1) {
+            UserDto selectedUser = tbvUser.getSelectionModel().getSelectedItem();
+            if (selectedUser != null) {
+                clearForm();
+                userInput = new UserInput(selectedUser);
+                bindUser();
+                txfNumberID.setDisable(true);
+            }
+        }
     }
 
     private void updateTable() {
@@ -310,9 +302,10 @@ public class UserViewController extends Controller implements Initializable {
             if (response.getState()) {
                 Map<String, Object> rootData = response.getResult();
                 Map<String, Object> data = (Map<String, Object>) rootData.get("");
-                List<UserDto> users = objectMapper.convertValue(data.get("users"), new TypeReference<List<UserDto>>() {});
+                List<UserDto> users = objectMapper.convertValue(data.get("users"), new TypeReference<List<UserDto>>() {
+                });
                 long totalElements = objectMapper.convertValue(data.get("totalElements"), Long.class);
-                userTable.getItems().setAll(users);
+                tbvUser.getItems().setAll(users);
                 int totalPages = (int) Math.ceil((double) totalElements / PAGE_SIZE);
                 pagination.setPageCount(totalPages);
             } else {
@@ -325,7 +318,7 @@ public class UserViewController extends Controller implements Initializable {
 
     private Node createPage(int pageIndex) {
         loadUsers(pageIndex);
-        return new VBox(userTable);
+        return new VBox(tbvUser);
     }
 
     private void configurePagination() {

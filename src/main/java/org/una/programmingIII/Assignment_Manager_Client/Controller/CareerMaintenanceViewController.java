@@ -45,6 +45,9 @@ public class CareerMaintenanceViewController extends Controller {
     private TableColumn<CareerDto, String> tbcName;
 
     @FXML
+    private TableColumn<CareerDto, String> tbcId;
+
+    @FXML
     private TableView<CareerDto> tbvCareer;
 
     @FXML
@@ -80,6 +83,7 @@ public class CareerMaintenanceViewController extends Controller {
     }
 
     private void setupTableColumns() {
+        tbcId.setCellValueFactory(new PropertyValueFactory<>("id"));
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));

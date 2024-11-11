@@ -81,7 +81,7 @@ public class MyUserViewController extends Controller implements Initializable {
             boolean privilege = user.getPermissions().stream()
                     .anyMatch(permission -> PermissionType.CREATE_ASSIGNMENTS.equals(permission.getName()));
             Long careerId = user.getCareerId();
-            courses = privilege ? new CourseService().getEnrolledCoursesByStudentId(user.getId())
+            courses = privilege ? new CourseService().getAssociateCourses(user.getId())
                     : new CourseService().getCoursesByCareerId(careerId);
             if (courses.isEmpty()) courses = new ArrayList<>();
             coursesListView.getItems().addAll(courses.stream().map(CourseDto::getName).toList());

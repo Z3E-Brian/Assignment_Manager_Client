@@ -58,12 +58,13 @@ public class CreateCourseViewController extends Controller {
     private TableColumn<CourseDto, String> tbcName;
 
     @FXML
-    private TableColumn<UserDto, String> tbcProfessor;
+    private TableColumn<CourseDto, String> tbcId;
 
+    @FXML
+    private TableColumn<UserDto, String> tbcProfessor;
 
     @FXML
     private TableColumn<CourseDto, Boolean> tbcDelete;
-
 
     @FXML
     private TableView<CourseDto> tbvCourse;
@@ -102,6 +103,7 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void setupTableColumns() {
+        tbcId.setCellValueFactory(new PropertyValueFactory<>("id"));
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));

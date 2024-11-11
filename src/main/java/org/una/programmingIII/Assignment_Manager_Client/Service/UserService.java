@@ -131,7 +131,6 @@ public class UserService {
 
     public Answer createUser(NewUserDto user) {
         try {
-            setJwtToken();
             String requestBody = objectMapper.writeValueAsString(user);
             HttpRequest request = createRequestBuilder(BASE_URL + "/create")
                     .header("Content-Type", "application/json")
@@ -142,7 +141,7 @@ public class UserService {
 
             if (response.statusCode() == 201) {
                 return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
-            } else if (response.statusCode() == 401) {
+            } else if (response.statusCode() == 401||response.statusCode()==403||response.statusCode()==409) {
                 return new Answer(false, "User already registered, please try with another email.", "Error: " + response.statusCode());
             } else {
                 return new Answer(false, response.body(), "Error: " + response.statusCode());

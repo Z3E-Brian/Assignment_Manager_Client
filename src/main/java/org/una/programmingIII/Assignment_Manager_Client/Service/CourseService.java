@@ -88,9 +88,9 @@ public class CourseService {
         }
     }
 
-    public List<CourseDto> getEnrolledCoursesByStudentId(Long studentId) throws Exception {
+    public List<CourseDto> getAssociateCourses(Long userId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/enrolled/" + studentId))
+                .uri(URI.create(BASE_URL + "/enrolled/" + userId))
                 .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();

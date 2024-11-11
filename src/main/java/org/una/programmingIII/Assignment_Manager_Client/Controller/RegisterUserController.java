@@ -46,6 +46,7 @@ public class RegisterUserController extends Controller {
     private UserInput userInput;
     private NewUserDto newUserDto;
     private RequiredFieldsValidator validator;
+    private final int MAX_PASSWORD_LENGTH = 4;
 
     @Override
     public void initialize() {
@@ -95,23 +96,29 @@ public class RegisterUserController extends Controller {
     void onActionBtnRegister(ActionEvent event) throws Exception {
         String req = validator.validate();
         if (req.isBlank()) {
-            if (passwordField.getText().equals(confirmPasswordField.getText())) {
-                newUserDto = new NewUserDto(userInput);
-                Answer response = userService.createUser(newUserDto);
+            if ((passwordField.getText().length() > MAX_PASSWORD_LENGTH)) {
+                if (passwordField.getText().equals(confirmPasswordField.getText())) {
+                    newUserDto = new NewUserDto(userInput);
+                    Answer response = userService.createUser(newUserDto);
 
-                if (response.getState()) {
-                    new Message().showModal(Alert.AlertType.INFORMATION, "Authentication", getStage(),
-                            "Your account has been created, please activate your account and login.");
-                    FlowController.getInstance().goViewInWindow("LoginView");
-                    getStage().close();
+                    if (response.getState()) {
+                        new Message().showModal(Alert.AlertType.INFORMATION, "Authentication", getStage(),
+                                "Your account has been created, please activate your account and login.");
+                        FlowController.getInstance().goViewInWindow("LoginView");
+                        getStage().close();
+                    } else {
+                        String errorMessage = response.getMessage();
+                        new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), errorMessage);
+                    }
                 } else {
-                    String errorMessage = response.getMessage();
-                    new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), errorMessage);
+                    new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), "Passwords do not match.");
                 }
-            } else {
-                new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), "Passwords do not match.");
             }
-        } else {
+            else {
+                new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), "Password must be at least 4 characters long.");
+            }
+        }
+        else {
             new Message().showModal(Alert.AlertType.ERROR, "Register User", getStage(), req);
         }
     }

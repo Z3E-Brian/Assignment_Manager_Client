@@ -16,7 +16,8 @@ public class CareerService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private static final String BASE_URL = "http://localhost:8080/api/careers";
-String jwtToken;
+    String jwtToken;
+
     public CareerService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
@@ -76,6 +77,10 @@ String jwtToken;
 
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting career: " + response.statusCode());
+        } else if (response.statusCode() == 404) {
+            return new Answer(false, response.body(), "Error, Career Not Found : " + response.statusCode());
+        } else if (response.statusCode() == 403) {
+            return new Answer(false, response.body(), "Error, cannot delete Career because some users are associated");
         }
         return new Answer(true, "The career was deleted", "Delete Career");
     }

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="10.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.CreateCourseViewController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="10.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.CreateCourseViewController">
    <children>
       <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" styleClass="tool-bar">
          <children>
@@ -74,6 +74,7 @@
                         </HBox>
                         <TableView fx:id="tbvCourse" onMousePressed="#onMousePressedUniversityTable">
                            <columns>
+                              <TableColumn fx:id="tbcId" minWidth="-1.0" prefWidth="32.0" text="ID" />
                               <TableColumn fx:id="tbcName" prefWidth="124.0" text="Name" />
                               <TableColumn fx:id="tbcDescription" prefWidth="272.0" text="Description" />
                               <TableColumn fx:id="tbcProfessor" prefWidth="133.0" text="Professor" />
