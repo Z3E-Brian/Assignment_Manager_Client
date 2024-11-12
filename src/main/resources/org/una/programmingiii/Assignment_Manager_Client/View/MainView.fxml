@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
     <top>
-        <VBox>
-         <VBox>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <VBox alignment="CENTER">
+                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
                       <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
                       <Region HBox.hgrow="ALWAYS" />
-                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" styleClass="mfx-btn-Save" text="Courses">
+                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" styleClass="mfx-btn-Save" text="Courses" HBox.hgrow="ALWAYS">
                 </MenuButton>
-                  <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" />
-                  <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" styleClass="mfx-btn-Save" text="Enroll Student Courses" />
-                  <MFXButton fx:id="btnUserMaintenance" layoutX="553.0" layoutY="38.0" onAction="#onActionBtnModifyUsers" styleClass="mfx-btn-Save" text="Modify Users" />
-                  <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="mfx-btn-Back" text="Exit" />
-                  <VBox alignment="CENTER">
+                  <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" HBox.hgrow="ALWAYS" />
+                  <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" styleClass="mfx-btn-Save" text="Enroll Student Courses" HBox.hgrow="ALWAYS" />
+                  <MFXButton fx:id="btnUserMaintenance" layoutX="553.0" layoutY="38.0" onAction="#onActionBtnModifyUsers" styleClass="mfx-btn-Save" text="Modify Users" HBox.hgrow="ALWAYS" />
+                  <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="mfx-btn-Back" text="Exit" HBox.hgrow="ALWAYS" />
+                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                      <children>
                             <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
                                 <graphic>
@@ -28,7 +34,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                        <Label fx:id="lblUserName" text="User Name" />
+                        <Label fx:id="lblUserName" text="User Name" VBox.vgrow="ALWAYS" />
                      </children>
                      <HBox.margin>
                         <Insets bottom="5.0" top="5.0" />

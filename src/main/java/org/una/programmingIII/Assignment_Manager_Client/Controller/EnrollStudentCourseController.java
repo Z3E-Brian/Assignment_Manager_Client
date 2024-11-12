@@ -235,7 +235,7 @@ public class EnrollStudentCourseController extends Controller {
         try {
             Answer answer = courseService.unenrollStudentFromCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
-                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Uncontrolled successfully");
+                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Unenrolled successfully");
                 loadCourses();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Unroll course", getStage(), "Something went wrong with course unEnrollment");
@@ -286,7 +286,7 @@ public class EnrollStudentCourseController extends Controller {
             cellButton.getStyleClass().add("mfx-btn-Delete");
 
             cellButton.setOnAction((ActionEvent t) -> {
-                CourseDto courseDto = (CourseDto) EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getTableView().getItems().get(EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getIndex());
+                CourseDto courseDto = ButtonCellUnEnrollCourse.this.getTableView().getItems().get(ButtonCellUnEnrollCourse.this.getIndex());
                 unEnrollStudentInCourse(courseDto.getId());
             });
         }

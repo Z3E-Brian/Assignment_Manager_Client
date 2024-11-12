@@ -16,6 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
@@ -169,11 +170,15 @@ public class UserService {
                 UserDto updatedUser = objectMapper.readValue(response.body(), UserDto.class);
                 return new Answer(true, "", "User updated successfully", "user", updatedUser);
             } else if (response.statusCode() == 404) {
-                throw new Exception("User not found");
+                throw new ElementNotFoundException("User or career not found,please check the data and try again.");
             } else {
                 throw new Exception("Error updating user: " + response.statusCode() + " - " + response.body());
             }
-        } catch (JsonProcessingException e) {
+        }
+        catch (ElementNotFoundException e) {
+            return new Answer(false, e.getMessage(), "Error updating user data");
+        }
+        catch (JsonProcessingException e) {
             Logger.getLogger("UserService").severe("Error serializing user input: " + e.getMessage());
             return new Answer(false, e.getMessage(), "Error serializing user data");
         } catch (IOException | InterruptedException e) {
