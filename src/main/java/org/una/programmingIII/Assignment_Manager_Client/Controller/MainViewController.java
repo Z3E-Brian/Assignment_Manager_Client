@@ -82,12 +82,12 @@ public class MainViewController extends Controller implements SessionObserver {
 
     private void loadCourses() {
         try {
-            Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
             if (isStudentSession) {
                 courses = (new CourseService().getAssociateCourses(SessionManager.getInstance().getLoginResponse().getUser().getId()));
             } else {
-                courses = (new CourseService().getCoursesByCareerId(careerId));
+                courses = (new CourseService().getProfessorCourses(SessionManager.getInstance().getLoginResponse().getUser().getId()));
             }
+            btnCoursesMenu.setVisible(true);
 
             if (courses.isEmpty()) {
                 courses = new ArrayList<>();

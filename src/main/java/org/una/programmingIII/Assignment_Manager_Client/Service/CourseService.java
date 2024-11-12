@@ -105,6 +105,23 @@ public class CourseService {
         }
     }
 
+    public List<CourseDto> getProfessorCourses(Long professorId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/professor/" + professorId))
+                .header("Authorization", "Bearer " + jwtToken)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<CourseDto>>() {
+            });
+        } else {
+            throw new Exception("Error fetching courses: " + response.statusCode());
+        }
+    }
+
     public List<CourseDto> getAvailableCoursesForAStudentInCareer(Long careerId, Long studentId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/available/career/" + careerId + "/user/" + studentId))
