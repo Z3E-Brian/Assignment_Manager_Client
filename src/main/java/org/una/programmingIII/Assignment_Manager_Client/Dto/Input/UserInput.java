@@ -2,13 +2,16 @@ package org.una.programmingIII.Assignment_Manager_Client.Dto.Input;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 
@@ -27,7 +30,7 @@ public class UserInput implements Serializable {
 
     @Setter
     @Getter
-    public List<PermissionType> role;
+    public Set<PermissionDto> permissions;
 
     public UserInput() {
         this.id = new SimpleStringProperty("");
@@ -39,7 +42,7 @@ public class UserInput implements Serializable {
         this.email = new SimpleStringProperty("");
         this.isActive = new SimpleBooleanProperty(false);
         this.password = new SimpleStringProperty("");
-        this.role = new ArrayList<>();
+        this.permissions = new HashSet<>();
     }
 
     public UserInput(UserDto userDto) {
@@ -56,7 +59,7 @@ public class UserInput implements Serializable {
         this.identificationNumber = new SimpleStringProperty(userDto.getIdentificationNumber());
         this.email = new SimpleStringProperty(userDto.getEmail());
         this.isActive = new SimpleBooleanProperty(userDto.isActive());
-        // this.role = userDto.getPermissions();
+        this.permissions = userDto.getPermissions();
     }
 
     public Long getId() {

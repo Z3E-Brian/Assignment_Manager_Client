@@ -143,6 +143,9 @@ public class UserService {
                 return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
             } else if (response.statusCode() == 401||response.statusCode()==403||response.statusCode()==409) {
                 return new Answer(false, "User already registered, please try with another email.", "Error: " + response.statusCode());
+            }
+            else if (response.statusCode() == 400) {
+                return new Answer(false, "Please dont forget to not let spaces in blank", "Error: " + response.statusCode());
             } else {
                 return new Answer(false, response.body(), "Error: " + response.statusCode());
             }
@@ -190,7 +193,7 @@ public class UserService {
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting user: " + response.statusCode());
         }
-        return null;
+        return new Answer(true, "", "User deleted successfully", "user", null);
     }
 
     public UserDto getUserById(Long id) throws Exception {

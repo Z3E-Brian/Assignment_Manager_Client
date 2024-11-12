@@ -117,13 +117,47 @@ public class UserViewController extends Controller implements Initializable {
         txfSecondLastName.textProperty().bindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().bindBidirectional(userInput.password);
         txfCareerId.textProperty().bindBidirectional(userInput.careerId);
-        for (Node node : fpPermissions.getChildren()) {
-            if (node instanceof MFXCheckbox checkBox) {
-                checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                    PermissionType permissionDto = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
-                    if (newValue) userInput.role.add(permissionDto);
-                    else userInput.role.remove(permissionDto);
-                });
+        bindUserPermissions();
+    }
+
+    private void bindUserPermissions() {
+        if (txfNumberID.isDisabled()) {
+            clearPermissions();
+            for (Node node : fpPermissions.getChildren()) {
+                if (node instanceof MFXCheckbox checkBox) {
+                    PermissionType permissionType = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
+                    boolean isSelected = userInput.getPermissions().stream()
+                            .anyMatch(permission -> permission.getName().equals(permissionType));
+                    checkBox.setSelected(isSelected);
+                    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                        PermissionDto permissionDto = permissions.stream()
+                                .filter(permission -> permission.getName().equals(permissionType))
+                                .findFirst().orElse(null);
+                        if (permissionDto != null) {
+                            if (newValue) {
+                                userInput.getPermissions().add(permissionDto);
+                            } else {
+                                userInput.getPermissions().remove(permissionDto);
+                            }
+                        }
+                    });
+                }
+            }
+        } else {
+            System.out.println("Not Selected");
+            for (Node node : fpPermissions.getChildren()) {
+                if (node instanceof MFXCheckbox checkBox) {
+                    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                        PermissionType permissionType = PermissionType.valueOf(checkBox.getText().replace(" ", "_"));
+                        PermissionDto permissionDto = permissions.stream()
+                                .filter(permission -> permission.getName().equals(permissionType))
+                                .findFirst().orElse(null);
+                        if (permissionDto != null) {
+                            if (newValue) userInput.getPermissions().add(permissionDto);
+                            else userInput.getPermissions().remove(permissionDto);
+                        }
+                    });
+                }
             }
         }
     }
@@ -136,6 +170,7 @@ public class UserViewController extends Controller implements Initializable {
         txfSecondLastName.textProperty().unbindBidirectional(userInput.secondLastName);
         txfPassword.textProperty().unbindBidirectional(userInput.password);
         txfCareerId.textProperty().unbindBidirectional(userInput.careerId);
+        clearPermissions();
     }
 
     private void newUser() {
@@ -154,6 +189,10 @@ public class UserViewController extends Controller implements Initializable {
         txfSecondLastName.setText("");
         txfPassword.setText("");
         txfCareerId.setText("");
+    }
+
+
+    private void clearPermissions() {
         for (Node node : fpPermissions.getChildren()) {
             if (node instanceof MFXCheckbox checkBox) checkBox.setSelected(false);
         }
@@ -260,10 +299,10 @@ public class UserViewController extends Controller implements Initializable {
         if (event.getClickCount() == 1) {
             UserDto selectedUser = tbvUser.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
+                txfNumberID.setDisable(true);
                 clearForm();
                 userInput = new UserInput(selectedUser);
                 bindUser();
-                txfNumberID.setDisable(true);
             }
         }
     }
