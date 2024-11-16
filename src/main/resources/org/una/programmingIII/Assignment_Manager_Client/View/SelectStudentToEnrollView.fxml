@@ -32,11 +32,6 @@
                         <Image url="@../Assets/Back.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="imvSearch" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#onMouseClickedImvSearch" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Assets/lupa.png" />
-                     </image>
-                  </ImageView>
                </children>
                <HBox.margin>
                   <Insets right="20.0" />

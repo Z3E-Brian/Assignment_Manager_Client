@@ -29,8 +29,6 @@ import java.util.Set;
 import javafx.scene.input.MouseEvent;
 
 public class UniversityMaintenanceController extends Controller implements SessionObserver {
-    @FXML
-    private MFXButton btnDelete;
 
 
     @FXML
@@ -67,6 +65,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
 
     private UniversityService universityService;
     private UniversityDto universityDto;
+    private Set<PermissionDto> permissionsDto;
 
     private RequiredFieldsValidator validator;
 
@@ -85,8 +84,12 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private void setupTableColumns() {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-        tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-        tbcDelete.setCellFactory(p -> new ButtonCellDelete());
+
+        if(permissionsDto.stream().anyMatch(permission -> permission.getName() == PermissionType.DELETE_UNIVERSITIES)){
+            tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+            tbcDelete.setCellFactory(p -> new ButtonCellDelete());
+        }
+
         tbcFaculty.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
         tbcFaculty.setCellFactory(p -> new ButtonCellFaculty());
         universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -125,12 +128,6 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         FlowController.getInstance().goMain();
     }
 
-    @FXML
-    void onMouseClickedImvSearch(MouseEvent event) {
-        loadUniversities();
-        System.out.println("search");
-    }
-
     private void clean() {
         this.txfLocation.clear();
         this.txfName.clear();
@@ -141,6 +138,10 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     }
 
     private void createUniversity() throws Exception {
+        if (permissionsDto.stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_UNIVERSITIES)){
+            new Message().showModal(Alert.AlertType.ERROR, "Create University", getStage(), "You don't have permission to create universities");
+            return;
+        }
         String invalids = validator.validate();
 
         if (!(invalids.isBlank())) {
@@ -156,6 +157,11 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     }
 
     private void updateUniversity() throws Exception {
+        if (permissionsDto.stream().anyMatch(permission -> permission.getName() == PermissionType.EDIT_UNIVERSITIES)){
+            new Message().showModal(Alert.AlertType.ERROR, "Update University", getStage(), "You don't have permission to edit universities");
+            return;
+        }
+
         universityDto.setLocation(txfLocation.getText());
         universityDto.setName(txfName.getText());
         universityDto = universityService.updateUniversity(universityDto.getId(), universityDto);
@@ -164,6 +170,10 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     }
 
     private void loadUniversities() {
+        if (permissionsDto.stream().noneMatch(permission -> permission.getName() == PermissionType.VIEW_UNIVERSITIES)) {
+            new Message().showModal(Alert.AlertType.ERROR, "Access to Data Denied", getStage(), "You don't have permission to view universities");
+            return;
+        }
         try {
             List<UniversityDto> universityDtoList = universityService.getAllUniversities();
             ObservableList<UniversityDto> universityDtoObservableList = FXCollections.observableArrayList(universityDtoList);
@@ -187,14 +197,10 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     }
 
     private void validateUserFunctions() {
-        Set<PermissionDto> permissionDtos = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
-        boolean hasViewCoursesPermission = permissionDtos.stream()
-                .anyMatch(permission -> permission.getName() == PermissionType.VIEW_COURSES);
-
-        if (hasViewCoursesPermission) {
-
-        } else {
-        }
+        permissionsDto = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
+        btnSave.setDisable(!
+                (permissionsDto.stream().noneMatch(permission -> permission.getName() == PermissionType.CREATE_UNIVERSITIES)||
+                permissionsDto.stream().noneMatch(permission -> permission.getName() == PermissionType.EDIT_UNIVERSITIES)));
     }
 
 

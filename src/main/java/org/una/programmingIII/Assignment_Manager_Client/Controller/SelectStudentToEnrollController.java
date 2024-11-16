@@ -59,10 +59,6 @@ public class SelectStudentToEnrollController extends Controller {
         FlowController.getInstance().goMain();
     }
 
-    @FXML
-    void onMouseClickedImvSearch(MouseEvent event) {
-
-    }
 
     private void loadCareerId() {
         careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();

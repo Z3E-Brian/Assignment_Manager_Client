@@ -20,10 +20,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Format;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
 import java.net.URL;
 import java.util.*;
@@ -32,7 +29,7 @@ import java.util.stream.Collectors;
 public class UserViewController extends Controller implements Initializable {
 
     @FXML
-    private MFXButton btnNew, btnSearch, btnSave, btnDelete, btnClear;
+    private MFXButton btnNew, btnSave, btnClear;
     @FXML
     private MFXTextField txfNumberID, txfName, txfLastName, txfSecondLastName, txfEmail, txfPassword, txfCareerId;
     @FXML
@@ -51,6 +48,7 @@ public class UserViewController extends Controller implements Initializable {
     private List<PermissionDto> permissions;
     private static final int PAGE_SIZE = 25;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,11 +58,19 @@ public class UserViewController extends Controller implements Initializable {
     @Override
     public void initialize() {
         getServerPermissions();
+        manageUserPermissionsAndButtons();
         configureTable();
         configureTextFields();
         initializePermissions();
         bindUser();
         configurePagination();
+    }
+
+    private void manageUserPermissionsAndButtons() {
+        btnSave.setDisable(
+                !(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
+                userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+        );
     }
 
     private void configureTable() {
@@ -74,20 +80,22 @@ public class UserViewController extends Controller implements Initializable {
         secondLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("secondLastName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         tbvUser.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        clmAction.setCellFactory(col -> new TableCell<>() {
-            private final MFXButton detailsButton = new MFXButton("Delete");
+        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.DELETE_USERS))) {
+            clmAction.setCellFactory(col -> new TableCell<>() {
+                private final MFXButton detailsButton = new MFXButton("Delete");
 
-            @Override
-            protected void updateItem(MFXButton item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(detailsButton);
-                    detailsButton.setOnAction(event -> deleteUser(getTableView().getItems().get(getIndex())));
+                @Override
+                protected void updateItem(MFXButton item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(detailsButton);
+                        detailsButton.setOnAction(event -> deleteUser(getTableView().getItems().get(getIndex())));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void configureTextFields() {
@@ -103,6 +111,7 @@ public class UserViewController extends Controller implements Initializable {
         if (!fpPermissions.getChildren().isEmpty()) return;
         for (PermissionType permission : PermissionType.values()) {
             MFXCheckbox checkBox = new MFXCheckbox(permission.toString().replace("_", " "));
+            checkBox.setDisable(userSession.getPermissions().stream().noneMatch(userPermission -> userPermission.getName().equals(PermissionType.MANAGE_PERMISSIONS)));
             checkBox.setPrefWidth(180);
             fpPermissions.getChildren().add(checkBox);
         }
@@ -200,8 +209,20 @@ public class UserViewController extends Controller implements Initializable {
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws Exception {
-        if (txfNumberID.isDisabled()) updateUser();
-        else createUser();
+        if (txfNumberID.isDisabled()) {
+            if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS))) {
+                updateUser();
+                return;
+            }
+            showError("Update User", "You don't have permission to update users.");
+            return;
+        }
+
+        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS))) {
+            createUser();
+            return;
+        }
+        showError("Create User", "You don't have permission to create users.");
     }
 
     private void createUser() throws Exception {
@@ -234,6 +255,8 @@ public class UserViewController extends Controller implements Initializable {
     }
 
     private void loadUsers() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_USERS)))
+            return;
         try {
             List<UserDto> users = userService.getAllUsers();
             tbvUser.setItems(FXCollections.observableArrayList(users));
@@ -296,7 +319,7 @@ public class UserViewController extends Controller implements Initializable {
 
     @FXML
     void OnMouseClickedTbvUser(MouseEvent event) {
-        if (event.getClickCount() == 1) {
+        if (event.getClickCount() == 2) {
             UserDto selectedUser = tbvUser.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
                 txfNumberID.setDisable(true);
