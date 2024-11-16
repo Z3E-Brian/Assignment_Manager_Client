@@ -18,6 +18,7 @@ import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
 import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,6 +47,8 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     private final SubmissionService submissionService = new SubmissionService();
     private final UserService userService = new UserService();
     private final AssignmentService assignmentService = new AssignmentService();
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,13 +64,15 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     }
 
     private void loadSubmissions() throws Exception {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_ASSIGNMENTS))){
+            throw new Exception("You don't have permission to view assignments");
+        }
         AssignmentDto assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
         lblAssignmentTitle.setText(assignment.getTitle());
         List<SubmissionDto> submissions = submissionService.getSubmissionByAssignmentId(assignment.getId());
 
         if (submissions == null || submissions.isEmpty()) {
-            System.out.println("No hay nada aun");
-            return;
+            throw new Exception("No submissions found");
         }
 
         List<StudentsSubmissions> studentsSubmissionsList = new ArrayList<>();

@@ -48,7 +48,7 @@ public class UserViewController extends Controller implements Initializable {
     private List<PermissionDto> permissions;
     private static final int PAGE_SIZE = 25;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-    UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

@@ -33,7 +33,7 @@ public class AssignmentViewController extends Controller implements Initializabl
     @FXML
     private VBox vbMain;
     @FXML
-    private Label   lblDocument,uploadDate, aiResponseLabel, lblRemainingTime, lblLastModification, lblShowGrade, lblComment, lblStudentName, lblAssignmentTitle, lblSubmission, lblIsQualified;
+    private Label lblDocument, uploadDate, aiResponseLabel, lblRemainingTime, lblLastModification, lblShowGrade, lblComment, lblStudentName, lblAssignmentTitle, lblSubmission, lblIsQualified;
     @FXML
     private MFXButton btnSubmitFeedback, btnUploadFile, btnClose;
     @FXML
@@ -45,11 +45,11 @@ public class AssignmentViewController extends Controller implements Initializabl
     private AssignmentDto assignment;
     private StudentsSubmissions submission;
     private final SubmissionService submissionService = new SubmissionService();
+    private final UserDto userDto = SessionManager.getInstance().getLoginResponse().getUser();
 
     @Override
     public void initialize() {
         clearAll();
-        System.out.println(SessionManager.getInstance().getLoginResponse().getUser().getPermissions());
         isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
                 .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
         assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
@@ -61,7 +61,7 @@ public class AssignmentViewController extends Controller implements Initializabl
             try {
                 submission = submissionService.getSubmissionByAssignmentIdAndStudentId(assignment.getId(), SessionManager.getInstance().getLoginResponse().getUser().getId());
                 loadSubmissionData();
-                if (submission.getStudentId() != null){
+                if (submission.getStudentId() != null) {
                     loadStudent(submission.getStudentId());
                 }
 
@@ -91,11 +91,11 @@ public class AssignmentViewController extends Controller implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
         initialize();
     }
+
     @FXML
     void onMouseClickedDocument(MouseEvent event) {
         downloadFile(lblDocument.getText());
     }
-
 
     private void setupViewForRole() {
         boolean isStudent = !isTeacher;
@@ -105,8 +105,8 @@ public class AssignmentViewController extends Controller implements Initializabl
         txfComment.setEditable(isTeacher);
         txfComment.setVisible(isTeacher);
         txfGrade.setVisible(isTeacher);
-        btnSubmitFeedback.setVisible(isTeacher);
-        btnUploadFile.setVisible(isStudent);
+        btnSubmitFeedback.setVisible(userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.SUBMIT_FEEDBACK));
+        btnUploadFile.setVisible(userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.SUBMIT_ASSIGNMENTS));
         btnClose.setVisible(isTeacher);
 
     }
@@ -121,36 +121,36 @@ public class AssignmentViewController extends Controller implements Initializabl
     }
 
     private void loadSubmissionData() {
-      if (submission!=null) {
-          lblLastModification.setText((submission.getCreatedAt() != null ? submission.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A"));
-          lblStudentName.setText(submission.getStudentName());
-          lblComment.setText(submission.getFeedback());
-          lblSubmission.setText(submission.getFiles() != null ? "Submission made" : "No submission");
-          lblSubmission.setStyle(submission.getFiles() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
-          lblShowGrade.setText(submission.getGrade() != null ? String.valueOf(submission.getGrade()) : "Not graded");
-          lblShowGrade.setStyle(submission.getGrade() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
-          txfGrade.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
-          txfComment.setText(submission.getFeedback() != null ? submission.getFeedback() : "");
-      }
-      else{
-          submission = new StudentsSubmissions();
-          lblLastModification.setText("N/A");
-          lblStudentName.setText("N/A");
-          lblComment.setText("N/A");
-          lblSubmission.setText("No submission");
-          lblSubmission.setStyle("-fx-text-fill: red");
-          lblShowGrade.setText("Not graded");
-          lblShowGrade.setStyle("-fx-text-fill: red");
-          txfGrade.setText("");
-          txfComment.setText("");
-      lblSubmission.setText("Submission made");}
+        if (submission != null) {
+            lblLastModification.setText((submission.getCreatedAt() != null ? submission.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A"));
+            lblStudentName.setText(submission.getStudentName());
+            lblComment.setText(submission.getFeedback());
+            lblSubmission.setText(submission.getFiles() != null ? "Submission made" : "No submission");
+            lblSubmission.setStyle(submission.getFiles() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
+            lblShowGrade.setText(submission.getGrade() != null ? String.valueOf(submission.getGrade()) : "Not graded");
+            lblShowGrade.setStyle(submission.getGrade() != null ? "-fx-text-fill: green" : "-fx-text-fill: red");
+            txfGrade.setText(submission.getGrade() != null ? submission.getGrade().toString() : "");
+            txfComment.setText(submission.getFeedback() != null ? submission.getFeedback() : "");
+        } else {
+            submission = new StudentsSubmissions();
+            lblLastModification.setText("N/A");
+            lblStudentName.setText("N/A");
+            lblComment.setText("N/A");
+            lblSubmission.setText("No submission");
+            lblSubmission.setStyle("-fx-text-fill: red");
+            lblShowGrade.setText("Not graded");
+            lblShowGrade.setStyle("-fx-text-fill: red");
+            txfGrade.setText("");
+            txfComment.setText("");
+            lblSubmission.setText("Submission made");
+        }
 
-FileDto fileDto = assignment.getFiles().getFirst();
-if (fileDto != null) {
-    lblDocument.setText(fileDto.getName());
-} else {
-    lblDocument.setText("No file uploaded");
-}
+        FileDto fileDto = assignment.getFiles().getFirst();
+        if (fileDto != null) {
+            lblDocument.setText(fileDto.getName());
+        } else {
+            lblDocument.setText("No file uploaded");
+        }
     }
 
     private void downloadFile(String labelText) {
@@ -171,23 +171,26 @@ if (fileDto != null) {
         }
     }
 
-    @FXML
-    private void fetchAIResponse(ActionEvent event) {
-        aiResponseLabel.setText(getRandomAIResponse());
-    }
+    private void sendEmailToStudent(SubmissionDto submissionDto) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setSubject(assignment.getTitle());
+        try {
+            UserDto userDto = new UserService().getUserById(submissionDto.getStudentId());
+            emailDto.setEmail(userDto.getEmail());
+            emailDto.setMessage("Your submission has been reviewed again, your new grade is: " + submissionDto.getGrade());
+            new AssignmentService().sendEmail(emailDto);
+        } catch (Exception e) {
+            showError("Error", "Error to get the student");
+        }
 
-    private String getRandomAIResponse() {
-        List<String> responses = Arrays.asList(
-                "Excellent work, keep it up.",
-                "Review the instructions to improve the presentation.",
-                "Good effort, but you can improve on the details.",
-                "Your submission looks complete, well done."
-        );
-        return responses.get(new Random().nextInt(responses.size()));
     }
 
     @FXML
     private void submitFeedback(ActionEvent event) {
+        if (userDto.getPermissions().stream().noneMatch(permission -> permission.getName() == PermissionType.SUBMIT_FEEDBACK)) {
+            showError("Error", "You don't have permission to submit feedback.");
+            return;
+        }
         SubmissionDto newSubmission = new SubmissionDto();
         newSubmission.setId(submission.getId());
         newSubmission.setAssignmentId(submission.getAssignmentId());
@@ -206,20 +209,6 @@ if (fileDto != null) {
             showInfo("Update Submission", "Submission updated successfully.");
             sendEmailToStudent(newSubmission);
         }
-    }
-
-    private void sendEmailToStudent(SubmissionDto submissionDto) {
-        EmailDto emailDto = new EmailDto();
-        emailDto.setSubject(assignment.getTitle());
-        try {
-            UserDto userDto = new UserService().getUserById(submissionDto.getStudentId());
-            emailDto.setEmail(userDto.getEmail());
-            emailDto.setMessage("Your submission has been reviewed again, your new grade is: " + submissionDto.getGrade());
-            new AssignmentService().sendEmail(emailDto);
-        } catch (Exception e) {
-            showError("Error", "Error to get the student");
-        }
-
     }
 
     @FXML

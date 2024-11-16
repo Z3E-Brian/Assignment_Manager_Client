@@ -61,6 +61,8 @@ public enum PermissionType {
 
     TEACH_CLASSES,
 
+    SUBMIT_FEEDBACK,
+
     TAKE_CLASSES,
 
     REGISTER_STUDENT_COURSES,
