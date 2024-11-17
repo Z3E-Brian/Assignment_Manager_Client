@@ -12,9 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FacultyService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
@@ -64,6 +62,7 @@ public class DepartmentMaintenanceController extends Controller {
     private DepartmentService departmentService;
     private FacultyDto facultyDto;
     private DepartmentDto departmentDto;
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
 
     @Override
@@ -126,6 +125,10 @@ public class DepartmentMaintenanceController extends Controller {
     }
 
     private void createDepartment() throws Exception {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_FACULTIES))){
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have permission to create departments.");
+            return;
+        }
         if ((txfDepartmentName.getText().isBlank())) {
             new Message().showModal(Alert.AlertType.ERROR, "Create Department", getStage(), "There are important blank spaces");
         } else {
@@ -139,6 +142,10 @@ public class DepartmentMaintenanceController extends Controller {
     }
 
     private void updateDepartment() throws Exception {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_DEPARTMENTS))){
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have permission to edit departments.");
+            return;
+        }
         if ((txfDepartmentName.getText().isBlank())) {
             new Message().showModal(Alert.AlertType.ERROR, "Update Department", getStage(), "There are important blank spaces");
         } else {
@@ -185,6 +192,7 @@ public class DepartmentMaintenanceController extends Controller {
         protected void handleAction(ActionEvent event) {
             departmentDto = getTableView().getItems().get(getIndex());
             deleteDepartment(departmentDto);
+            setDisable(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.DELETE_DEPARTMENTS)));
             loadDepartments();
         }
     }

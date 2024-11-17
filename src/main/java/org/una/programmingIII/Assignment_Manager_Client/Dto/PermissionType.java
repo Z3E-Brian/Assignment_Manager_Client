@@ -41,6 +41,8 @@ public enum PermissionType {
     EDIT_USERS,
     DELETE_USERS,
     VIEW_USERS,
+    VIEW_PROFESSORS,
+    VIEW_STUDENTS,
     MANAGE_PERMISSIONS,
 
     //ASSIGNMENTS
@@ -51,10 +53,6 @@ public enum PermissionType {
     GRADE_ASSIGNMENTS,
     SUBMIT_ASSIGNMENTS,
     VIEW_GRADES,
-
-    //REPORTS
-    VIEW_REPORTS,
-    EDIT_REPORTS,
 
     //MISC
     EDIT_PROFILE,

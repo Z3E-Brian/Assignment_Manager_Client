@@ -39,7 +39,7 @@ public class CourseViewController extends Controller implements Initializable {
     List<AssignmentDto> assignments;
     List<CourseContentDto> courseContents;
     CourseDto courseDto;
-    UserDto userDto;
+    UserDto userSession;
 
     @Override
     public void initialize() {
@@ -49,7 +49,7 @@ public class CourseViewController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         clearComponents();
-        userDto = SessionManager.getInstance().getLoginResponse().getUser();
+        userSession = SessionManager.getInstance().getLoginResponse().getUser();
         courseDto = (CourseDto) AppContext.getInstance().get("course");
         startDate = courseDto.getStartDate();
         endDate = courseDto.getEndDate();
@@ -252,13 +252,13 @@ public class CourseViewController extends Controller implements Initializable {
     }
 
     private void createButtonToAddFile(HBox header) {
-        if (userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
             addButtonToHeader(header, "btn-AddAssignment", this::addFile);
         }
     }
 
     private void createDeleteButton(HBox header) {
-        if (userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
             addButtonToHeader(header, "btn-DeleteFile", this::deleteFile);
         }
     }

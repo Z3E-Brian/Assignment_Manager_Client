@@ -69,7 +69,7 @@ public class UserViewController extends Controller implements Initializable {
     private void manageUserPermissionsAndButtons() {
         btnSave.setDisable(
                 !(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
-                userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+                        userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
         );
     }
 
@@ -80,22 +80,22 @@ public class UserViewController extends Controller implements Initializable {
         secondLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("secondLastName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         tbvUser.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.DELETE_USERS))) {
-            clmAction.setCellFactory(col -> new TableCell<>() {
-                private final MFXButton detailsButton = new MFXButton("Delete");
+        clmAction.setCellFactory(col -> new TableCell<>() {
+            private final MFXButton detailsButton = new MFXButton("Delete");
 
-                @Override
-                protected void updateItem(MFXButton item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                    } else {
-                        setGraphic(detailsButton);
-                        detailsButton.setOnAction(event -> deleteUser(getTableView().getItems().get(getIndex())));
-                    }
+            @Override
+            protected void updateItem(MFXButton item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(detailsButton);
+                    detailsButton.setOnAction(event -> deleteUser(getTableView().getItems().get(getIndex())));
+                    setDisable(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.DELETE_USERS)));
                 }
-            });
-        }
+            }
+        });
+
     }
 
     private void configureTextFields() {
@@ -183,11 +183,13 @@ public class UserViewController extends Controller implements Initializable {
     }
 
     private void newUser() {
-        userInput = new UserInput();
-        bindUser();
-        clearForm();
-        setFieldsEditable(true);
-        txfName.requestFocus();
+        if (new Message().showConfirmation("New Career", getStage(), "Are you sure you want to clean the registry?")) {
+            userInput = new UserInput();
+            bindUser();
+            clearForm();
+            setFieldsEditable(true);
+            txfName.requestFocus();
+        }
     }
 
     private void clearForm() {

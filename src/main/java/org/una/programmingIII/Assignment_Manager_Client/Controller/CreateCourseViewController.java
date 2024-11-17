@@ -85,6 +85,7 @@ public class CreateCourseViewController extends Controller {
     private CareerDto careerDto;
     private CourseDto courseDto;
     private RequiredFieldsValidator validator;
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
     @Override
     public void initialize() {
@@ -94,6 +95,14 @@ public class CreateCourseViewController extends Controller {
         loadProfessorsAndCareer();
         setupValidator();
         bindCourse();
+        manageUserPermissionsAndButtons();
+    }
+
+    private void manageUserPermissionsAndButtons() {
+        btnSave.setDisable(
+                !(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
+                        userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+        );
     }
 
     private void initializeCourseData() {
@@ -135,6 +144,7 @@ public class CreateCourseViewController extends Controller {
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
+
         try {
             String validationMessage = validator.validate();
             if (!validationMessage.isEmpty()) {
@@ -231,6 +241,10 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void loanCareer() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_COURSES))) {
+            showError("Load Career", "You do not have permission to view courses");
+            return;
+        }
         try {
             careerDto = (CareerDto) AppContext.getInstance().get("careerDto");
             lblCareer.setText(careerDto.getName());
@@ -253,6 +267,10 @@ public class CreateCourseViewController extends Controller {
 
 
     private void loanProfessors() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_PROFESSORS))) {
+            showError("Load Professors", "You do not have permission to view professors");
+            return;
+        }
         try {
             Answer answer = (Answer) new UserService().getAllUsersByPermission(String.valueOf(PermissionType.TEACH_CLASSES));
             if (!answer.getState()) {

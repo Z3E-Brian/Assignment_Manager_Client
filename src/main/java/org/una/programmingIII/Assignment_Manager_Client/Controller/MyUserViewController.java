@@ -34,6 +34,8 @@ public class MyUserViewController extends Controller implements Initializable {
     public void initialize() {
         clear();
         loadUserInformation();
+        btnEdit.setVisible(SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
+                .anyMatch(permission -> PermissionType.EDIT_PROFILE.equals(permission.getName())));
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

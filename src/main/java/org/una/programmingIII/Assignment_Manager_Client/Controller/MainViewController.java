@@ -60,7 +60,6 @@ public class MainViewController extends Controller implements SessionObserver {
 
     @Override
     public void initialize() {
-        System.out.println("Entro main view");
         activateButton(btnRegisterStudents_Courses, false);
         activateButton(btnUniversitiesMaintenance, false);
         activateButton(btnUserMaintenance, false);

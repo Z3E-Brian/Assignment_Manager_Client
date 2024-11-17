@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -84,12 +85,8 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private void setupTableColumns() {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-
-        if(permissionsDto.stream().anyMatch(permission -> permission.getName() == PermissionType.DELETE_UNIVERSITIES)){
-            tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
-            tbcDelete.setCellFactory(p -> new ButtonCellDelete());
-        }
-
+        tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDelete.setCellFactory(p -> new ButtonCellDelete());
         tbcFaculty.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
         tbcFaculty.setCellFactory(p -> new ButtonCellFaculty());
         universityTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -218,6 +215,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private class ButtonCellDelete extends ButtonCellBase<UniversityDto> {
         ButtonCellDelete() {
             super("Delete", "mfx-btn-Delete");
+            setDisable(permissionsDto.stream().noneMatch(permission -> permission.getName() == PermissionType.DELETE_UNIVERSITIES));
         }
 
         @Override
@@ -236,6 +234,7 @@ public class UniversityMaintenanceController extends Controller implements Sessi
     private class ButtonCellFaculty extends ButtonCellBase<UniversityDto> {
         ButtonCellFaculty() {
             super("Faculty", "mfx-btn-Enter");
+            setDisable(permissionsDto.stream().noneMatch(permission -> permission.getName() == PermissionType.VIEW_FACULTIES));
         }
 
         @Override
