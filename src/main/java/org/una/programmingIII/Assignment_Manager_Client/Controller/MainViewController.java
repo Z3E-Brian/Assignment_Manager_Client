@@ -188,38 +188,31 @@ public class MainViewController extends Controller implements SessionObserver {
                 .getUser()
                 .getPermissions();
 
-        boolean hasTakeClassesPermission = loginUserPermissions.stream()
-                .anyMatch(permission -> PermissionType.TAKE_CLASSES.equals(permission.getName()));
+        checkAndActivateButton(loginUserPermissions, PermissionType.TAKE_CLASSES, btnRegisterStudents_Courses);
+        checkAndActivateButton(loginUserPermissions, PermissionType.REGISTER_STUDENT_COURSES, btnRegisterStudents_Courses);
+        checkAndActivateButton(loginUserPermissions, PermissionType.VIEW_USERS, btnUserMaintenance);
+        checkAndActivateButton(loginUserPermissions, PermissionType.VIEW_UNIVERSITIES, btnUniversitiesMaintenance);
 
-        if (hasTakeClassesPermission) {
+        if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.VIEW_COURSES.equals(permission.getName()))) {
+            btnCoursesMenu.setVisible(true);
+        }
+        if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.TAKE_CLASSES.equals(permission.getName()))) {
             isStudentSession = true;
             btnRegisterStudents_Courses.setText("Enroll Courses");
-            activateButton(btnRegisterStudents_Courses, true);
-        }
-
-        boolean hasRegisterStudentCoursesPermission = loginUserPermissions.stream()
-                .anyMatch(permission -> PermissionType.REGISTER_STUDENT_COURSES.equals(permission.getName()));
-
-        if (hasRegisterStudentCoursesPermission) {
+        } else if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.REGISTER_STUDENT_COURSES.equals(permission.getName()))) {
             isStudentSession = false;
             btnRegisterStudents_Courses.setText("Enroll Student Courses");
-            activateButton(btnRegisterStudents_Courses, true);
         }
 
-        boolean modifyUsers = loginUserPermissions.stream()
-                .anyMatch(permission -> PermissionType.MANAGE_USERS.equals(permission.getName()));
-        if (modifyUsers) {
-            activateButton(btnUserMaintenance, true);
-        }
-
-
-        boolean hasGlobalMaintenacePermission = loginUserPermissions.stream()
-                .anyMatch(permission -> PermissionType.GLOBAL_MAINTENANCE.equals(permission.getName()));
-
-        if (hasGlobalMaintenacePermission) {
-            activateButton(btnUniversitiesMaintenance, true);
-        }
     }
+
+    private void checkAndActivateButton(Set<PermissionDto> permissions, PermissionType permissionType, MFXButton
+            button) {
+        boolean hasPermission = permissions.stream()
+                .anyMatch(permission -> permissionType.equals(permission.getName()));
+        activateButton(button, hasPermission);
+    }
+
 
     private void activateButton(MFXButton button, boolean value) {
         button.setDisable(!value);

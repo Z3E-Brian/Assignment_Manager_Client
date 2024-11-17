@@ -72,6 +72,30 @@
     -fx-background-color: #D32F2F;
 }
 
+.mfx-primary-button, .mfx-primary-button:armed, .mfx-primary-button:focused {
+    -fx-background-color: linear-gradient(#071b8b, #3b3b3b);
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.mfx-primary-button:hover {
+    -fx-background-color: linear-gradient(#3b3b3b, #071b8b);
+}
+
+.mfx-secondary-button, .mfx-secondary-button:armed, .mfx-secondary-button:focused {
+    -fx-background-color: #076eea;
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.mfx-secondary-button:hover {
+    -fx-background-color: #0551b3;
+}
+
 /* Secondary buttons / icons */
 .button-secondary {
     -fx-background-color: #1565C0;
@@ -236,7 +260,6 @@
     -fx-background-color: #cb7676;
 }
 
-/* JMDZ */
 .tool-bar {
     -fx-background-color: #16126a;
 }
@@ -264,7 +287,7 @@
 
 /* General buttons */
 .mfx-btn-new, .mfx-btn-new:armed, .mfx-btn-new:focused {
-    -fx-background-color: #2196F3;
+    -fx-background-color: #209cff;
 }
 
 .mfx-btn-new > ImageView {
@@ -272,7 +295,7 @@
 }
 
 .mfx-btn-new:hover {
-    -fx-background-color: #00ffcc;
+    -fx-background-color: #1a79c1;
 }
 
 .mfx-btn-Search, .mfx-btn-Search:armed, .mfx-btn-Search:focused {
@@ -296,11 +319,12 @@
 }
 
 .mfx-btn-Delete:hover {
-    -fx-background-color: #ff0000;
+    -fx-background-color: #710000;
 }
 
 .mfx-btn-Save, .mfx-btn-Save:armed, .mfx-btn-Save:focused {
     -fx-background-color: #008f36;
+    -fx-text-fill: #000000;
 }
 
 .mfx-btn-Save:hover {

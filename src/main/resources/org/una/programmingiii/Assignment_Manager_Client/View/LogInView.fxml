@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
+<VBox alignment="CENTER" spacing="20" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.LogInController">
    <padding>
       <Insets bottom="30" left="30" right="30" top="30" />
    </padding>
@@ -37,6 +41,6 @@
          <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" style="-fx-pref-width: 300px; -fx-font-size: 16px;" />
       </children>
    </HBox>
-   <MFXButton fx:id="btnLogIn" buttonType="RAISED" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-Save" text="Login" />
-   <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-btn-SaveChanges" text="Register" />
+   <MFXButton fx:id="btnLogIn" buttonType="RAISED" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-primary-button" text="Login" />
+   <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-secondary-button" text="Register" />
 </VBox>

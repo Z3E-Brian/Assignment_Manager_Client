@@ -93,7 +93,7 @@ public class RegisterUserController extends Controller {
     }
 
     @FXML
-    void onActionBtnRegister(ActionEvent event) throws Exception {
+    void onActionBtnRegister(ActionEvent event) {
         String req = validator.validate();
         if (req.isBlank()) {
             if ((passwordField.getText().length() > MAX_PASSWORD_LENGTH)) {
@@ -105,6 +105,7 @@ public class RegisterUserController extends Controller {
                         new Message().showModal(Alert.AlertType.INFORMATION, "Authentication", getStage(),
                                 "Your account has been created, please activate your account and login.");
                         FlowController.getInstance().goViewInWindow("LoginView");
+                        FlowController.getInstance().delete("RegisterUserView");
                         getStage().close();
                     } else {
                         String errorMessage = response.getMessage();
@@ -126,6 +127,7 @@ public class RegisterUserController extends Controller {
     @FXML
     void onActionBtnBack(ActionEvent event) throws Exception {
         FlowController.getInstance().goViewInWindow("LogInView");
+        FlowController.getInstance().delete("RegisterUserView");
         getStage().close();
     }
 
@@ -137,7 +139,6 @@ public class RegisterUserController extends Controller {
         txfSecondLastName.setText("");
         txfLastName.setText("");
         confirmPasswordField.setText("");
-
     }
 
 
