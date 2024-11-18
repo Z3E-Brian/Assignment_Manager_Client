@@ -2,9 +2,9 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,8 +12,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="10.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.CreateCourseViewController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="10.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.CreateCourseViewController">
    <children>
       <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" styleClass="tool-bar">
          <children>
@@ -95,7 +96,7 @@
       </VBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
          <children>
-            <HBox alignment="CENTER" spacing="25.0">
+            <HBox alignment="CENTER" prefHeight="70.0" prefWidth="790.0" spacing="25.0">
                <children>
                   <HBox alignment="CENTER_RIGHT" prefWidth="120.0">
                      <children>
@@ -107,8 +108,22 @@
                         <MFXComboBox fx:id="cbxProfessor" floatingText="Professor" onAction="#onActionCbxProfessor" styleClass="mxf-combobox-label" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <MFXDatePicker fx:id="dtpStartDate" floatMode="BORDER" floatingText="Start Course Date" />
-                  <MFXDatePicker fx:id="dtpEndDate" floatMode="BORDER" floatingText="End Course Date" />
+                  <VBox alignment="CENTER" spacing="2.0">
+                     <children>
+                        <Label styleClass="label3" text="Init Date" textFill="WHITE">
+                           <font>
+                              <Font size="53.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="dtpStartDate" styleClass="date-picker" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" layoutX="463.0" layoutY="10.0" spacing="2.0">
+                     <children>
+                        <Label styleClass="label3" text="End Date" />
+                        <DatePicker fx:id="dtpEndDate" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
             <MFXTextField fx:id="txfDescription" floatingText="Description" minHeight="-Infinity" prefHeight="40.0" prefWidth="126.0" />

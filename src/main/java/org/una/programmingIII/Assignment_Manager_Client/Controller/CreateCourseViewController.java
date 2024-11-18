@@ -46,10 +46,10 @@ public class CreateCourseViewController extends Controller {
     private ImageView imvSearch;
 
     @FXML
-    private MFXDatePicker dtpEndDate;
+    private DatePicker  dtpEndDate;
 
     @FXML
-    private MFXDatePicker dtpStartDate;
+    private DatePicker  dtpStartDate;
 
     @FXML
     private TableColumn<CourseDto, String> tbcDescription;

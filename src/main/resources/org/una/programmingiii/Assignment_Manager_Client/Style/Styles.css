@@ -37,6 +37,11 @@
     -fx-text-fill: #000000;
 }
 
+.label3 {
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+}
+
 .Titles {
     -fx-font-size: 30px;
     -fx-text-fill: white;
@@ -365,4 +370,30 @@
 
 .mfx-text-field .floating-text {
     -fx-text-fill: #000000;
+}
+
+.date-picker {
+    -fx-background-color: #0D47A1;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-border-color: #000000;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #040f4e;
+}
+
+.date-picker .arrow {
+    -fx-background-color: #c6c6c6;
+}
+
+.date-picker .month-year-label {
+    -fx-text-fill: #000000;
+}
+
+.date-picker .spinner .text {
+    -fx-fill: #000000;
 }
