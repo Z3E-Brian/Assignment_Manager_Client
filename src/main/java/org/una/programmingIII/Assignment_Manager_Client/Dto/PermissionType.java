@@ -36,8 +36,6 @@ public enum PermissionType {
     EDIT_USERS,
     DELETE_USERS,
     VIEW_USERS,
-    VIEW_PROFESSORS,
-    VIEW_STUDENTS,
     MANAGE_PERMISSIONS,
 
     //ASSIGNMENTS

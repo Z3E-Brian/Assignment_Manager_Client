@@ -267,7 +267,7 @@ public class CreateCourseViewController extends Controller {
 
 
     private void loanProfessors() {
-        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_PROFESSORS))) {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_USERS))) {
             showError("Load Professors", "You do not have permission to view professors");
             return;
         }
