@@ -253,7 +253,7 @@ public class CourseViewController extends Controller implements Initializable {
 
     private void createButtonToAddFile(HBox header) {
         if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
-            addButtonToHeader(header, "btn-AddAssignment", this::addFile);
+            addButtonToHeader(header, "btn-AddFile", this::addFile);
         }
     }
 
@@ -264,12 +264,10 @@ public class CourseViewController extends Controller implements Initializable {
     }
 
     private void addButtonToHeader(HBox header, String styleClass, EventHandler<ActionEvent> action) {
-        if (havePermission) {
-            Button button = new Button();
-            button.getStyleClass().add(styleClass);
-            button.setOnAction(action);
-            header.getChildren().add(button);
-        }
+        Button button = new Button();
+        button.getStyleClass().add(styleClass);
+        button.setOnAction(action);
+        header.getChildren().add(button);
     }
 
     private String convertDateInMonth(LocalDate startDate, LocalDate endDate) {

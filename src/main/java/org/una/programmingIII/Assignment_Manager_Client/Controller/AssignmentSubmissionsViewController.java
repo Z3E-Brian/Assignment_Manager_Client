@@ -42,7 +42,7 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     private TableColumn<StudentsSubmissions, Long> gradeColumn;
 
     @FXML
-    private TableColumn<StudentsSubmissions, List<FileDto>> uploadedFileColumn;
+    private TableColumn<StudentsSubmissions, List<FileInput>> uploadedFileColumn;
 
     @FXML
     private TableColumn<StudentsSubmissions, MFXButton> detailsColumn;
@@ -63,7 +63,6 @@ public class AssignmentSubmissionsViewController extends Controller implements I
 
     private void configureTable() {
         studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
-        //TODO: necesito usar el fileservice para poner un label y poder desacargar el archivo correspondiente
         uploadedFileColumn.setCellValueFactory(new PropertyValueFactory<>("files"));
         gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
         tbcDownloadFile.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
@@ -113,7 +112,6 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     }
 
     private void openDetailsModal(StudentsSubmissions submission) {
-        AppContext.getInstance().delete("submission");
         AppContext.getInstance().set("submission", submission);
         FlowController.getInstance().goViewInWindowModal("AssignmentView", getStage(), false);
         FlowController.getInstance().getController("AssignmentView").initialize();
@@ -150,6 +148,7 @@ public class AssignmentSubmissionsViewController extends Controller implements I
             throw new RuntimeException(e);
         }
     }
+    //TODO: COPIAR ESTO
     private class ButtonCellDownload extends ButtonCellBase<StudentsSubmissions> {
         ButtonCellDownload() {
             super("Download", "mfx-btn-Enter");

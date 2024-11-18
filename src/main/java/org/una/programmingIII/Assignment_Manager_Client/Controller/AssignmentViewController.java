@@ -51,7 +51,7 @@ public class AssignmentViewController extends Controller implements Initializabl
     public void initialize() {
         clearAll();
         isTeacher = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
-                .anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS);
+                .anyMatch(permission -> permission.getName() == PermissionType.TEACH_CLASSES);
         assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
 
         if (isTeacher) {
@@ -145,9 +145,9 @@ public class AssignmentViewController extends Controller implements Initializabl
             lblSubmission.setText("Submission made");
         }
 
-        FileDto fileDto = assignment.getFiles().getFirst();
-        if (fileDto != null) {
-            lblDocument.setText(fileDto.getName());
+
+        if (!assignment.getFiles().isEmpty()) {
+            lblDocument.setText(assignment.getFiles().get(0).getName());
         } else {
             lblDocument.setText("No file uploaded");
         }

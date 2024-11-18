@@ -17,4 +17,9 @@ public class FileInput {
     private Long submissionId;
     private Long assignmentId;
     private Long courseContentId;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
