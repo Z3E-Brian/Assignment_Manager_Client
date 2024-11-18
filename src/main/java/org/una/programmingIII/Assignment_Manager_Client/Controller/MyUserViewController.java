@@ -85,18 +85,14 @@ public class MyUserViewController extends Controller implements Initializable {
         try {
             UserDto user = SessionManager.getInstance().getLoginResponse().getUser();
             boolean privilege = user.getPermissions().stream()
-                    .anyMatch(permission -> PermissionType.CREATE_ASSIGNMENTS.equals(permission.getName()));
+                    .anyMatch(permission -> PermissionType.TEACH_CLASSES.equals(permission.getName()));
             Long careerId = user.getCareerId();
+            if (careerId == null) {
+                throw new Exception("User doesn't have a career assigned");
+            }
+            courses = new ArrayList<>();
             courses = privilege ? new CourseService().getAssociateCourses(user.getId())
                     : new CourseService().getCoursesByCareerId(careerId);
-            if (courses.isEmpty()) {
-                courses = new ArrayList<>();
-                showWarning("Load Courses", "You don't have courses assigned");
-                coursesListView.setVisible(false);
-                noCoursesLabel.setVisible(true);
-                return;
-            }
-            noCoursesLabel.setVisible(false);
             coursesListView.getItems().addAll(courses.stream().map(CourseDto::getName).toList());
             coursesListView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && coursesListView.getSelectionModel().getSelectedItem() != null) {
@@ -106,6 +102,12 @@ public class MyUserViewController extends Controller implements Initializable {
                 }
             });
         } catch (Exception e) {
+            if (courses == null || courses.isEmpty()) {
+                showWarning("Load Courses", "You don't have courses assigned");
+                coursesListView.setVisible(false);
+                noCoursesLabel.setVisible(true);
+                return;
+            }
             showError("Load Courses", "Can't load the courses list correctly");
         }
     }
