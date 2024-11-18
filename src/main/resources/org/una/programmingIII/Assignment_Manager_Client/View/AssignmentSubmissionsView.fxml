@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<VBox alignment="TOP_CENTER" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentSubmissionsViewController">
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.AssignmentSubmissionsViewController">
       <HBox alignment="CENTER_LEFT" spacing="15.0">
              <Label fx:id="lblAssignmentTitle" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Submissions for Assignment" />
             <MFXButton mnemonicParsing="false" onAction="#updateTable" styleClass="mfx-btn-new" text="Reload" />
@@ -13,7 +16,8 @@
            <columns>
                <TableColumn fx:id="studentNameColumn" prefWidth="150" text="Student Name" />
                <TableColumn fx:id="uploadedFileColumn" prefWidth="150" text="Uploaded File" />
-               <TableColumn fx:id="gradeColumn" prefWidth="100" text="Grade" />
+         <TableColumn fx:id="tbcDownloadFile" prefWidth="102.0" text="Download File" />
+               <TableColumn fx:id="gradeColumn" prefWidth="73.0" text="Grade" />
                <TableColumn fx:id="detailsColumn" prefWidth="100" text="Actions" />
            </columns>
        </TableView>
