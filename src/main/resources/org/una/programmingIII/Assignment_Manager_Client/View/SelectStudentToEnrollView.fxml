@@ -2,13 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="5.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.SelectStudentToEnrollController">
    <children>
@@ -16,7 +16,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="385.0" spacing="15.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label styleClass="Titles" text="EnrollStudents" />
+                  <Label styleClass="Titles" text="Enroll Students" />
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Assets/Assignment-Manager.png" />
@@ -27,7 +27,7 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="25.0" HBox.hgrow="ALWAYS">
                <children>
-                  <ImageView fx:id="imvBack" fitHeight="25.0" fitWidth="25.0" layoutX="159.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvBack" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="159.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvBack" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Assets/Back.png" />
                      </image>
@@ -43,20 +43,11 @@
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                <children>
-                  <HBox alignment="CENTER">
-                     <children>
-                        <Label styleClass="lbl-Subtitle" text="Students" HBox.hgrow="ALWAYS">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <HBox />
-                     </children>
-                  </HBox>
                   <TableView fx:id="tbvStudents" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="tbcStudentName" minWidth="-Infinity" prefWidth="150" text="Name" />
                         <TableColumn fx:id="tbcStudentLastName" prefWidth="150" text="LastName" />
+                        <TableColumn fx:id="tbcStudentSecondLastName" prefWidth="150" text="Second Last Name" />
+                        <TableColumn fx:id="tbcStudentName" minWidth="-Infinity" prefWidth="150" text="Name" />
                         <TableColumn fx:id="tbcStudentIdentificationNumber" prefWidth="150" text="IdentificationNumber" />
                         <TableColumn fx:id="tbcEnrollCourses" prefWidth="75.0" text="EnrollCourses" />
                      </columns>
@@ -64,6 +55,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
+                  <Pagination fx:id="pagination" maxPageIndicatorCount="5" pageCount="0" VBox.vgrow="NEVER" />
                </children>
                <HBox.margin>
                   <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />

@@ -83,16 +83,22 @@ public class UserService {
         }
     }
 
-    public Answer getAllStudentsByCareerId(Long careerId) throws Exception {
+    public Answer getStudentsByCareerIdAndPagination(Long careerId, int actualPage, int pageSize) throws Exception {
         setJwtToken();
-        HttpRequest request = createRequestBuilder(BASE_URL + "/students/byCareerId/" + careerId).GET().build();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/studentsByCareer/" + careerId + "?page=" + actualPage + "&size=" + pageSize)
+                .header("Authorization", "Bearer " + jwtToken)
+                .GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return new Answer(true, "", "students fetched successfully", "students", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
-            }));
+            Map<String, Object> result = objectMapper.readValue(response.body(), new TypeReference<>() {
+            });
+            List<UserDto> users = objectMapper.convertValue(result.get("content"), new TypeReference<>() {
+            });
+            long totalElements = objectMapper.convertValue(result.get("totalElements"), Long.class);
+            return new Answer(true, "Users fetched successfully", "", "StudentsByCareerIdAndPagination", Map.of("users", users, "totalElements", totalElements));
         } else {
-            throw new Exception("Error fetching users: " + response.statusCode());
+            throw new Exception("Error fetching students: " + response.statusCode());
         }
     }
 
@@ -142,10 +148,9 @@ public class UserService {
 
             if (response.statusCode() == 201) {
                 return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
-            } else if (response.statusCode() == 401||response.statusCode()==403||response.statusCode()==409) {
+            } else if (response.statusCode() == 401 || response.statusCode() == 403 || response.statusCode() == 409) {
                 return new Answer(false, "User already registered, please try with another email.", "Error: " + response.statusCode());
-            }
-            else if (response.statusCode() == 400) {
+            } else if (response.statusCode() == 400) {
                 return new Answer(false, "Please dont forget to not let spaces in blank", "Error: " + response.statusCode());
             } else {
                 return new Answer(false, response.body(), "Error: " + response.statusCode());
@@ -174,11 +179,9 @@ public class UserService {
             } else {
                 throw new Exception("Error updating user: " + response.statusCode() + " - " + response.body());
             }
-        }
-        catch (ElementNotFoundException e) {
+        } catch (ElementNotFoundException e) {
             return new Answer(false, e.getMessage(), "Error updating user data");
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             Logger.getLogger("UserService").severe("Error serializing user input: " + e.getMessage());
             return new Answer(false, e.getMessage(), "Error serializing user data");
         } catch (IOException | InterruptedException e) {
