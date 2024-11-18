@@ -105,6 +105,10 @@ public class EnrollStudentCourseController extends Controller {
     private void loadCareerInfo() {
         try {
             Long careerId = studentDto.getCareerId();
+            if (careerId == null) {
+                new Message().showModal(Alert.AlertType.ERROR, "Load Career", getStage(), "You has not career assigned");
+                return;
+            }
             Answer answer = new CareerService().getById(careerId);
             if (answer.getState()) {
                 careerDto = (CareerDto) answer.getResult("careerDto");
@@ -112,10 +116,8 @@ public class EnrollStudentCourseController extends Controller {
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Load Career", getStage(), "Can't load the career label correctly");
             }
-        } catch (
-                Exception e) {
- new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
-
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
         }
     }
 

@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 
 
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
@@ -227,5 +228,10 @@ public class MainViewController extends Controller implements SessionObserver {
         FlowController.getInstance().clearLoarders();
     }
 
+    @FXML
+    public void goMainView(MouseEvent mouseEvent) {
+        vboxCenterView.getChildren().clear();
+        restoreBackgroundImage();
+    }
 }
 

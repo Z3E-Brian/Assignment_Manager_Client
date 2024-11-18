@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../Style/Styles.css"
+            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.MainViewController">
     <top>
-        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
-         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
-                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="0.0" spacing="10.0" style="-fx-background-color: #3B4252;" VBox.vgrow="ALWAYS">
-               <HBox alignment="CENTER" spacing="10.0" HBox.hgrow="SOMETIMES">
-                  <children>
-                            <Label prefHeight="35.0" prefWidth="216.0" style="-fx-text-fill: white; -fx-font-size: 22;" text="Assignment Manager" />
-                            <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" prefHeight="26.0" prefWidth="90.0" style="-fx-text-fill: white;" styleClass="mfx-primary-button" text="Courses">
-                </MenuButton>
-                        <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" prefHeight="30.0" prefWidth="196.0" styleClass="mfx-secondary-button" text="Universities Maintenance" />
-                        <MFXButton fx:id="btnRegisterStudents_Courses" onAction="#OnActionBtnRegisterStudents_Courses" prefHeight="30.0" prefWidth="180.0" styleClass="mfx-secondary-button" text="Enroll Student Courses" />
-                        <MFXButton fx:id="btnUserMaintenance" onAction="#onActionBtnModifyUsers" prefHeight="30.0" prefWidth="123.0" styleClass="mfx-secondary-button" text="Modify Users" />
-                        <MFXButton buttonType="RAISED" depthLevel="LEVEL3" onAction="#OnActionBtnLogOut" prefHeight="30.0" prefWidth="55.0" styleClass="mfx-btn-Back" text="Exit" />
-                  </children>
-                  <HBox.margin>
-                     <Insets left="5.0" />
-                  </HBox.margin>
-               </HBox>
-                  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                     <children>
-                            <Button fx:id="imageButton" onAction="#onCustomUser" prefWidth="129.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
-                                <graphic>
-                                    <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
-                                        <Image url="@../Assets/UserIcon.png" />
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        <Label fx:id="lblUserName" text="User Name" VBox.vgrow="ALWAYS" />
-                     </children>
-                     <HBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
-                     </HBox.margin>
-                  </VBox>
-                      <opaqueInsets>
-                          <Insets />
-                      </opaqueInsets>
-                  </HBox>
-         </VBox>
+        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="0.0" spacing="10.0"
+                  style="-fx-background-color: #3B4252;" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER" prefHeight="86.0" prefWidth="989.0" spacing="10.0" HBox.hgrow="SOMETIMES">
+                    <children>
+                        <Label onMouseClicked="#goMainView" prefHeight="35.0" prefWidth="216.0"
+                               style="-fx-text-fill: white; -fx-font-size: 22;" text="Assignment Manager"/>
+                        <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" prefHeight="26.0"
+                                    prefWidth="90.0" style="-fx-text-fill: white;" styleClass="mfx-primary-button"
+                                    text="Courses">
+                        </MenuButton>
+                        <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance"
+                                   prefHeight="30.0" prefWidth="196.0" styleClass="mfx-secondary-button"
+                                   text="Universities Maintenance"/>
+                        <MFXButton fx:id="btnRegisterStudents_Courses" onAction="#OnActionBtnRegisterStudents_Courses"
+                                   prefHeight="30.0" prefWidth="180.0" styleClass="mfx-secondary-button"
+                                   text="Enroll Student Courses"/>
+                        <MFXButton fx:id="btnUserMaintenance" onAction="#onActionBtnModifyUsers" prefHeight="30.0"
+                                   prefWidth="123.0" styleClass="mfx-secondary-button" text="Modify Users"/>
+                        <MFXButton buttonType="RAISED" depthLevel="LEVEL3" onAction="#OnActionBtnLogOut"
+                                   prefHeight="30.0" prefWidth="55.0" styleClass="mfx-btn-Back" text="Exit"/>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="5.0"/>
+                    </HBox.margin>
+                    <padding>
+                        <Insets left="10.0"/>
+                    </padding>
+                </HBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Button fx:id="imageButton" onAction="#onCustomUser" prefWidth="129.0"
+                                style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                            <graphic>
+                                <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
+                                    <Image url="@../Assets/UserIcon.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Label fx:id="lblUserName" text="User Name" VBox.vgrow="ALWAYS"/>
+                    </children>
+                    <HBox.margin>
+                        <Insets bottom="5.0" top="5.0"/>
+                    </HBox.margin>
+                </VBox>
+                <opaqueInsets>
+                    <Insets/>
+                </opaqueInsets>
+            </HBox>
         </VBox>
     </top>
-   <center>
-      <VBox fx:id="vboxCenterView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="vBox_Main" BorderPane.alignment="BOTTOM_CENTER" />
-   </center>
+    <center>
+        <VBox fx:id="vboxCenterView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+              prefHeight="200.0" prefWidth="100.0" styleClass="vBox_Main" BorderPane.alignment="BOTTOM_CENTER"/>
+    </center>
 </BorderPane>

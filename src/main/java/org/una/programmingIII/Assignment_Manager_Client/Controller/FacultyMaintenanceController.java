@@ -83,9 +83,8 @@ public class FacultyMaintenanceController extends Controller {
     }
     private void manageUserPermissionsAndButtons() {
         btnSave.setDisable(
-                !(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_FACULTIES)) ||
-                        userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_FACULTIES)))
-        );
+                !(userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_FACULTIES)) ||
+                        userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_FACULTIES))));
     }
 
     private void initializeServices() {

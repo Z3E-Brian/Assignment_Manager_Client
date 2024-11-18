@@ -68,8 +68,8 @@ public class UserViewController extends Controller implements Initializable {
 
     private void manageUserPermissionsAndButtons() {
         btnSave.setDisable(
-                !(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
-                        !userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+                !(userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
+                        userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
         );
     }
 
@@ -300,6 +300,10 @@ public class UserViewController extends Controller implements Initializable {
     private void deleteUser(UserDto selectedUser) {
         if (selectedUser != null) {
             try {
+                if (selectedUser.getId().equals(userSession.getId()) && userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.DELETE_USERS))) {
+                    showAlert("Error Deleting User", "You can't delete yourself.", Alert.AlertType.ERROR);
+                    return;
+                }
                 Answer answer = userService.deleteUser(selectedUser.getId());
                 if (!answer.getState()) showAlert("Error Deleting User", answer.getMessage(), Alert.AlertType.ERROR);
                 else {

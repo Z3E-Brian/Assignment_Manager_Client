@@ -82,8 +82,8 @@ public class CareerMaintenanceViewController extends Controller {
 
     private void validatePermissions() {
         btnSave.setDisable(
-                !(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
-                        userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+                !(userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
+                        userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
         );
     }
 
