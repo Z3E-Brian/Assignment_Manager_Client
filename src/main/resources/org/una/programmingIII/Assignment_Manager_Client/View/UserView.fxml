@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<HBox prefHeight="476.0" prefWidth="1104.0" spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
+<HBox prefHeight="476.0" prefWidth="1104.0" spacing="15.0" style="-fx-background-color: #2E3440;" stylesheets="@../Style/Styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.programmingIII.Assignment_Manager_Client.Controller.UserViewController">
     <VBox spacing="10.0" HBox.hgrow="ALWAYS">
         <TableView fx:id="tbvUser" onMouseClicked="#OnMouseClickedTbvUser" prefHeight="400.0" prefWidth="639.0" VBox.vgrow="ALWAYS">
             <columns>
@@ -32,43 +22,49 @@
         <!-- Control de Paginación -->
         <Pagination fx:id="pagination" maxPageIndicatorCount="5" pageCount="0" prefWidth="639.0" VBox.vgrow="ALWAYS" />
     </VBox>
+   <VBox>
+      <children>
 
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #2E3440; -fx-border-color: #2E3440;">
-        <VBox prefHeight="307.0" prefWidth="416.0" spacing="15.0">
-            <HBox spacing="15.0">
-                <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios" />
-                <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
-                    <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
-                    </graphic>
-                </MFXButton>
-            </HBox>
-            <!-- Resto de los campos de usuario -->
-            <MFXTextField fx:id="txfNumberID" floatMode="ABOVE" promptText="Identity Card Number (Exmp. 112341234)" HBox.hgrow="ALWAYS" />
-            <MFXTextField fx:id="txfName" floatMode="ABOVE" prefHeight="29.0" prefWidth="636.0" promptText="Name (Exmp. example example example)" HBox.hgrow="ALWAYS" />
-            <MFXTextField fx:id="txfLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Lastname" />
-            <MFXTextField fx:id="txfSecondLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Second Lastname" />
-            <MFXTextField fx:id="txfEmail" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" promptText="Email (Exmp. example@example.com)" HBox.hgrow="ALWAYS" />
-            <MFXTextField fx:id="txfCareerId" floatMode="ABOVE" layoutX="10.0" layoutY="288.0" promptText="CareerId" />
-            <MFXPasswordField fx:id="txfPassword" caretVisible="false" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS" />
-            <Accordion>
-                <panes>
-                    <TitledPane fx:id="tpPermission" animated="false" style="-fx-background-color: white;" text="Permissions">
-                        <FlowPane fx:id="fpPermissions" hgap="15.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" />
-                    </TitledPane>
-                </panes>
-            </Accordion>
-
-            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="590.0" spacing="10.0">
-                <MFXButton fx:id="btnSave" onAction="#onActionBtnSave" prefWidth="95.0" styleClass="mfx-btn-Save" text="Save">
-                    <graphic>
-                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
-                    </graphic>
-                </MFXButton>
-            </HBox>
-
-        </VBox>
-    </ScrollPane>
+          <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="516.0" prefWidth="421.0" style="-fx-background: #2E3440; -fx-border-color: #2E3440;" VBox.vgrow="ALWAYS">
+              <VBox prefHeight="307.0" prefWidth="416.0" spacing="15.0">
+                  <HBox spacing="15.0">
+                      <Label style="-fx-font-size: 24px;" text="Gestión de Usuarios" />
+                      <MFXButton fx:id="btnNew" buttonType="RAISED" onAction="#onActionBtnNew" prefWidth="95.0" styleClass="mfx-btn-new" text="New">
+                          <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                          </graphic>
+                      </MFXButton>
+                  </HBox>
+                  <!-- Resto de los campos de usuario -->
+                  <MFXTextField fx:id="txfNumberID" floatMode="ABOVE" promptText="Identity Card Number (Exmp. 112341234)" HBox.hgrow="ALWAYS" />
+                  <MFXTextField fx:id="txfName" floatMode="ABOVE" prefHeight="29.0" prefWidth="636.0" promptText="Name (Exmp. example example example)" HBox.hgrow="ALWAYS" />
+                  <MFXTextField fx:id="txfLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Lastname" />
+                  <MFXTextField fx:id="txfSecondLastName" floatMode="ABOVE" layoutX="10.0" layoutY="60.0" promptText="Second Lastname" />
+                  <MFXTextField fx:id="txfEmail" floatMode="ABOVE" prefHeight="30.0" prefWidth="584.0" promptText="Email (Exmp. example@example.com)" HBox.hgrow="ALWAYS" />
+                  <MFXTextField fx:id="txfCareerId" floatMode="ABOVE" layoutX="10.0" layoutY="288.0" promptText="CareerId" />
+                  <MFXPasswordField fx:id="txfPassword" caretVisible="false" floatMode="ABOVE" promptText="Password" HBox.hgrow="ALWAYS" />
+                  <Accordion>
+                      <panes>
+                          <TitledPane fx:id="tpPermission" animated="false" style="-fx-background-color: white;" text="Permissions">
+                              <FlowPane fx:id="fpPermissions" hgap="15.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" />
+                          </TitledPane>
+                      </panes>
+                  </Accordion>
+      
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="590.0" spacing="10.0" />
+      
+              </VBox>
+          </ScrollPane>
+             <MFXButton fx:id="btnSave" onAction="#onActionBtnSave" prefWidth="95.0" styleClass="mfx-btn-Save" text="Save">
+                 <graphic>
+                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                 </graphic>
+            <VBox.margin>
+               <Insets left="150.0" />
+            </VBox.margin>
+             </MFXButton>
+      </children>
+   </VBox>
     <padding>
         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
     </padding>

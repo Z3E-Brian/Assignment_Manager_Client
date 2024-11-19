@@ -57,11 +57,11 @@ public class UserViewController extends Controller implements Initializable {
 
     @Override
     public void initialize() {
+        initializePermissions();
         getServerPermissions();
         manageUserPermissionsAndButtons();
         configureTable();
         configureTextFields();
-        initializePermissions();
         bindUser();
         configurePagination();
     }
@@ -153,7 +153,6 @@ public class UserViewController extends Controller implements Initializable {
                 }
             }
         } else {
-            System.out.println("Not Selected");
             for (Node node : fpPermissions.getChildren()) {
                 if (node instanceof MFXCheckbox checkBox) {
                     checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -183,13 +182,11 @@ public class UserViewController extends Controller implements Initializable {
     }
 
     private void newUser() {
-        if (new Message().showConfirmation("New Career", getStage(), "Are you sure you want to clean the registry?")) {
-            userInput = new UserInput();
+           userInput = new UserInput();
             bindUser();
             clearForm();
             setFieldsEditable(true);
             txfName.requestFocus();
-        }
     }
 
     private void clearForm() {
@@ -228,7 +225,7 @@ public class UserViewController extends Controller implements Initializable {
     }
 
     private void createUser() throws Exception {
-        bindUser();
+
         NewUserDto newUserDto = new NewUserDto(userInput);
         newUserDto.setPermissions(getPermissions());
         Answer answer = userService.createUser(newUserDto);
@@ -317,10 +314,11 @@ public class UserViewController extends Controller implements Initializable {
         } else showAlert("Warning", "Select a user from table.", Alert.AlertType.WARNING);
         updateTable();
     }
-
     @FXML
     private void onActionBtnNew(ActionEvent actionEvent) {
-        prepareForNewUser();
+        if (new Message().showConfirmation("New Career", getStage(), "Are you sure you want to clean the registry?")) {
+            prepareForNewUser();
+        }
     }
 
     @FXML
