@@ -26,23 +26,15 @@
                   <Label styleClass="Titles" text="Career Maintainance" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="25.0">
-               <children>
-                  <ImageView fx:id="imvBack" fitHeight="25.0" fitWidth="25.0" layoutX="159.0" layoutY="16.0" onMouseClicked="#onMouseClickedImvBack" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Assets/Back.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="imvSearch" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#onMouseClickedImvSearch" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Assets/lupa.png" />
-                     </image>
-                  </ImageView>
-               </children>
-               <HBox.margin>
-                  <Insets right="20.0" />
-               </HBox.margin>
-            </HBox>
+             <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" spacing="10.0">
+                <children>
+                   <MFXButton fx:id="btnBack" onMouseClicked="#onMouseClickedImvBack" styleClass="toolbar-btn toolbar-btn-back" text="Back" />
+                   <MFXButton fx:id="btnSearch" onMouseClicked="#onMouseClickedImvSearch" styleClass="toolbar-btn toolbar-btn-search" text="Search" />
+                </children>
+                <HBox.margin>
+                   <Insets right="20.0" />
+                </HBox.margin>
+             </HBox>
          </children>
       </HBox>
       <VBox>

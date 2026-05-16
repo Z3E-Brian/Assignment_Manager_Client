@@ -1,6 +1,6 @@
 /* General background */
 .root {
-    -fx-background-color: #2E3440;
+    -fx-background-color: #1f2430;
 }
 
 * {
@@ -26,11 +26,11 @@
 
 .label {
     -fx-font-size: 12px;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #f3f6fb;
 }
 .lbl-Subtitle {
     -fx-font-size: 22px;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #f3f6fb;
 }
 .label2 {
     -fx-font-size: 16px;
@@ -39,35 +39,35 @@
 
 .Titles {
     -fx-font-size: 30px;
-    -fx-text-fill: white;
+    -fx-text-fill: #f8fafc;
 }
 .table-cell {
     -fx-alignment: CENTER;
 }
 /* Main action buttons */
 .mfx-button {
-    -fx-background-color: #D32F2F;
-    -fx-text-fill: #ECEFF4;
+    -fx-background-color: #1f2937;
+    -fx-text-fill: #e5e7eb;
     -fx-font-size: 14px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #334155;
+    -fx-border-width: 1px;
 }
 
 .mfx-button:pressed {
-    -fx-background-color: #600a0a;
+    -fx-background-color: #111827;
     -fx-scale-x: 0.98;
     -fx-scale-y: 0.98;
 }
 
 .mfx-button:hover {
-    -fx-background-color: #610606;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+    -fx-background-color: #334155;
 }
 
 .mfx-button:focused {
-    -fx-border-color: #ECEFF4;
-    -fx-background-color: #D32F2F;
+    -fx-border-color: #94a3b8;
+    -fx-background-color: #1f2937;
 }
 
 
@@ -249,7 +249,56 @@
 
 /*JMDZ*/
 .tool-bar {
-    -fx-background-color: #16126a;
+    -fx-background-color: linear-gradient(to right, #111827, #1e293b);
+    -fx-border-color: #0f172a;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #111827, #0f172a);
+    -fx-padding: 8px 18px;
+}
+
+.top-bar-title {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.profile-card {
+    -fx-background-color: #1f2937;
+    -fx-background-radius: 10px;
+    -fx-padding: 6px 10px;
+    -fx-spacing: 4px;
+}
+
+.profile-name {
+    -fx-text-fill: #e5e7eb;
+    -fx-font-size: 12px;
+}
+
+.toolbar-btn {
+    -fx-background-color: #1f2937;
+    -fx-text-fill: #e5e7eb;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #334155;
+    -fx-border-width: 1px;
+    -fx-padding: 4px 10px;
+}
+
+.toolbar-btn:hover {
+    -fx-background-color: #334155;
+}
+
+.toolbar-btn-back {
+    -fx-background-color: #0f172a;
+    -fx-border-color: #475569;
+}
+
+.toolbar-btn-search {
+    -fx-background-color: #0f172a;
+    -fx-border-color: #2563eb;
 }
 
 .mfx-btn-Back, .mfx-btn-Back:armed, .mfx-btn-Back:focused {
@@ -275,7 +324,7 @@
 
 /*General buttons*/
 .mfx-btn-new, .mfx-btn-new:armed, .mfx-btn-new:focused {
-    -fx-background-color: #2196F3;
+    -fx-background-color: #2563eb;
 }
 
 .mfx-btn-new > ImageView {
@@ -283,11 +332,11 @@
 }
 
 .mfx-btn-new:hover {
-    -fx-background-color: #00ffcc;
+    -fx-background-color: #3b82f6;
 }
 
 .mfx-btn-Search, .mfx-btn-Search:armed, .mfx-btn-Search:focused {
-    -fx-background-color: #00bcd4;
+    -fx-background-color: #0ea5e9;
 }
 
 .mfx-btn-Search > ImageView {
@@ -295,11 +344,11 @@
 }
 
 .mfx-btn-Search:hover {
-    -fx-background-color: #006666;
+    -fx-background-color: #38bdf8;
 }
 
 .mfx-btn-Delete, .mfx-btn-Delete:armed, .mfx-btn-Delete:focused {
-    -fx-background-color: #f44336;
+    -fx-background-color: #dc2626;
 }
 
 .mfx-btn-Delete > ImageView {
@@ -307,15 +356,15 @@
 }
 
 .mfx-btn-Delete:hover {
-    -fx-background-color: #ff0000;
+    -fx-background-color: #ef4444;
 }
 
 .mfx-btn-Save, .mfx-btn-Save:armed, .mfx-btn-Save:focused {
-    -fx-background-color: #00C853;
+    -fx-background-color: #16a34a;
 }
 
 .mfx-btn-Save:hover {
-    -fx-background-color: #25ff7d;
+    -fx-background-color: #22c55e;
 }
 
 .mfx-btn-Save > ImageView {
@@ -323,7 +372,7 @@
 }
 
 .mfx-btn-Enroll, .mfx-btn-Enroll:armed, .mfx-btn-Enroll:focused {
-    -fx-background-color: #ffeb00;
+    -fx-background-color: #f59e0b;
 }
 
 .mfx-btn-Enroll > ImageView {
@@ -331,11 +380,11 @@
 }
 
 .mfx-btn-Enroll:hover {
-    -fx-background-color: #0eefd5;
+    -fx-background-color: #fbbf24;
 }
 
 .mfx-btn-Enter, .mfx-btn-Enter:armed, .mfx-btn-Enter:focused {
-    -fx-background-color: #00bcd4;
+    -fx-background-color: #0ea5e9;
 }
 
 .mfx-btn-Enter > ImageView {
@@ -343,7 +392,7 @@
 }
 
 .mfx-btn-Enter:hover {
-    -fx-background-color: #006666;
+    -fx-background-color: #38bdf8;
 }
 
 .mfx-text-field {

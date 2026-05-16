@@ -10,30 +10,29 @@
     <top>
         <VBox>
          <VBox>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" style="-fx-background-color: #3B4252;">
-                      <Label style="-fx-text-fill: white; -fx-font-size: 24px;" text="Assignment Manager" />
+                  <HBox alignment="CENTER_RIGHT" prefHeight="80.0" prefWidth="0.0" spacing="15" styleClass="top-bar">
+                      <Label styleClass="top-bar-title" text="Assignment Manager" />
                       <Region HBox.hgrow="ALWAYS" />
-                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" style="-fx-text-fill: white;" text="Courses">
-                </MenuButton>
-                  <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="mfx-btn-Save" text="UniversitiesMaintenance" />
-                  <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" text="Enroll Student Courses" />
-                  <MFXButton fx:id="btnUserMaintenance" layoutX="553.0" layoutY="38.0" onAction="#onActionBtnModifyUsers" styleClass="mfx-btn-Save" text="Modify Users" />
-                  <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="mfx-btn-Back" text="Exit" />
-                  <VBox alignment="CENTER">
-                     <children>
-                            <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
-                                <graphic>
-                                    <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
-                                        <Image url="@../Assets/UserIcon.png" />
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        <Label fx:id="lblUserName" text="User Name" />
-                     </children>
-                     <HBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
-                     </HBox.margin>
-                  </VBox>
+                      <MenuButton fx:id="btnCoursesMenu" onAction="#onActionBtnCoursesMenu" styleClass="toolbar-btn" text="Courses" />
+                      <MFXButton fx:id="btnUniversitiesMaintenance" onAction="#OnActionBtnUniversitiesMaintenance" styleClass="toolbar-btn" text="Universities" />
+                      <MFXButton fx:id="btnRegisterStudents_Courses" layoutX="732.0" layoutY="38.0" onAction="#OnActionBtnRegisterStudents_Courses" styleClass="toolbar-btn" text="Enroll Students" />
+                      <MFXButton fx:id="btnUserMaintenance" layoutX="553.0" layoutY="38.0" onAction="#onActionBtnModifyUsers" styleClass="toolbar-btn" text="Users" />
+                      <MFXButton buttonType="RAISED" depthLevel="LEVEL3" layoutX="744.0" layoutY="38.0" onAction="#OnActionBtnLogOut" styleClass="toolbar-btn toolbar-btn-back" text="Exit" />
+                   <VBox alignment="CENTER" styleClass="profile-card">
+                      <children>
+                             <Button fx:id="imageButton" onAction="#onCustomUser" style="-fx-background-color: transparent;">
+                                 <graphic>
+                                     <ImageView fx:id="imageView" fitHeight="50" fitWidth="50">
+                                         <Image url="@../Assets/UserIcon.png" />
+                                     </ImageView>
+                                 </graphic>
+                             </Button>
+                        <Label fx:id="lblUserName" styleClass="profile-name" text="User Name" />
+                      </children>
+                      <HBox.margin>
+                         <Insets bottom="5.0" top="5.0" />
+                      </HBox.margin>
+                   </VBox>
                       <opaqueInsets>
                           <Insets />
                       </opaqueInsets>
