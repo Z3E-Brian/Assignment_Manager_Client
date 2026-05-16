@@ -3,7 +3,7 @@ package org.una.programmingIII.Assignment_Manager_Client.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
+import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URI;
@@ -13,22 +13,20 @@ import java.net.http.HttpResponse;
 
 
 public class DepartmentService {
-    private static final String BASE_URL = "http://localhost:8080/api/departments";
+    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/api/departments";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-String jwtToken;
+
     public DepartmentService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
     }
 
     public DepartmentDto getById(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 
@@ -49,7 +47,7 @@ String jwtToken;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/"))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -67,7 +65,7 @@ String jwtToken;
         String requestBody = objectMapper.writeValueAsString(departmentDto);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -86,7 +84,7 @@ String jwtToken;
     public void deleteDepartment(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .DELETE()
                 .build();
 

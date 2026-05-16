@@ -14,21 +14,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
+import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 
 public class UserService {
 
-    private static final String BASE_URL = "http://localhost:8080/api/users";
+    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/api/users";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private  String jwtToken;
     public UserService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
@@ -36,11 +35,9 @@ public class UserService {
     }
 
     public Answer getById(Long id) throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 
@@ -58,11 +55,9 @@ public class UserService {
 
 
     public List<UserDto> getAllUsers() throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getAllUsers"))//TODO: remove "/getAllUsers" from URI
-                .header("Authorization", "Bearer " + jwtToken)
+                .uri(URI.create(BASE_URL + "/getAllUsers"))
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 
@@ -77,11 +72,9 @@ public class UserService {
     }
 
     public Answer getAllUsersByPermission(String permission) throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getUsersByPermission?permission=" + permission))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 
@@ -97,11 +90,9 @@ public class UserService {
     }
 
     public Answer getAllStudentsByCareerId(Long careerId) throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/students/byCareerId/" + careerId))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 
@@ -140,11 +131,9 @@ public class UserService {
     }
 
     public UserDto getUserByEmail(String email) throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/findByEmail?email=" + email))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 
@@ -164,7 +153,7 @@ public class UserService {
             String requestBody = objectMapper.writeValueAsString(user);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/create"))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -188,12 +177,10 @@ public class UserService {
 
     public Answer updateUser(Long id, NewUserDto userInput) {
         try {
-            LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-            this.jwtToken = loginResponse.getAccessToken();
             String requestBody = objectMapper.writeValueAsString(userInput);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -223,11 +210,9 @@ public class UserService {
     }
 
     public Answer deleteUser(Long id) throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .DELETE()
                 .build();
 
@@ -236,14 +221,12 @@ public class UserService {
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting user: " + response.statusCode());
         }
-        return null;
+        return new Answer(true, "", "User deleted successfully");
     }
 
     public UserDto getUserById(Long id) throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .uri(URI.create(BASE_URL + "/" + id))
                 .GET()
                 .build();
@@ -258,12 +241,10 @@ public class UserService {
     }
 
     public List<PermissionDto> getAllPermissions() throws Exception {
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
-        String URL= "http://localhost:8080/api/permissions/";
+        String URL = ConfigLoader.getBackendUrl() + "/api/permissions/";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());

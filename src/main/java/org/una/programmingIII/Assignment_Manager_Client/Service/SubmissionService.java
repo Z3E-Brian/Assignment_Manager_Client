@@ -4,17 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.SubmissionDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
-import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
+import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URI;
@@ -26,15 +19,13 @@ import java.util.List;
 public class SubmissionService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private static final String BASE_URL = "http://localhost:8080/api/submissions";
-    String jwtToken;
+    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/api/submissions";
+
     public SubmissionService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
     }
 
     public Answer createSubmission(SubmissionDto submissionDto) {
@@ -43,7 +34,7 @@ public class SubmissionService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/"))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -67,7 +58,7 @@ public class SubmissionService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))  // Asegúrate de que el ID esté en la URL
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -89,7 +80,7 @@ public class SubmissionService {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
@@ -110,7 +101,7 @@ public class SubmissionService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/getByAssignmentId/" + id))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .GET()
                     .build();
 
@@ -127,7 +118,7 @@ public class SubmissionService {
     public StudentsSubmissions getSubmissionByAssignmentIdAndStudentId(Long assignmentId, Long userId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/getByAssignmentIdAndStudentId/" + assignmentId + "/" + userId))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .GET()
                 .build();
 

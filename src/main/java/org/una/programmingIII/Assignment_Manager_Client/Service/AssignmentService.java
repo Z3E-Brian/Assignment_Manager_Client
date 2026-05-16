@@ -8,8 +8,8 @@ import org.una.programmingIII.Assignment_Manager_Client.Dto.AssignmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CourseContentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.EmailDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.AssignmentInput;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
+import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
 import java.net.URLEncoder;
@@ -23,26 +23,24 @@ import java.util.logging.Logger;
 
 public class AssignmentService {
 
-    private static final String BASE_URL = "http://localhost:8080/api/assignments";  // URL de tu API
+    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/api/assignments";
+    private final HttpClient httpClient;
     private final ObjectMapper mapper;
-    private final String jwtToken;
 
     public AssignmentService() {
+        this.httpClient = HttpClient.newHttpClient();
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JavaTimeModule());
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getAccessToken();
     }
     public AssignmentDto getAssignmentById(Long id) throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             return mapper.readValue(response.body(), AssignmentDto.class);
@@ -53,15 +51,14 @@ public class AssignmentService {
 
     public Answer getAllAssignmentsByCourseAndPosition(Long courseId, String position) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/getByCourseIdAndAddress/" + courseId + "/" + URLEncoder.encode(position, StandardCharsets.UTF_8)))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
                 List<AssignmentDto> assignments = mapper.readValue(response.body(), new TypeReference<List<AssignmentDto>>() {});
@@ -77,15 +74,14 @@ public class AssignmentService {
     }
     public Answer deleteAssignment(Long id) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 204) {
                 return new Answer(true, "", "Assignment deleted successfully");
@@ -99,16 +95,15 @@ public class AssignmentService {
     }
     public Answer saveAssignment(AssignmentDto assignmentDto) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             String json = mapper.writeValueAsString(assignmentDto);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/create"))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 201) {
                 AssignmentDto assignmentDtoResult = mapper.readValue(response.body(), AssignmentDto.class);
@@ -123,15 +118,14 @@ public class AssignmentService {
     }
     public Answer getAssignmentsByCourseId(Long courseId) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/getByCourseId/" + courseId))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
                 List<AssignmentDto> assignments = mapper.readValue(response.body(), new TypeReference<List<AssignmentDto>>() {});
@@ -146,16 +140,15 @@ public class AssignmentService {
     }
     public Answer sendEmail(EmailDto emailDto){
         try {
-            HttpClient client = HttpClient.newHttpClient();
             String json = mapper.writeValueAsString(emailDto);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/sendEmail"))
-                    .header("Authorization", "Bearer " + jwtToken)
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
                 return new Answer(true, "", "Email sent successfully");

@@ -6,8 +6,8 @@ import javafx.scene.control.Alert;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FileDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.LoginResponse;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
+import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Message;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
 
@@ -29,16 +29,13 @@ import java.util.List;
 public class FileService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private static final String BASE_URL = "http://localhost:8080/api/files";
-    private static final String UPLOAD_URL = "http://localhost:8080/api/files/upload";
+    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/api/files";
+    private static final String UPLOAD_URL = ConfigLoader.getBackendUrl() + "/api/files/upload";
     private static final int CHUNK_SIZE = 512 * 1024;
-    String jwtToken;
 
     public FileService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
-        LoginResponse loginResponse = SessionManager.getInstance().getLoginResponse();
-        this.jwtToken = loginResponse.getRefreshToken();
     }
 
     public Answer createFile(FileInput fileInput, File file) throws Exception {
@@ -46,7 +43,7 @@ public class FileService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/"))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
@@ -111,7 +108,6 @@ if (responseCode != HttpURLConnection.HTTP_OK){
     }
 
     public void downloadFileInChunks(Long fileId, Path destination) throws Exception {
-        HttpClient httpClient = HttpClient.newHttpClient();
         long downloadedSize = 0;
         boolean moreChunks = true;
         Files.deleteIfExists(destination);
@@ -135,7 +131,7 @@ if (responseCode != HttpURLConnection.HTTP_OK){
     private HttpRequest buildDownloadRequest(Long fileId, long downloadedSize) {
         return HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/download/" + fileId))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .header("Range", "bytes=" + downloadedSize + "-")
                 .GET()
                 .build();
@@ -144,7 +140,7 @@ if (responseCode != HttpURLConnection.HTTP_OK){
     public Answer deleteFile(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
                 .DELETE()
                 .build();
 
