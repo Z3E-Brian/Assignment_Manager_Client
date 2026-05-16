@@ -72,6 +72,8 @@ public class CareerService {
                 .DELETE()
                 .build();
 
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting career: " + response.statusCode());
         }

@@ -79,16 +79,23 @@ public class FlowController {
 
     public void goMain() {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource("View/MainView.fxml")), this.idioma);
+            double stageWidth = mainStage != null ? mainStage.getWidth() : 0;
+            double stageHeight = mainStage != null ? mainStage.getHeight() : 0;
+            FXMLLoader loader = getLoader("MainView");
+            Parent root = loader.getRoot();
             Scene scene = new Scene(root);
             MFXThemeManager.addOn(scene, Themes.DEFAULT, Themes.LEGACY);
             mainStage.setScene(scene);
+            if (stageWidth > 0 && stageHeight > 0) {
+                mainStage.setWidth(stageWidth);
+                mainStage.setHeight(stageHeight);
+            }
             mainStage.show();
             InputStream inputStream = App.class.getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png");
             mainStage.getIcons().add(new Image(inputStream));
             mainStage.setTitle("Assignment Manager");
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
         }
     }

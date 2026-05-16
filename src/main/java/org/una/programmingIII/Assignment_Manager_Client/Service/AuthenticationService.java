@@ -12,9 +12,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 
 public class AuthenticationService {
-    private static final String BASE_URL = "http://localhost:8080/auth";
+    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/auth";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
