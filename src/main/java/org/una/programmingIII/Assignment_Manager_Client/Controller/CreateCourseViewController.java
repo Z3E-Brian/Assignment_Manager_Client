@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -58,7 +59,7 @@ public class CreateCourseViewController extends Controller {
     private TableColumn<CourseDto, String> tbcName;
 
     @FXML
-    private TableColumn<UserDto, String> tbcProfessor;
+    private TableColumn<CourseDto, String> tbcProfessor;
 
 
     @FXML
@@ -93,6 +94,21 @@ public class CreateCourseViewController extends Controller {
         loadProfessorsAndCareer();
         setupValidator();
         bindCourse();
+        setupComboBoxOpenOnClick();
+        txfName.setOnAction(event -> handleSave());
+        txfDescription.setOnAction(event -> handleSave());
+    }
+
+    private void handleSave() {
+        try {
+            onActionBtnSave(null);
+        } catch (Exception e) {
+            showError("Save Course", "An error occurred saving the assignment");
+        }
+    }
+
+    private void setupComboBoxOpenOnClick() {
+        cbxProfessor.setOnMousePressed(event -> cbxProfessor.show());
     }
 
     private void initializeCourseData() {
@@ -104,7 +120,11 @@ public class CreateCourseViewController extends Controller {
     private void setupTableColumns() {
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
+        tbcProfessor.setCellValueFactory(data -> {
+            UserDto professor = data.getValue().getProfessor();
+            String name = professor != null ? professor.getFullName() : "";
+            return new SimpleStringProperty(name.trim());
+        });
         tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
         tbcDelete.setCellFactory(p -> new ButtonCellDelete());
         tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -252,15 +272,19 @@ public class CreateCourseViewController extends Controller {
 
     private void loanProfessors() {
         try {
-            Answer answer = (Answer) new UserService().getAllUsersByPermission(String.valueOf(PermissionType.TEACH_CLASSES));
-            if (!answer.getState()) {
-                showError("Load Professors", answer.getMessage());
-            } else {
+            String permissionName = PermissionType.TEACH_CLASSES.name();
+            Answer answer = new UserService().getAllUsersByPermission(permissionName);
+            
+            if (answer.getState() && answer.getResult("users") != null) {
                 professors = (List<UserDto>) answer.getResult("users");
                 ObservableList<UserDto> professorList = FXCollections.observableArrayList(professors);
                 cbxProfessor.setItems(professorList);
+            } else {
+                System.out.println("No professors found or error: " + answer.getMessage());
             }
         } catch (Exception e) {
+            System.out.println("Error loading professors: " + e.getMessage());
+            e.printStackTrace();
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
         }
     }

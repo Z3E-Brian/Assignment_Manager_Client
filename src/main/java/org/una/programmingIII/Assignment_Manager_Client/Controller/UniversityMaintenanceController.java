@@ -77,9 +77,20 @@ public class UniversityMaintenanceController extends Controller implements Sessi
         setupTableColumns();
         validator = new RequiredFieldsValidator(Arrays.asList(txfName, txfLocation));
 
+        txfName.setOnAction(event -> handleSave());
+        txfLocation.setOnAction(event -> handleSave());
+
         loadUniversities();
         SessionManager.getInstance().addObserver(this);
         SessionManager.getInstance().startTokenValidationTask();
+    }
+
+    private void handleSave() {
+        try {
+            onActionBtnSave(null);
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, e.getMessage(), getStage(), "An error occurred while saving the university");
+        }
     }
 
     private void setupTableColumns() {

@@ -80,7 +80,16 @@ public class DepartmentMaintenanceController extends Controller {
         tbcCareer.setCellValueFactory((TableColumn.CellDataFeatures<DepartmentDto, Boolean> p) -> new SimpleBooleanProperty(p.getValue() != null));
         tbcCareer.setCellFactory((TableColumn<DepartmentDto, Boolean> p) -> new ButtonCellCareer());
         tbvDepartment.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        txfDepartmentName.setOnAction(event -> handleSave());
         loadDepartments();
+    }
+
+    private void handleSave() {
+        try {
+            onActionBtnSave(null);
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, "Save Department", getStage(), "An error occurred while saving the department");
+        }
     }
 
 

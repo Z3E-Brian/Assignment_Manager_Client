@@ -75,7 +75,16 @@ public class FacultyMaintenanceController extends Controller {
         updateUniversityInputLabel();
         setupTableColumns();
         setupValidator();
+        txfFacultyName.setOnAction(event -> handleSave());
         loadUniversityFaculties();
+    }
+
+    private void handleSave() {
+        try {
+            onActionBtnSave(null);
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.ERROR, "Save Faculty", getStage(), "An error occurred while saving the faculty");
+        }
     }
 
     private void initializeServices() {

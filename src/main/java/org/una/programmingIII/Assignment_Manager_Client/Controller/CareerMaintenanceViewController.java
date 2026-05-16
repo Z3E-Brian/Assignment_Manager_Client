@@ -68,9 +68,19 @@ public class CareerMaintenanceViewController extends Controller {
         setupTableColumns();
         setupTextFormatters();
         setupValidator();
+        txfName.setOnAction(event -> handleSave());
+        txfDescription.setOnAction(event -> handleSave());
         loadDepartment();
         loadCareers();
         bind();
+    }
+
+    private void handleSave() {
+        try {
+            onActionBtnSave(null);
+        } catch (Exception e) {
+            showError("Save Career", "An error occurred while saving the career");
+        }
     }
 
     private void initializeCareerData() {
