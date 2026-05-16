@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class CourseDto {
     private Long id;
     private String name;
     private String description;
+    @JsonIgnore
     private UserDto professor;
     private List<Long> studentsId;
     private Long careerId;

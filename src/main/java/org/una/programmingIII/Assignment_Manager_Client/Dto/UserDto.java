@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class UserDto {
     private String identificationNumber;
     private boolean isActive;
     private Set<PermissionDto> permissions;
+    @JsonIgnore
     private List<CourseDto> courses;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdate;
