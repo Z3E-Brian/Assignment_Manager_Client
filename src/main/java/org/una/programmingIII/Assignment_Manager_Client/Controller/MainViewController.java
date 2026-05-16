@@ -82,17 +82,30 @@ public class MainViewController extends Controller implements SessionObserver {
 
     private void loadCourses() {
         try {
+            Set<PermissionDto> permissions = SessionManager.getInstance().getLoginResponse().getUser().getPermissions();
+            boolean hasTeachClasses = permissions.stream()
+                    .anyMatch(permission -> PermissionType.TEACH_CLASSES.equals(permission.getName()));
             Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
-            if (isStudentSession) {
+            if (hasTeachClasses) {
+                courses = new CourseService().getCoursesByProfessorId(SessionManager.getInstance().getLoginResponse().getUser().getId());
+                btnCoursesMenu.setText("My Courses");
+            } else if (isStudentSession) {
                 courses = (new CourseService().getEnrolledCoursesByStudentId(SessionManager.getInstance().getLoginResponse().getUser().getId()));
+                btnCoursesMenu.setText("My Courses");
             } else {
-                courses = (new CourseService().getCoursesByCareerId(careerId));
+                if (careerId != null) {
+                    courses = (new CourseService().getCoursesByCareerId(careerId));
+                } else {
+                    courses = new ArrayList<>();
+                }
+                btnCoursesMenu.setText("Courses");
             }
 
             if (courses.isEmpty()) {
                 courses = new ArrayList<>();
             }
 
+            btnCoursesMenu.getItems().clear();
             for (CourseDto course : courses) {
                 MenuItem menuItem = new MenuItem(course.getName());
                 menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
@@ -203,6 +216,12 @@ public class MainViewController extends Controller implements SessionObserver {
             isStudentSession = false;
             btnRegisterStudents_Courses.setText("Enroll Student Courses");
             activateButton(btnRegisterStudents_Courses, true);
+        }
+
+        boolean hasTeachClassesPermission = loginUserPermissions.stream()
+                .anyMatch(permission -> PermissionType.TEACH_CLASSES.equals(permission.getName()));
+        if (hasTeachClassesPermission) {
+            btnCoursesMenu.setText("My Courses");
         }
 
         boolean modifyUsers = loginUserPermissions.stream()

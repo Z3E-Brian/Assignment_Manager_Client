@@ -73,15 +73,19 @@ public class MyUserViewController extends Controller implements Initializable {
         identificationNumberLabel.setText(user.getIdentificationNumber());
         try {
             Long careerId = user.getCareerId();
-            Answer answer = new CareerService().getById(careerId);
-            if (answer.getState()) {
-                CareerDto careerDto = (CareerDto) answer.getResult("careerDto");
-                careerLabel.setText(careerDto.getName());
+            if (careerId != null) {
+                Answer answer = new CareerService().getById(careerId);
+                if (answer.getState()) {
+                    CareerDto careerDto = (CareerDto) answer.getResult("careerDto");
+                    careerLabel.setText(careerDto.getName());
+                } else {
+                    careerLabel.setText("No career assigned");
+                }
             } else {
-                new Message().showModal(Alert.AlertType.ERROR, "Load Career", getStage(), "Can't load the career label correctly");
+                careerLabel.setText("No career assigned");
             }
         } catch (Exception e) {
-            new Message().showModal(Alert.AlertType.ERROR, "Load Career", getStage(), "Can't load the career label correctly");
+            careerLabel.setText("No career assigned");
         }
         loadCourses();
 
@@ -90,13 +94,15 @@ public class MyUserViewController extends Controller implements Initializable {
 
     private void loadCourses() {
         try {
-            boolean privilege = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
-                    .anyMatch(permission -> PermissionType.CREATE_ASSIGNMENTS.equals(permission.getName()));
+            boolean isProfessor = SessionManager.getInstance().getLoginResponse().getUser().getPermissions().stream()
+                    .anyMatch(permission -> PermissionType.TEACH_CLASSES.equals(permission.getName()));
             Long careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
-            if (privilege) {
+            if (isProfessor) {
+                courses = new CourseService().getCoursesByProfessorId(SessionManager.getInstance().getLoginResponse().getUser().getId());
+            } else if (careerId != null) {
                 courses = (new CourseService().getEnrolledCoursesByStudentId(SessionManager.getInstance().getLoginResponse().getUser().getId()));
             } else {
-                courses = (new CourseService().getCoursesByCareerId(careerId));
+                courses = new ArrayList<>();
             }
 
             if (courses.isEmpty()) {
