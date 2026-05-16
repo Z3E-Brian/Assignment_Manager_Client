@@ -1,5 +1,6 @@
 package org.una.programmingIII.Assignment_Manager_Client.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
@@ -11,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class CareerService {
     private final HttpClient httpClient;
@@ -70,12 +72,25 @@ public class CareerService {
                 .DELETE()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting career: " + response.statusCode());
         }
         return new Answer(true, "The career was deleted", "Delete Career");
     }
 
+    public List<CareerDto> getCareersByDepartmentId(Long departmentId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/getByDepartmentId/" + departmentId))
+                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<CareerDto>>() {});
+        } else {
+            throw new Exception("Error fetching careers by department: " + response.statusCode());
+        }
+    }
 }
