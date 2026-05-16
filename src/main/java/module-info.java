@@ -5,13 +5,10 @@ module org.una.programmingIII.assignment_manager_client {
     requires java.logging;
     requires static lombok;
     requires java.net.http;
-    requires com.google.gson;
     requires jakarta.validation;
     requires com.fasterxml.jackson.databind;
     requires modelmapper;
     requires com.fasterxml.jackson.datatype.jsr310;
-    requires org.apache.httpcomponents.client5.httpclient5;
-    requires org.apache.httpcomponents.core5.httpcore5;
 
     opens org.una.programmingIII.Assignment_Manager_Client.Dto.Input to com.fasterxml.jackson.databind, javafx.base;
     opens org.una.programmingIII.Assignment_Manager_Client.Dto to com.fasterxml.jackson.databind, javafx.base;
