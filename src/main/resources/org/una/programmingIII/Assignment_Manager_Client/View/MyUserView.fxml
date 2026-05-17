@@ -50,6 +50,7 @@
     <HBox alignment="TOP_CENTER" prefHeight="131.0" prefWidth="580.0" spacing="10">
         <Label style="-fx-font-size: 16;" text="Courses:" />
         <ListView fx:id="coursesListView" prefHeight="157.0" prefWidth="554.0" style="-fx-font-size: 16;" />
+        <Label fx:id="noCoursesLabel" style="-fx-font-size: 16;" text="No courses assigned" />
     </HBox>
    <opaqueInsets>
       <Insets />

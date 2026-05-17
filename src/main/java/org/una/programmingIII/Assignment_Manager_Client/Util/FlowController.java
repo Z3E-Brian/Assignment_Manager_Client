@@ -178,6 +178,8 @@ public class FlowController {
         InputStream inputStream = App.class.getResourceAsStream("/org/una/programmingIII/Assignment_Manager_Client/Assets/Assignment-Manager.png");
         stage.getIcons().add(new Image(inputStream));
         stage.setTitle("Assignment Manager");
+        stage.setMaximized(false);
+        stage.setResizable(false);
         stage.setOnHidden((WindowEvent event) -> {
             controller.getStage().getScene().setRoot(new Pane());
             controller.setStage(null);

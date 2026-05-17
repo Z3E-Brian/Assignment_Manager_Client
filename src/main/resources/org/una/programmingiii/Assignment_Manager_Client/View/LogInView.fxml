@@ -41,6 +41,6 @@
          <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" style="-fx-pref-width: 300px; -fx-font-size: 16px;" />
       </children>
    </HBox>
-   <MFXButton fx:id="btnLogIn" buttonType="RAISED" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Login" />
-   <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" text="Register" />
+   <MFXButton fx:id="btnLogIn" buttonType="RAISED" defaultButton="true" onAction="#onActionBtnLogIn" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-primary-button" text="Login" />
+   <MFXButton fx:id="btnRegister" onAction="#onActionBtnRegister" style="-fx-pref-width: 300px; -fx-font-size: 16px;" styleClass="mfx-secondary-button" text="Register" />
 </VBox>

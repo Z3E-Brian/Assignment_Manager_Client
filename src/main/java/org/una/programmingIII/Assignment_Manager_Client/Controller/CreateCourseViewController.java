@@ -11,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -47,10 +46,10 @@ public class CreateCourseViewController extends Controller {
     private ImageView imvSearch;
 
     @FXML
-    private MFXDatePicker dtpEndDate;
+    private DatePicker  dtpEndDate;
 
     @FXML
-    private MFXDatePicker dtpStartDate;
+    private DatePicker  dtpStartDate;
 
     @FXML
     private TableColumn<CourseDto, String> tbcDescription;
@@ -59,12 +58,13 @@ public class CreateCourseViewController extends Controller {
     private TableColumn<CourseDto, String> tbcName;
 
     @FXML
-    private TableColumn<CourseDto, String> tbcProfessor;
+    private TableColumn<CourseDto, String> tbcId;
 
+    @FXML
+    private TableColumn<UserDto, String> tbcProfessor;
 
     @FXML
     private TableColumn<CourseDto, Boolean> tbcDelete;
-
 
     @FXML
     private TableView<CourseDto> tbvCourse;
@@ -85,6 +85,7 @@ public class CreateCourseViewController extends Controller {
     private CareerDto careerDto;
     private CourseDto courseDto;
     private RequiredFieldsValidator validator;
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
     @Override
     public void initialize() {
@@ -94,21 +95,14 @@ public class CreateCourseViewController extends Controller {
         loadProfessorsAndCareer();
         setupValidator();
         bindCourse();
-        setupComboBoxOpenOnClick();
-        txfName.setOnAction(event -> handleSave());
-        txfDescription.setOnAction(event -> handleSave());
+        manageUserPermissionsAndButtons();
     }
 
-    private void handleSave() {
-        try {
-            onActionBtnSave(null);
-        } catch (Exception e) {
-            showError("Save Course", "An error occurred saving the assignment");
-        }
-    }
-
-    private void setupComboBoxOpenOnClick() {
-        cbxProfessor.setOnMousePressed(event -> cbxProfessor.show());
+    private void manageUserPermissionsAndButtons() {
+        btnSave.setDisable(
+                !(userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
+                        userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+        );
     }
 
     private void initializeCourseData() {
@@ -118,13 +112,10 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void setupTableColumns() {
+        tbcId.setCellValueFactory(new PropertyValueFactory<>("id"));
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        tbcProfessor.setCellValueFactory(data -> {
-            UserDto professor = data.getValue().getProfessor();
-            String name = professor != null ? professor.getFullName() : "";
-            return new SimpleStringProperty(name.trim());
-        });
+        tbcProfessor.setCellValueFactory(new PropertyValueFactory<>("professor"));
         tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
         tbcDelete.setCellFactory(p -> new ButtonCellDelete());
         tbvCourse.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -153,6 +144,7 @@ public class CreateCourseViewController extends Controller {
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
+
         try {
             String validationMessage = validator.validate();
             if (!validationMessage.isEmpty()) {
@@ -249,6 +241,10 @@ public class CreateCourseViewController extends Controller {
     }
 
     private void loanCareer() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_COURSES))) {
+            showError("Load Career", "You do not have permission to view courses");
+            return;
+        }
         try {
             careerDto = (CareerDto) AppContext.getInstance().get("careerDto");
             lblCareer.setText(careerDto.getName());
@@ -271,20 +267,20 @@ public class CreateCourseViewController extends Controller {
 
 
     private void loanProfessors() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_USERS))) {
+            showError("Load Professors", "You do not have permission to view professors");
+            return;
+        }
         try {
-            String permissionName = PermissionType.TEACH_CLASSES.name();
-            Answer answer = new UserService().getAllUsersByPermission(permissionName);
-            
-            if (answer.getState() && answer.getResult("users") != null) {
+            Answer answer = (Answer) new UserService().getAllUsersByPermission(String.valueOf(PermissionType.TEACH_CLASSES));
+            if (!answer.getState()) {
+                showError("Load Professors", answer.getMessage());
+            } else {
                 professors = (List<UserDto>) answer.getResult("users");
                 ObservableList<UserDto> professorList = FXCollections.observableArrayList(professors);
                 cbxProfessor.setItems(professorList);
-            } else {
-                System.out.println("No professors found or error: " + answer.getMessage());
             }
         } catch (Exception e) {
-            System.out.println("Error loading professors: " + e.getMessage());
-            e.printStackTrace();
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
         }
     }

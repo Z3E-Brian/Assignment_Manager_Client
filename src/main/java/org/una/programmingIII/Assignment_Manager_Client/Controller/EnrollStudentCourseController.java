@@ -106,7 +106,7 @@ public class EnrollStudentCourseController extends Controller {
         try {
             Long careerId = studentDto.getCareerId();
             if (careerId == null) {
-                lblCareerName.setText("No career assigned");
+                new Message().showModal(Alert.AlertType.ERROR, "Load Career", getStage(), "You has not career assigned");
                 return;
             }
             Answer answer = new CareerService().getById(careerId);
@@ -116,9 +116,8 @@ public class EnrollStudentCourseController extends Controller {
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Load Career", getStage(), "Can't load the career label correctly");
             }
-        } catch (
-                Exception e) {
-            lblCareerName.setText("No career assigned");
+        } catch (Exception e) {
+            new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
         }
     }
 
@@ -154,7 +153,7 @@ public class EnrollStudentCourseController extends Controller {
 
     private void loadEnrolledCoursesStudentSession() {
         try {
-            List<CourseDto> coursesStudentDto = new CourseService().getEnrolledCoursesByStudentId(studentDto.getId());
+            List<CourseDto> coursesStudentDto = new CourseService().getAssociateCourses(studentDto.getId());
             ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
             tbvEnrollCourses.getItems().clear();
             tbvEnrollCourses.setItems(courseDtos);
@@ -165,10 +164,6 @@ public class EnrollStudentCourseController extends Controller {
 
     private void loadAvailableCoursesStudentSession() {
         try {
-            if (careerDto == null || careerDto.getId() == null) {
-                new Message().showModal(Alert.AlertType.INFORMATION, "Info", getStage(), "No career assigned to this student. Cannot load available courses.");
-                return;
-            }
             List<CourseDto> coursesStudentDto = new CourseService().getAvailableCoursesForAStudentInCareer(careerDto.getId(), studentDto.getId());
             ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
             tbvAvailableCourses.getItems().clear();
@@ -242,7 +237,7 @@ public class EnrollStudentCourseController extends Controller {
         try {
             Answer answer = courseService.unenrollStudentFromCourse(studentDto.getId(), courseId);
             if (answer.getState()) {
-                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Uncontrolled successfully");
+                new Message().showModal(Alert.AlertType.INFORMATION, "Enroll course", getStage(), "Unenrolled successfully");
                 loadCourses();
             } else {
                 new Message().showModal(Alert.AlertType.ERROR, "Unroll course", getStage(), "Something went wrong with course unEnrollment");
@@ -293,7 +288,7 @@ public class EnrollStudentCourseController extends Controller {
             cellButton.getStyleClass().add("mfx-btn-Delete");
 
             cellButton.setOnAction((ActionEvent t) -> {
-                CourseDto courseDto = (CourseDto) EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getTableView().getItems().get(EnrollStudentCourseController.ButtonCellUnEnrollCourse.this.getIndex());
+                CourseDto courseDto = ButtonCellUnEnrollCourse.this.getTableView().getItems().get(ButtonCellUnEnrollCourse.this.getIndex());
                 unEnrollStudentInCourse(courseDto.getId());
             });
         }

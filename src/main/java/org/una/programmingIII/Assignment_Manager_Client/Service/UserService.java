@@ -10,37 +10,41 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.NewUserDto;
-import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.UserInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
+import org.una.programmingIII.Assignment_Manager_Client.Exception.ElementNotFoundException;
 import org.una.programmingIII.Assignment_Manager_Client.Util.Answer;
-import org.una.programmingIII.Assignment_Manager_Client.Util.ConfigLoader;
 import org.una.programmingIII.Assignment_Manager_Client.Util.SessionManager;
-
 
 public class UserService {
 
-    private static final String BASE_URL = ConfigLoader.getBackendUrl() + "/api/users";
+    private static final String BASE_URL = "http://localhost:8080/api/users";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private String jwtToken;
+
     public UserService() {
         this.httpClient = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    }
+
+    private void setJwtToken() {
+        this.jwtToken = SessionManager.getInstance().getLoginResponse().getAccessToken();
+    }
+
+    private HttpRequest.Builder createRequestBuilder(String uri) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Bearer " + jwtToken);
     }
 
     public Answer getById(Long id) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .GET()
-                .build();
-
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/" + id).GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         UserDto userDtoResult = objectMapper.readValue(response.body(), UserDto.class);
 
@@ -53,14 +57,9 @@ public class UserService {
         }
     }
 
-
     public List<UserDto> getAllUsers() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getAllUsers"))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .GET()
-                .build();
-
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/getAllUsers").GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
@@ -72,13 +71,8 @@ public class UserService {
     }
 
     public Answer getAllUsersByPermission(String permission) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/getUsersByPermission?permission=" + permission))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .GET()
-                .build();
-
-
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/getUsersByPermission?permission=" + permission).GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
@@ -89,54 +83,48 @@ public class UserService {
         }
     }
 
-    public Answer getAllStudentsByCareerId(Long careerId) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/students/byCareerId/" + careerId))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .GET()
-                .build();
-
-
+    public Answer getStudentsByCareerIdAndPagination(Long careerId, int actualPage, int pageSize) throws Exception {
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/studentsByCareer/" + careerId + "?page=" + actualPage + "&size=" + pageSize)
+                .header("Authorization", "Bearer " + jwtToken)
+                .GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return new Answer(true, "", "students fetched successfully", "students", objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
-            }));
+            Map<String, Object> result = objectMapper.readValue(response.body(), new TypeReference<>() {
+            });
+            List<UserDto> users = objectMapper.convertValue(result.get("content"), new TypeReference<>() {
+            });
+            long totalElements = objectMapper.convertValue(result.get("totalElements"), Long.class);
+            return new Answer(true, "Users fetched successfully", "", "StudentsByCareerIdAndPagination", Map.of("users", users, "totalElements", totalElements));
         } else {
-            throw new Exception("Error fetching users: " + response.statusCode());
+            throw new Exception("Error fetching students: " + response.statusCode());
         }
     }
 
-    // GET: Obtener usuarios paginados en un Map
-    public Map<String, Object> getUsers(int page, int size, int limit) throws Exception {
-        return getStringObjectMap(page, size, limit, httpClient, objectMapper);
-    }
-
-    static Map<String, Object> getStringObjectMap(int page, int size, int limit, HttpClient httpClient, ObjectMapper objectMapper) throws Exception {
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(UserService.BASE_URL + "/getMap?page=" + page + "&size=" + size + "&limit=" + limit))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
+    public Answer getUsers(int page, int size) throws Exception {
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/getPageable?page=" + page + "&size=" + size)
+                .header("Authorization", "Bearer " + jwtToken)
                 .GET()
                 .build();
-
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<Map<String, Object>>() {
+            Map<String, Object> result = objectMapper.readValue(response.body(), new TypeReference<>() {
             });
+            List<UserDto> users = objectMapper.convertValue(result.get("content"), new TypeReference<>() {
+            });
+            long totalElements = objectMapper.convertValue(result.get("totalElements"), Long.class);
+            return new Answer(true, "Users fetched successfully", "", "", Map.of("users", users, "totalElements", totalElements));
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
     }
 
     public UserDto getUserByEmail(String email) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/findByEmail?email=" + email))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .GET()
-                .build();
-
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/findByEmail?email=" + email).GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
@@ -151,9 +139,7 @@ public class UserService {
     public Answer createUser(NewUserDto user) {
         try {
             String requestBody = objectMapper.writeValueAsString(user);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/create"))
-                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
+            HttpRequest request = createRequestBuilder(BASE_URL + "/create")
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
@@ -162,11 +148,12 @@ public class UserService {
 
             if (response.statusCode() == 201) {
                 return new Answer(true, "", "User created successfully", "user", objectMapper.readValue(response.body(), UserDto.class));
-            } else if (response.statusCode() == 401) {
-     return new Answer(false, "User already registered, please try with another email.", "Error: " + response.statusCode());
+            } else if (response.statusCode() == 401 || response.statusCode() == 403 || response.statusCode() == 409) {
+                return new Answer(false, "User already registered, please try with another email.", "Error: " + response.statusCode());
+            } else if (response.statusCode() == 400) {
+                return new Answer(false, "Please dont forget to not let spaces in blank", "Error: " + response.statusCode());
             } else {
-                String errorMessage = response.body();
-                return new Answer(false, errorMessage, "Error: " + response.statusCode());
+                return new Answer(false, response.body(), "Error: " + response.statusCode());
             }
         } catch (Exception e) {
             Logger.getLogger("UserService").severe(e.getMessage());
@@ -174,35 +161,32 @@ public class UserService {
         }
     }
 
-
     public Answer updateUser(Long id, NewUserDto userInput) {
         try {
+            setJwtToken();
             String requestBody = objectMapper.writeValueAsString(userInput);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/" + id))
-                    .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
+            HttpRequest request = createRequestBuilder(BASE_URL + "/" + id)
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
             if (response.statusCode() == 200) {
                 UserDto updatedUser = objectMapper.readValue(response.body(), UserDto.class);
                 return new Answer(true, "", "User updated successfully", "user", updatedUser);
+            } else if (response.statusCode() == 404) {
+                throw new ElementNotFoundException("User or career not found,please check the data and try again.");
+            } else {
+                throw new Exception("Error updating user: " + response.statusCode() + " - " + response.body());
             }
-            if (response.statusCode() == 404) {
-                throw new Exception("User not found");
-            }
-            throw new Exception("Error updating user: " + response.statusCode() + " - " + response.body());
+        } catch (ElementNotFoundException e) {
+            return new Answer(false, e.getMessage(), "Error updating user data");
         } catch (JsonProcessingException e) {
             Logger.getLogger("UserService").severe("Error serializing user input: " + e.getMessage());
             return new Answer(false, e.getMessage(), "Error serializing user data");
-        } catch (IOException e) {
-            Logger.getLogger("UserService").severe("IO error during request: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            Logger.getLogger("UserService").severe("Error during request: " + e.getMessage());
             return new Answer(false, e.getMessage(), "Error sending the request");
-        } catch (InterruptedException e) {
-            Logger.getLogger("UserService").severe("Request interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();  // Restores interrupt status
-            return new Answer(false, e.getMessage(), "Request interrupted");
         } catch (Exception e) {
             Logger.getLogger("UserService").severe("General error: " + e.getMessage());
             return new Answer(false, e.getMessage(), "Error updating the user");
@@ -210,27 +194,19 @@ public class UserService {
     }
 
     public Answer deleteUser(Long id) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/" + id))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .DELETE()
-                .build();
-
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/" + id).DELETE().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 204) {
             throw new Exception("Error deleting user: " + response.statusCode());
         }
-        return new Answer(true, "", "User deleted successfully");
+        return new Answer(true, "", "User deleted successfully", "user", null);
     }
 
     public UserDto getUserById(Long id) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .uri(URI.create(BASE_URL + "/" + id))
-                .GET()
-                .build();
-
+        setJwtToken();
+        HttpRequest request = createRequestBuilder(BASE_URL + "/" + id).GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
@@ -241,20 +217,15 @@ public class UserService {
     }
 
     public List<PermissionDto> getAllPermissions() throws Exception {
-        String URL = ConfigLoader.getBackendUrl() + "/api/permissions/";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(URL))
-                .header("Authorization", "Bearer " + SessionManager.getInstance().getLoginResponse().getAccessToken())
-                .GET()
-                .build();
+        setJwtToken();
+        HttpRequest request = createRequestBuilder("http://localhost:8080/api/permissions/").GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
         if (response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), new TypeReference<List<PermissionDto>>() {
             });
         } else {
             throw new Exception("Error fetching users: " + response.statusCode());
         }
-
     }
-
 }

@@ -1,6 +1,8 @@
 package org.una.programmingIII.Assignment_Manager_Client.Controller;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -8,17 +10,20 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.FileInput;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.StudentsSubmissions;
 import org.una.programmingIII.Assignment_Manager_Client.Service.AssignmentService;
+import org.una.programmingIII.Assignment_Manager_Client.Service.FileService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.SubmissionService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UserService;
-import org.una.programmingIII.Assignment_Manager_Client.Util.AppContext;
-import org.una.programmingIII.Assignment_Manager_Client.Util.Controller;
-import org.una.programmingIII.Assignment_Manager_Client.Util.FlowController;
+import org.una.programmingIII.Assignment_Manager_Client.Util.*;
 
+import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -37,14 +42,19 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     private TableColumn<StudentsSubmissions, Long> gradeColumn;
 
     @FXML
-    private TableColumn<StudentsSubmissions, List<FileDto>> uploadedFileColumn;
+    private TableColumn<StudentsSubmissions, List<FileInput>> uploadedFileColumn;
 
     @FXML
     private TableColumn<StudentsSubmissions, MFXButton> detailsColumn;
 
+    @FXML
+    private TableColumn<StudentsSubmissions, Boolean> tbcDownloadFile;
+
     private final SubmissionService submissionService = new SubmissionService();
     private final UserService userService = new UserService();
     private final AssignmentService assignmentService = new AssignmentService();
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,20 +63,23 @@ public class AssignmentSubmissionsViewController extends Controller implements I
 
     private void configureTable() {
         studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
-        //TODO: necesito usar el fileservice para poner un label y poder desacargar el archivo correspondiente
         uploadedFileColumn.setCellValueFactory(new PropertyValueFactory<>("files"));
         gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        tbcDownloadFile.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
+        tbcDownloadFile.setCellFactory(p -> new ButtonCellDownload());
         submissionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
     }
 
     private void loadSubmissions() throws Exception {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_ASSIGNMENTS))){
+            throw new Exception("You don't have permission to view assignments");
+        }
         AssignmentDto assignment = (AssignmentDto) AppContext.getInstance().get("assignment");
         lblAssignmentTitle.setText(assignment.getTitle());
         List<SubmissionDto> submissions = submissionService.getSubmissionByAssignmentId(assignment.getId());
 
         if (submissions == null || submissions.isEmpty()) {
-            System.out.println("No hay nada aun");
-            return;
+            throw new Exception("No submissions found");
         }
 
         List<StudentsSubmissions> studentsSubmissionsList = new ArrayList<>();
@@ -99,9 +112,8 @@ public class AssignmentSubmissionsViewController extends Controller implements I
     }
 
     private void openDetailsModal(StudentsSubmissions submission) {
-        AppContext.getInstance().delete("submission");
         AppContext.getInstance().set("submission", submission);
-        FlowController.getInstance().goViewInWindowUndecorated("AssignmentView");
+        FlowController.getInstance().goViewInWindowModal("AssignmentView", getStage(), false);
         FlowController.getInstance().getController("AssignmentView").initialize();
 
     }
@@ -136,4 +148,31 @@ public class AssignmentSubmissionsViewController extends Controller implements I
             throw new RuntimeException(e);
         }
     }
+    //TODO: COPIAR ESTO
+    private class ButtonCellDownload extends ButtonCellBase<StudentsSubmissions> {
+        ButtonCellDownload() {
+            super("Download", "mfx-btn-Enter");
+        }
+
+        @Override
+        protected void handleAction(ActionEvent event) {
+            StudentsSubmissions studentsSubmissions = getTableView().getItems().get(getIndex());
+            if (studentsSubmissions.getFiles() != null && !studentsSubmissions.getFiles().isEmpty()) {
+                for (FileInput fileInput : studentsSubmissions.getFiles()) {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setInitialFileName(fileInput.getName());
+                    fileChooser.setTitle("Save File");
+                    File file = fileChooser.showSaveDialog(new Stage());
+                    if (file != null) {
+                        try {
+                            new FileService().downloadFileInChunks(fileInput.getId(), Paths.get(file.getAbsolutePath()));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -1,10 +1,6 @@
 /* General background */
 .root {
-    -fx-background-color: #1f2430;
-}
-
-* {
-    /*-fx-font-family: Arial Rounded;*/
+    -fx-background-color: #2E3440;
 }
 
 /* Top tab (navigation bar or header) */
@@ -14,10 +10,12 @@
     -fx-font-size: 18px;
     -fx-padding: 10px;
 }
-.vBox_Main{
--fx-background-image: url("../Assets/Main_Background.png");
--fx-background-size: 100% 100%;
+
+.vBox_Main {
+    -fx-background-image: url("../Assets/Main_Background.png");
+    -fx-background-size: 100% 100%;
 }
+
 .context-menu {
     -fx-background-color: #464a55;
     -fx-border-color: #04495e;
@@ -26,50 +24,82 @@
 
 .label {
     -fx-font-size: 12px;
-    -fx-text-fill: #f3f6fb;
+    -fx-text-fill: #ffffff;
 }
+
 .lbl-Subtitle {
     -fx-font-size: 22px;
-    -fx-text-fill: #f3f6fb;
+    -fx-text-fill: #ffffff;
 }
+
 .label2 {
     -fx-font-size: 16px;
     -fx-text-fill: #000000;
 }
 
+.label3 {
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+}
+
 .Titles {
     -fx-font-size: 30px;
-    -fx-text-fill: #f8fafc;
+    -fx-text-fill: white;
 }
+
 .table-cell {
     -fx-alignment: CENTER;
 }
+
 /* Main action buttons */
 .mfx-button {
-    -fx-background-color: #1f2937;
-    -fx-text-fill: #e5e7eb;
+    -fx-background-color: #D32F2F;
+    -fx-text-fill: #ECEFF4;
     -fx-font-size: 14px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-border-color: #334155;
-    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
 }
 
 .mfx-button:pressed {
-    -fx-background-color: #111827;
+    -fx-background-color: #600a0a;
     -fx-scale-x: 0.98;
     -fx-scale-y: 0.98;
 }
 
 .mfx-button:hover {
-    -fx-background-color: #334155;
+    -fx-background-color: #610606;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
 }
 
 .mfx-button:focused {
-    -fx-border-color: #94a3b8;
-    -fx-background-color: #1f2937;
+    -fx-border-color: #ECEFF4;
+    -fx-background-color: #D32F2F;
 }
 
+.mfx-primary-button, .mfx-primary-button:armed, .mfx-primary-button:focused {
+    -fx-background-color: linear-gradient(#071b8b, #3b3b3b);
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.mfx-primary-button:hover {
+    -fx-background-color: linear-gradient(#3b3b3b, #071b8b);
+}
+
+.mfx-secondary-button, .mfx-secondary-button:armed, .mfx-secondary-button:focused {
+    -fx-background-color: #076eea;
+    -fx-text-fill: #ECEFF4;
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.mfx-secondary-button:hover {
+    -fx-background-color: #0551b3;
+}
 
 /* Secondary buttons / icons */
 .button-secondary {
@@ -117,17 +147,8 @@
     -fx-text-fill: #42A5F5;
 }
 
-/*UploadTask style*/
-.vbox-Dates {
-    -fx-background-color: #b0b0b0;
-    -fx-padding: 5px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-border-color: #BDBDBD;
-    -fx-border-width: 1px;
-}
-
-.label-AddDelivery {
+/* UploadTask style */
+.vbox-Dates, .label-AddDelivery {
     -fx-background-color: #b0b0b0;
     -fx-padding: 5px;
     -fx-border-radius: 8px;
@@ -196,10 +217,9 @@
     -fx-background-color: #e71e1e;
 }
 
-/*CoursesView*/
+/* CoursesView */
 .titledPane {
     -fx-font: 14px "Roboto";
-    /*-fx-font-style: bold;*/
     -fx-padding: 2px;
 }
 
@@ -214,8 +234,8 @@
 }
 
 .mfx-text-field {
-    -fx-pref-width: 100%; /* Forzar que ocupe el 100% del ancho del padre */
-    -fx-max-width: Infinity; /* Para asegurar que no tenga límites de crecimiento */
+    -fx-pref-width: 100%;
+    -fx-max-width: Infinity;
 }
 
 .btn-AddFile {
@@ -232,7 +252,6 @@
 }
 
 .btn-DeleteFile {
-
     -fx-background-color: transparent;
     -fx-background-image: url("../Assets/DeleteFile.png");
     -fx-background-repeat: no-repeat;
@@ -246,66 +265,15 @@
     -fx-background-color: #cb7676;
 }
 
-
-/*JMDZ*/
 .tool-bar {
-    -fx-background-color: linear-gradient(to right, #111827, #1e293b);
-    -fx-border-color: #0f172a;
-    -fx-border-width: 0 0 1px 0;
-}
-
-.top-bar {
-    -fx-background-color: linear-gradient(to right, #111827, #0f172a);
-    -fx-padding: 8px 18px;
-}
-
-.top-bar-title {
-    -fx-text-fill: #f8fafc;
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
-}
-
-.profile-card {
-    -fx-background-color: #1f2937;
-    -fx-background-radius: 10px;
-    -fx-padding: 6px 10px;
-    -fx-spacing: 4px;
-}
-
-.profile-name {
-    -fx-text-fill: #e5e7eb;
-    -fx-font-size: 12px;
-}
-
-.toolbar-btn {
-    -fx-background-color: #1f2937;
-    -fx-text-fill: #e5e7eb;
-    -fx-background-radius: 6px;
-    -fx-border-radius: 6px;
-    -fx-border-color: #334155;
-    -fx-border-width: 1px;
-    -fx-padding: 4px 10px;
-}
-
-.toolbar-btn:hover {
-    -fx-background-color: #334155;
-}
-
-.toolbar-btn-back {
-    -fx-background-color: #0f172a;
-    -fx-border-color: #475569;
-}
-
-.toolbar-btn-search {
-    -fx-background-color: #0f172a;
-    -fx-border-color: #2563eb;
+    -fx-background-color: #16126a;
 }
 
 .mfx-btn-Back, .mfx-btn-Back:armed, .mfx-btn-Back:focused {
     -fx-background-color: #bd1515;
 }
 
-.mfx-btn-Back> ImageView {
+.mfx-btn-Back > ImageView {
     -fx-image: url("../Assets/Back.png");
 }
 
@@ -322,9 +290,9 @@
     -fx-max-height: 15px;
 }
 
-/*General buttons*/
+/* General buttons */
 .mfx-btn-new, .mfx-btn-new:armed, .mfx-btn-new:focused {
-    -fx-background-color: #2563eb;
+    -fx-background-color: #209cff;
 }
 
 .mfx-btn-new > ImageView {
@@ -332,11 +300,11 @@
 }
 
 .mfx-btn-new:hover {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #1a79c1;
 }
 
 .mfx-btn-Search, .mfx-btn-Search:armed, .mfx-btn-Search:focused {
-    -fx-background-color: #0ea5e9;
+    -fx-background-color: #00bcd4;
 }
 
 .mfx-btn-Search > ImageView {
@@ -344,11 +312,11 @@
 }
 
 .mfx-btn-Search:hover {
-    -fx-background-color: #38bdf8;
+    -fx-background-color: #006666;
 }
 
 .mfx-btn-Delete, .mfx-btn-Delete:armed, .mfx-btn-Delete:focused {
-    -fx-background-color: #dc2626;
+    -fx-background-color: #f44336;
 }
 
 .mfx-btn-Delete > ImageView {
@@ -356,15 +324,16 @@
 }
 
 .mfx-btn-Delete:hover {
-    -fx-background-color: #ef4444;
+    -fx-background-color: #710000;
 }
 
 .mfx-btn-Save, .mfx-btn-Save:armed, .mfx-btn-Save:focused {
-    -fx-background-color: #16a34a;
+    -fx-background-color: #008f36;
+    -fx-text-fill: #000000;
 }
 
 .mfx-btn-Save:hover {
-    -fx-background-color: #22c55e;
+    -fx-background-color: #25ff7d;
 }
 
 .mfx-btn-Save > ImageView {
@@ -372,7 +341,7 @@
 }
 
 .mfx-btn-Enroll, .mfx-btn-Enroll:armed, .mfx-btn-Enroll:focused {
-    -fx-background-color: #f59e0b;
+    -fx-background-color: #ffeb00;
 }
 
 .mfx-btn-Enroll > ImageView {
@@ -380,11 +349,11 @@
 }
 
 .mfx-btn-Enroll:hover {
-    -fx-background-color: #fbbf24;
+    -fx-background-color: #0eefd5;
 }
 
 .mfx-btn-Enter, .mfx-btn-Enter:armed, .mfx-btn-Enter:focused {
-    -fx-background-color: #0ea5e9;
+    -fx-background-color: #00bcd4;
 }
 
 .mfx-btn-Enter > ImageView {
@@ -392,13 +361,39 @@
 }
 
 .mfx-btn-Enter:hover {
-    -fx-background-color: #38bdf8;
+    -fx-background-color: #006666;
 }
 
 .mfx-text-field {
-    -fx-text-fill: #000000; /* Color negro para el texto */
+    -fx-text-fill: #000000;
 }
 
 .mfx-text-field .floating-text {
-    -fx-text-fill: #000000; /* Color negro para el texto */
+    -fx-text-fill: #000000;
+}
+
+.date-picker {
+    -fx-background-color: #0D47A1;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-border-color: #000000;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #040f4e;
+}
+
+.date-picker .arrow {
+    -fx-background-color: #c6c6c6;
+}
+
+.date-picker .month-year-label {
+    -fx-text-fill: #000000;
+}
+
+.date-picker .spinner .text {
+    -fx-fill: #000000;
 }

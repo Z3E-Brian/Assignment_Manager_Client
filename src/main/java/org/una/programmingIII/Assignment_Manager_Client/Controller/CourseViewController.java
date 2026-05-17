@@ -33,15 +33,13 @@ public class CourseViewController extends Controller implements Initializable {
     private Accordion acDates;
     @FXML
     private ScrollPane scrollPane;
-    @FXML
-    private Label lblCourseName;
     boolean havePermission = true;
     LocalDate startDate;
     LocalDate endDate;
     List<AssignmentDto> assignments;
     List<CourseContentDto> courseContents;
     CourseDto courseDto;
-    UserDto userDto;
+    UserDto userSession;
 
     @Override
     public void initialize() {
@@ -51,11 +49,8 @@ public class CourseViewController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         clearComponents();
-        userDto = SessionManager.getInstance().getLoginResponse().getUser();
+        userSession = SessionManager.getInstance().getLoginResponse().getUser();
         courseDto = (CourseDto) AppContext.getInstance().get("course");
-        if (courseDto != null && lblCourseName != null) {
-            lblCourseName.setText(courseDto.getName());
-        }
         startDate = courseDto.getStartDate();
         endDate = courseDto.getEndDate();
         loanAssignments();
@@ -93,7 +88,6 @@ public class CourseViewController extends Controller implements Initializable {
         TitledPane weekPane = new TitledPane();
         VBox.setVgrow(weekPane, Priority.ALWAYS);
         weekPane.getStyleClass().add("titledPane");
-        weekPane.setAnimated(false);
 
         Label weekDate = new Label(titledData);
         weekDate.getStyleClass().add("label2");
@@ -116,7 +110,7 @@ public class CourseViewController extends Controller implements Initializable {
 
         if (assignments != null) {
             assignments.stream()
-                    .filter(assignment -> titledData.equals(assignment.getAddress()))
+                    .filter(assignment -> assignment.getAddress().equals(titledData))
                     .forEach(assignment -> {
                         if (content.getChildren().stream().noneMatch(node -> ((Label) ((HBox) node).getChildren().get(0)).getText().equals(assignment.getId().toString()))) {
                             HBox contentData = new HBox();
@@ -129,7 +123,7 @@ public class CourseViewController extends Controller implements Initializable {
         }
         if (courseContents != null) {
             courseContents.stream()
-                    .filter(courseContent -> titledData.equals(courseContent.getAddress()))
+                    .filter(courseContent -> courseContent.getAddress().equals(titledData))
                     .flatMap(courseContent -> courseContent.getFiles().stream())
                     .forEach(file -> {
                         if (content.getChildren().stream().noneMatch(node -> ((Label) ((HBox) node).getChildren().get(0)).getText().equals(file.getId().toString()))) {
@@ -140,6 +134,11 @@ public class CourseViewController extends Controller implements Initializable {
                             content.getChildren().add(contentData);
                         }
                     });
+        }
+        if (content.getChildren().isEmpty()) {
+            Label label = new Label("No files or assignments");
+            label.getStyleClass().add("label");
+            content.getChildren().add(label);
         }
 
         weekPane.setContent(content);
@@ -162,7 +161,7 @@ public class CourseViewController extends Controller implements Initializable {
 
     private void goToFile(MouseEvent event) {
         HBox parent = (HBox) ((Label) event.getSource()).getParent();
-        String labelText = ((Label) parent.getChildren().get(0)).getText();
+        String labelText = ((Label) parent.getChildren().getFirst()).getText();
         FileDto fileDto = getFileDto(labelText);
         if (fileDto != null) {
             FileChooser fileChooser = new FileChooser();
@@ -204,7 +203,7 @@ public class CourseViewController extends Controller implements Initializable {
 
     private void deleteFile(ActionEvent event) {
         HBox parent = (HBox) ((Button) event.getSource()).getParent();
-        String labelText = ((Label) parent.getChildren().get(0)).getText();
+        String labelText = ((Label) parent.getChildren().getFirst()).getText();
 
         if (new Message().showConfirmation("Delete File", getStage(), "Are you sure you want to delete the file?")) {
             assignments.stream()
@@ -253,24 +252,22 @@ public class CourseViewController extends Controller implements Initializable {
     }
 
     private void createButtonToAddFile(HBox header) {
-        if (userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
             addButtonToHeader(header, "btn-AddFile", this::addFile);
         }
     }
 
     private void createDeleteButton(HBox header) {
-        if (userDto.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
+        if (userSession.getPermissions().stream().anyMatch(permission -> permission.getName() == PermissionType.CREATE_ASSIGNMENTS)) {
             addButtonToHeader(header, "btn-DeleteFile", this::deleteFile);
         }
     }
 
     private void addButtonToHeader(HBox header, String styleClass, EventHandler<ActionEvent> action) {
-        if (havePermission) {
-            Button button = new Button();
-            button.getStyleClass().add(styleClass);
-            button.setOnAction(action);
-            header.getChildren().add(button);
-        }
+        Button button = new Button();
+        button.getStyleClass().add(styleClass);
+        button.setOnAction(action);
+        header.getChildren().add(button);
     }
 
     private String convertDateInMonth(LocalDate startDate, LocalDate endDate) {

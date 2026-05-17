@@ -29,7 +29,7 @@ public class RequiredFieldsValidator {
                 invalid.append(floatingText);
             }
         }
-        return invalid.isEmpty() ? "" : "Fields required or with formatting problems [" + invalid + "].";
+        return invalid.isEmpty() ? "" : "The following required fields are empty or have formatting issues: [" + invalid + "].";
     }
 
     private String getFloatingText(Node node) {

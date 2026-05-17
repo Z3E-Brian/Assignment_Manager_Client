@@ -14,6 +14,8 @@ import javafx.scene.image.ImageView;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.CareerDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.DepartmentDto;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CareerInput;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.CareerService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.DepartmentService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
@@ -45,6 +47,9 @@ public class CareerMaintenanceViewController extends Controller {
     private TableColumn<CareerDto, String> tbcName;
 
     @FXML
+    private TableColumn<CareerDto, String> tbcId;
+
+    @FXML
     private TableView<CareerDto> tbvCareer;
 
     @FXML
@@ -57,31 +62,31 @@ public class CareerMaintenanceViewController extends Controller {
     @FXML
     private TableColumn<CareerDto, Boolean> tbcCourse;
 
-    DepartmentDto departmentDto;
-    CareerInput careerInput;
-    CareerDto careerDto;
+    private DepartmentDto departmentDto;
+    private CareerInput careerInput;
+    private CareerDto careerDto;
     private RequiredFieldsValidator validator;
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
     @Override
     public void initialize() {
         initializeCareerData();
+        validatePermissions();
         setupTableColumns();
         setupTextFormatters();
         setupValidator();
-        txfName.setOnAction(event -> handleSave());
-        txfDescription.setOnAction(event -> handleSave());
         loadDepartment();
         loadCareers();
         bind();
     }
 
-    private void handleSave() {
-        try {
-            onActionBtnSave(null);
-        } catch (Exception e) {
-            showError("Save Career", "An error occurred while saving the career");
-        }
+    private void validatePermissions() {
+        btnSave.setDisable(
+                !(userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_USERS)) ||
+                        userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_USERS)))
+        );
     }
+
 
     private void initializeCareerData() {
         careerInput = new CareerInput();
@@ -90,6 +95,7 @@ public class CareerMaintenanceViewController extends Controller {
     }
 
     private void setupTableColumns() {
+        tbcId.setCellValueFactory(new PropertyValueFactory<>("id"));
         tbcName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbcDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         tbcDelete.setCellValueFactory(p -> new SimpleBooleanProperty(p.getValue() != null));
@@ -119,6 +125,10 @@ public class CareerMaintenanceViewController extends Controller {
     }
 
     private void loadCareers() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_CAREERS))) {
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have the required permissions to view this section.");
+            return;
+        }
         try {
             departmentDto = new DepartmentService().getById(departmentDto.getId());
             List<CareerDto> departmentDtoList = departmentDto.getCareers();
@@ -150,7 +160,9 @@ public class CareerMaintenanceViewController extends Controller {
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
-
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_CAREERS))){
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have the required permissions to view this section.");
+            return;}
         try {
             String validationMessage = validator.validate();
             if (!validationMessage.isEmpty()) {
@@ -224,6 +236,10 @@ public class CareerMaintenanceViewController extends Controller {
     private class ButtonCellDelete extends ButtonCellBase<CareerDto> {
         ButtonCellDelete() {
             super("Delete", "mfx-btn-Delete");
+            setDisable(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.DELETE_CAREERS)));
+            if (isDisable()) {
+                setTooltip(new Tooltip("You do not have the required permissions to delete careers"));
+            }
         }
 
         @Override

@@ -14,7 +14,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.FacultyDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.PermissionType;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.UniversityDto;
+import org.una.programmingIII.Assignment_Manager_Client.Dto.UserDto;
 import org.una.programmingIII.Assignment_Manager_Client.Service.FacultyService;
 import org.una.programmingIII.Assignment_Manager_Client.Service.UniversityService;
 import org.una.programmingIII.Assignment_Manager_Client.Util.*;
@@ -66,6 +68,7 @@ public class FacultyMaintenanceController extends Controller {
     private UniversityDto universityDto;
     private FacultyDto facultyDto;
     private RequiredFieldsValidator validator;
+    private final UserDto userSession = SessionManager.getInstance().getLoginResponse().getUser();
 
 
     @Override
@@ -77,6 +80,12 @@ public class FacultyMaintenanceController extends Controller {
         setupValidator();
         txfFacultyName.setOnAction(event -> handleSave());
         loadUniversityFaculties();
+        manageUserPermissionsAndButtons();
+    }
+    private void manageUserPermissionsAndButtons() {
+        btnSave.setDisable(
+                !(userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.CREATE_FACULTIES)) ||
+                        userSession.getPermissions().stream().anyMatch(permission -> permission.getName().equals(PermissionType.EDIT_FACULTIES))));
     }
 
     private void handleSave() {
@@ -142,6 +151,10 @@ public class FacultyMaintenanceController extends Controller {
     }
 
     private void loadUniversityFaculties() {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.VIEW_FACULTIES))){
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have permission to view faculties.");
+            return;
+        }
         try {
             universityDto = universityService.getUniversityById(universityDto.getId());
             List<FacultyDto> facultyDtoList = universityDto.getFaculties();
@@ -163,6 +176,10 @@ public class FacultyMaintenanceController extends Controller {
     }
 
     private void createFaculty() throws Exception {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.CREATE_FACULTIES))){
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have permission to create faculties.");
+            return;
+        }
         String invalids = validator.validate();
         if (!(invalids.isBlank())) {
             new Message().showModal(Alert.AlertType.ERROR, "Create Faculty", getStage(), invalids);
@@ -177,6 +194,10 @@ public class FacultyMaintenanceController extends Controller {
     }
 
     private void updateFaculty() throws Exception {
+        if (userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.EDIT_FACULTIES))){
+            new Message().showModal(Alert.AlertType.WARNING, "Permission Error", getStage(), "You do not have permission to edit faculties.");
+            return;
+        }
         String invalids = validator.validate();
         if (!(invalids.isBlank())) {
             new Message().showModal(Alert.AlertType.ERROR, "Update Faculty", getStage(), invalids);
@@ -211,6 +232,7 @@ public class FacultyMaintenanceController extends Controller {
     private class ButtonCellDelete extends ButtonCellBase<FacultyDto> {
         ButtonCellDelete() {
             super("Delete", "mfx-btn-Delete");
+            setDisable(userSession.getPermissions().stream().noneMatch(permission -> permission.getName().equals(PermissionType.DELETE_FACULTIES)));
         }
 
         @Override
