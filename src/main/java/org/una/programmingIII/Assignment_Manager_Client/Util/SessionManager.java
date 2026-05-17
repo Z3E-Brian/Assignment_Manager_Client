@@ -35,6 +35,12 @@ public class SessionManager {
         observers.remove(observer);
     }
 
+    public void clearSession() {
+        isRunningTokenValidationThread = false;
+        loginResponse = null;
+        observers.clear();
+    }
+
     private void validateTokens() throws Exception {
         if (loginResponse != null && loginResponse.getAccessToken() != null) {
             if (!(isValidToken(loginResponse.getRefreshToken()))) {

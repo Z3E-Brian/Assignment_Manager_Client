@@ -231,10 +231,10 @@ public class MainViewController extends Controller implements SessionObserver {
 
     @FXML
     void OnActionBtnLogOut(ActionEvent event) {
+        SessionManager.getInstance().clearSession();
+        FlowController.getInstance().clearLoarders();
         FlowController.getInstance().goViewInWindow("LogInView");
         FlowController.getInstance().exitMain();
-        SessionManager.getInstance().removeObserver(this);
-        FlowController.getInstance().clearLoarders();
     }
 
     @FXML
