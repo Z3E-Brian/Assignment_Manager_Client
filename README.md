@@ -1,130 +1,171 @@
 # Assignment Manager Client
 
-A desktop application built with **JavaFX** and **MaterialFX** for managing university courses, assignments, submissions, and grades. The client communicates with a Spring Boot REST backend to enable professors and students to collaborate on academic workflows.
+Aplicación de escritorio construida con **JavaFX** y **MaterialFX** para la gestión de cursos, asignaciones, entregas y calificaciones a nivel universitario. El cliente se comunica con un backend Spring Boot REST.
 
 ---
 
-## Features
+## Características
 
-- **Role-based access** — Login with student or professor credentials; UI adapts to permissions
-- **Course management** — Create, enroll, unenroll; browse available and enrolled courses
-- **Assignment workflow** — Create assignments, upload files, submit work, receive grades and feedback
-- **Grade tracking** — View grades per assignment; professors can grade and comment submissions
-- **File upload/download** — Chunked file transfer for reliable uploads of any size
-- **Calendar integration** — Visual assignment timeline for deadlines
-- **Email notifications** — Send email alerts for assignment updates
-- **University hierarchy** — Navigate universities → faculties → departments → careers → courses
-- **Token-based authentication** — Auto-refresh of expired tokens with background validation
-- **Configurable backend URL** — Centralized via `config.properties` (no hardcoded URLs)
+- **Acceso por roles** — Inicio de sesión como estudiante o profesor; la UI se adapta a los permisos
+- **Gestión de cursos** — Crear, matricular, desmatricular; explorar cursos disponibles e inscritos
+- **Flujo de asignaciones** — Crear tareas, subir archivos, entregar trabajos, recibir notas y retroalimentación
+- **Seguimiento de notas** — Ver calificaciones por asignación; los profesores califican y comentan entregas
+- **Subida/descarga de archivos** — Transferencia confiable de archivos
+- **Calendario integrado** — Línea de tiempo visual de asignaciones y fechas límite
+- **Notificaciones por correo** — Alertas de nuevas asignaciones, entregas y calificaciones
+- **Jerarquía universitaria** — Navegar: universidades → facultades → departamentos → carreras → cursos
+- **Autenticación JWT** — Refresco automático de tokens expirados
+- **URL del backend configurable** — Centralizada en `config.properties`
 
 ---
 
-## Tech Stack
+## Tecnologías Usadas
 
-| Layer | Technology |
-|-------|-----------|
-| Language | Java 17 |
-| UI Framework | JavaFX 21 |
-| UI Components | MaterialFX 11.16.1 |
-| Build Tool | Maven (wrapper included) |
-| HTTP Client | `java.net.http.HttpClient` |
+| Capa | Tecnología |
+|------|-----------|
+| Lenguaje | Java 17 |
+| UI | JavaFX 21 |
+| Componentes UI | MaterialFX 11.16.1 |
+| Build | Maven (wrapper incluido) |
+| Cliente HTTP | `java.net.http.HttpClient` |
 | JSON | Jackson (`jackson-databind` + `jackson-datatype-jsr310`) |
-| DTO Mapping | ModelMapper 3.2.1 |
-| Boilerplate | Lombok |
-| Validation | Jakarta Validation / Hibernate Validator |
+| Mapeo DTO | ModelMapper 3.2.1 |
+| Validación | Jakarta Validation / Hibernate Validator |
+| Código boilerplate | Lombok |
 
 ---
 
-## Prerequisites
+## Requisitos Previos
 
-- **Java 17+** (JDK)
-- **Maven** (or use the included `mvnw` wrapper)
-- A running instance of the [Assignment Manager API](https://github.com/anomalyco/Assignment_Manager) (Spring Boot backend)
+- **Java 17+ JDK** (si no lo tienes: [Descargar JDK 17](https://adoptium.net/temurin/releases/?version=17))
+- **Maven 3.8+** (o usa el wrapper `mvnw.cmd` incluido)
+- Una instancia del backend corriendo: [Assignment Manager API](https://github.com/JustinMdz/Assignment_Manager)
 
 ---
 
-## Setup
+## Configuración
 
-### 1. Clone
+### 1. Clonar el repositorio
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/TU_USUARIO/Assignment_Manager_Client.git
 cd Assignment_Manager_Client
 ```
 
-### 2. Backend Connection
+### 2. Configurar conexión al backend
 
-The backend URL defaults to `http://localhost:8080` and can be changed in:
+Editar `src/main/resources/config.properties`:
 
 ```properties
-# src/main/resources/config.properties
+# URL del backend Spring Boot (por defecto localhost:8080)
 backend.url=http://localhost:8080
 ```
 
-### 3. Build & Run
+Si el backend corre en otro puerto o IP, cámbialo aquí.
 
-```bash
-# Compile
-./mvnw compile
+### 3. Posibles descargas adicionales
 
-# Launch
-./mvnw javafx:run
-```
+Si el proyecto no compila por dependencias faltantes:
+
+| Recurso | Descarga |
+|---------|----------|
+| **JDK 17** | https://adoptium.net/temurin/releases/?version=17 |
+| **JavaFX SDK 21** (solo si hay errores de módulos) | https://gluonhq.com/products/javafx/ |
+| **Apache Maven 3.8.5+** | https://maven.apache.org/download.cgi |
+| **Lombok** (si el IDE no lo reconoce) | https://projectlombok.org/download |
 
 ---
 
-## Project Structure
+## Cómo Ejecutar
+
+### Desde consola (recomendado)
+
+```bash
+# Compilar
+./mvnw.cmd compile
+
+# Ejecutar
+./mvnw.cmd javafx:run
+```
+
+### Desde VS Code
+
+1. Instalar extensiones:
+   - [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
+   - [Maven for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-maven)
+   - [Lombok Annotations Support](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-lombok)
+
+2. Abrir la carpeta del proyecto en VS Code
+
+3. En el panel **Maven** (vista lateral), ir a: `Assignment_Manager_Client > Plugins > javafx > javafx:run` y dar clic
+
+4. O crear un launch config (`.vscode/launch.json`):
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Run JavaFX",
+            "request": "launch",
+            "mainClass": "org.una.programmingIII.Assignment_Manager_Client.App",
+            "vmArgs": "--module-path \"C:/ruta/a/javafx-sdk-21/lib\" --add-modules javafx.controls,javafx.fxml",
+            "projectName": "Assignment_Manager_Client"
+        }
+    ]
+}
+```
+
+> **Nota:** Si usas JDK 17+ con JavaFX 21 como dependencia de Maven, no necesitas el `--module-path`. Solo si descargaste el SDK manualmente.
+
+---
+
+## Referencia del Backend
+
+El cliente necesita el backend corriendo en:
+
+```
+http://localhost:8080
+```
+
+Endpoints principales que consume:
+
+| Método | Endpoint | Propósito |
+|--------|----------|-----------|
+| POST | `/auth/login` | Inicio de sesión |
+| POST | `/auth/refreshToken` | Refrescar token JWT |
+| GET | `/api/users` | Listar usuarios |
+| GET | `/api/courses` | Listar cursos |
+| GET | `/api/courses/professor/{id}` | Cursos de un profesor |
+| POST | `/api/assignments` | Crear asignación |
+| POST | `/api/submissions` | Crear entrega |
+| POST | `/api/files` | Subir archivo |
+
+Swagger UI del backend: `http://localhost:8080/doc/swagger-ui.html`
+
+---
+
+## Estructura del Proyecto
 
 ```
 src/main/java/org/una/programmingIII/Assignment_Manager_Client/
-├── App.java                     # Application entry point
-├── Controller/                  # 19 controllers (MVC)
-│   ├── LogInController.java
-│   ├── MainViewController.java
-│   ├── CourseViewController.java
-│   ├── AssignmentViewController.java
-│   └── ...
-├── Service/                     # 12 service classes
-│   ├── AuthenticationService.java
-│   ├── AssignmentService.java
-│   ├── FileService.java
-│   └── ...
-├── Dto/                         # Data transfer objects
-├── Util/                        # Utilities (ConfigLoader, SessionManager, etc.)
-├── Mapper/                      # Generic mapper (ModelMapper)
-├── Exception/                   # Custom exceptions
-└── Interfaces/                  # Observer pattern interfaces
+├── App.java                          # Punto de entrada JavaFX
+├── Controller/                       # 19 controladores (MVC)
+├── Service/                          # 12 clases de servicio (HTTP)
+├── Dto/                              # Objetos de transferencia de datos
+│   └── Input/                        # DTOs para entrada de datos
+├── Util/                             # Utilidades (ConfigLoader, SessionManager, etc.)
+├── Mapper/                           # Mapeo genérico con ModelMapper
+├── Exception/                        # Excepciones personalizadas
+└── Interfaces/                       # Patrón Observer
 ```
 
 ---
 
-## Architecture
+## Notas
 
-Monolithic MVC desktop client:
-
-```
-User Input → Controller → Service → HttpClient → REST API
-                              ↓
-                        ObjectMapper ← DTOs
-                              ↓
-                        JavaFX Properties → View
-```
-
-- **Controllers** handle UI events and bind data to FXML views
-- **Services** encapsulate HTTP communication with the backend API
-- **Util** classes provide singleton utilities (`SessionManager`, `AppContext`, `ConfigLoader`)
-- **DTOs** model the data contract between client and server
-
----
-
-## Known Limitations
-
-- No automated tests (planned for future iterations)
-- Backend must be running locally or on a reachable network
-- Some FXML files target JavaFX 22 API but are loaded by JavaFX 21 runtime (non-critical warning)
-
----
-
-## License
-
-This project is developed for academic purposes at the Universidad Nacional de Costa Rica (UNA) — Programming III course.
+- **Seed data:** El backend incluye un `DataSeeder` que crea datos de prueba si la BD está vacía.
+- **Usuarios de prueba:** `admin@test.com`, `carlos.mendoza@test.com`, `juan.perez@test.com` — contraseña: `123456`
+- **Backend:** PostgreSQL + Spring Boot 3.3.4. Ver README del backend para docker-compose y configuración.
+- Este proyecto fue desarrollado como parte del curso Programación III en la Universidad Nacional de Costa Rica (UNA).
