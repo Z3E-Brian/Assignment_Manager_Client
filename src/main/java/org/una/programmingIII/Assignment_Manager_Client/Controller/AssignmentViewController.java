@@ -144,7 +144,7 @@ public class AssignmentViewController extends Controller implements Initializabl
           txfComment.setText("");
       lblSubmission.setText("Submission made");}
 
-FileDto fileDto = assignment.getFiles().getFirst();
+FileDto fileDto = assignment.getFiles().isEmpty() ? null : assignment.getFiles().get(0);
 if (fileDto != null) {
     lblDocument.setText(fileDto.getName());
 } else {

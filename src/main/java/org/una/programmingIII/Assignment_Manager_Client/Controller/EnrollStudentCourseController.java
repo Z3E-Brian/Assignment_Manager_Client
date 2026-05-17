@@ -105,6 +105,10 @@ public class EnrollStudentCourseController extends Controller {
     private void loadCareerInfo() {
         try {
             Long careerId = studentDto.getCareerId();
+            if (careerId == null) {
+                lblCareerName.setText("No career assigned");
+                return;
+            }
             Answer answer = new CareerService().getById(careerId);
             if (answer.getState()) {
                 careerDto = (CareerDto) answer.getResult("careerDto");
@@ -114,8 +118,7 @@ public class EnrollStudentCourseController extends Controller {
             }
         } catch (
                 Exception e) {
- new Message().showModal(Alert.AlertType.WARNING, "Connection Error", getStage(), "You must select one of the universities in the table to delete it.");
-
+            lblCareerName.setText("No career assigned");
         }
     }
 
@@ -162,6 +165,10 @@ public class EnrollStudentCourseController extends Controller {
 
     private void loadAvailableCoursesStudentSession() {
         try {
+            if (careerDto == null || careerDto.getId() == null) {
+                new Message().showModal(Alert.AlertType.INFORMATION, "Info", getStage(), "No career assigned to this student. Cannot load available courses.");
+                return;
+            }
             List<CourseDto> coursesStudentDto = new CourseService().getAvailableCoursesForAStudentInCareer(careerDto.getId(), studentDto.getId());
             ObservableList<CourseDto> courseDtos = FXCollections.observableArrayList(coursesStudentDto);
             tbvAvailableCourses.getItems().clear();

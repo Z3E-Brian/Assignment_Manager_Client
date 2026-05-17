@@ -70,17 +70,28 @@ public class SelectStudentToEnrollController extends Controller {
 
     private void loadStudents() {
         try {
-            Answer answer = new UserService().getAllStudentsByCareerId(careerId);
-            if (answer.getState()) {
-                List<UserDto> students = (List<UserDto>) answer.getResult("students");
-                ObservableList<UserDto> studentsDtoObservableList = FXCollections.observableArrayList(students);
-                tbvStudents.getItems().clear();
-                tbvStudents.setItems(studentsDtoObservableList);
+            List<UserDto> users;
+            
+            if (careerId == null) {
+                // Si no tiene carrera asignada, obtener todos los usuarios
+                users = new UserService().getAllUsers();
             } else {
-                new Message().showModal(Alert.AlertType.ERROR, "Login Error", getStage(), "An error occurred during login");
+                Answer answer = new UserService().getAllStudentsByCareerId(careerId);
+                if (answer.getState()) {
+                    users = (List<UserDto>) answer.getResult("students");
+                } else {
+                    new Message().showModal(Alert.AlertType.ERROR, "Error", getStage(), "Error loading students");
+                    return;
+                }
             }
+            
+            ObservableList<UserDto> studentsDtoObservableList = FXCollections.observableArrayList(users);
+            tbvStudents.getItems().clear();
+            tbvStudents.setItems(studentsDtoObservableList);
+            
         } catch (Exception e) {
-            new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Can't retrieve courses");
+            e.printStackTrace();
+            new Message().showModal(Alert.AlertType.ERROR, "Connection Error", getStage(), "Can't retrieve courses: " + e.getMessage());
         }
     }
 
