@@ -86,10 +86,14 @@ public class FlowController {
             Parent root = loader.getRoot();
             Scene scene = mainStage.getScene();
 
-            if (scene == null) {
-                scene = new Scene(root);
+            if (scene == null || scene.getRoot() != root) {
+                if (scene == null) {
+                    scene = new Scene(root);
+                    mainStage.setScene(scene);
+                } else {
+                    scene.setRoot(root);
+                }
                 MFXThemeManager.addOn(scene, Themes.DEFAULT, Themes.LEGACY);
-                mainStage.setScene(scene);
             }
 
             if (root instanceof BorderPane borderPane) {

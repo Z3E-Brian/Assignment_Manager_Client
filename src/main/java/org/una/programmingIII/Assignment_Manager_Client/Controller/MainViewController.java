@@ -81,24 +81,24 @@ public class MainViewController extends Controller implements SessionObserver {
     }
 
     private void loadCourses() {
+        if (!btnCoursesMenu.isVisible()) {
+            return;
+        }
         try {
             if (isStudentSession) {
                 courses = (new CourseService().getAssociateCourses(SessionManager.getInstance().getLoginResponse().getUser().getId()));
             } else {
                 courses = (new CourseService().getProfessorCourses(SessionManager.getInstance().getLoginResponse().getUser().getId()));
             }
-            btnCoursesMenu.setVisible(true);
-
             if (courses.isEmpty()) {
                 courses = new ArrayList<>();
                 btnCoursesMenu.setVisible(false);
+                return;
             }
-
             for (CourseDto course : courses) {
                 MenuItem menuItem = new MenuItem(course.getName());
                 menuItem.setOnAction(event -> handleMenuItemAction(menuItem));
                 btnCoursesMenu.getItems().add(menuItem);
-
             }
         } catch (Exception e) {
             System.out.println(e);
