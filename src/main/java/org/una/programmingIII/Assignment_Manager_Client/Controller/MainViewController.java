@@ -189,22 +189,31 @@ public class MainViewController extends Controller implements SessionObserver {
                 .getUser()
                 .getPermissions();
 
-        checkAndActivateButton(loginUserPermissions, PermissionType.TAKE_CLASSES, btnRegisterStudents_Courses);
-        checkAndActivateButton(loginUserPermissions, PermissionType.REGISTER_STUDENT_COURSES, btnRegisterStudents_Courses);
+        boolean hasTakeClasses = loginUserPermissions.stream()
+                .anyMatch(p -> PermissionType.TAKE_CLASSES.equals(p.getName()));
+        boolean hasTeachClasses = loginUserPermissions.stream()
+                .anyMatch(p -> PermissionType.TEACH_CLASSES.equals(p.getName()));
+        boolean hasRegisterStudents = loginUserPermissions.stream()
+                .anyMatch(p -> PermissionType.REGISTER_STUDENT_COURSES.equals(p.getName()));
+
         checkAndActivateButton(loginUserPermissions, PermissionType.VIEW_USERS, btnUserMaintenance);
         checkAndActivateButton(loginUserPermissions, PermissionType.VIEW_UNIVERSITIES, btnUniversitiesMaintenance);
 
-        if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.VIEW_COURSES.equals(permission.getName()))) {
-            btnCoursesMenu.setVisible(true);
-        }
-        if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.TAKE_CLASSES.equals(permission.getName()))) {
+        boolean showEnrollButton = hasTakeClasses || hasRegisterStudents || hasTeachClasses;
+        btnRegisterStudents_Courses.setVisible(showEnrollButton);
+        btnRegisterStudents_Courses.setDisable(!showEnrollButton);
+
+        if (hasTakeClasses && !hasTeachClasses && !hasRegisterStudents) {
             isStudentSession = true;
             btnRegisterStudents_Courses.setText("Enroll Courses");
-        } else if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.REGISTER_STUDENT_COURSES.equals(permission.getName()))) {
+        } else if (showEnrollButton) {
             isStudentSession = false;
             btnRegisterStudents_Courses.setText("Enroll Student Courses");
         }
 
+        if (loginUserPermissions.stream().anyMatch(permission -> PermissionType.VIEW_COURSES.equals(permission.getName()))) {
+            btnCoursesMenu.setVisible(true);
+        }
     }
 
     private void checkAndActivateButton(Set<PermissionDto> permissions, PermissionType permissionType, MFXButton
