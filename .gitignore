@@ -38,3 +38,5 @@ target/
 *.iml
 *.ipr
 .idea/workspace.xml
+/.opencode
+/.planning
