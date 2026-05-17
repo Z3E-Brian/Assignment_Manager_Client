@@ -167,7 +167,7 @@ public class CourseViewController extends Controller implements Initializable {
 
     private void goToFile(MouseEvent event) {
         HBox parent = (HBox) ((Label) event.getSource()).getParent();
-        String labelText = ((Label) parent.getChildren().getFirst()).getText();
+        String labelText = ((Label) parent.getChildren().get(0)).getText();
         FileDto fileDto = getFileDto(labelText);
         if (fileDto != null) {
             FileChooser fileChooser = new FileChooser();
@@ -209,7 +209,7 @@ public class CourseViewController extends Controller implements Initializable {
 
     private void deleteFile(ActionEvent event) {
         HBox parent = (HBox) ((Button) event.getSource()).getParent();
-        String labelText = ((Label) parent.getChildren().getFirst()).getText();
+        String labelText = ((Label) parent.getChildren().get(0)).getText();
 
         if (new Message().showConfirmation("Delete File", getStage(), "Are you sure you want to delete the file?")) {
             assignments.stream()

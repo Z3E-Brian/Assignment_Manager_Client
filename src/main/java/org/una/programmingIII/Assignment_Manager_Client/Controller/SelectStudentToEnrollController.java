@@ -49,6 +49,7 @@ public class SelectStudentToEnrollController extends Controller {
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     Long careerId;
+    private boolean isAdmin;
 
     @Override
     public void initialize() {
@@ -71,7 +72,12 @@ public class SelectStudentToEnrollController extends Controller {
 
 
     private void loadCareerId() {
-        careerId = SessionManager.getInstance().getLoginResponse().getUser().getCareerId();
+        UserDto user = SessionManager.getInstance().getLoginResponse().getUser();
+        careerId = user.getCareerId();
+        isAdmin = careerId == null;
+        if (isAdmin) {
+            careerId = 0L;
+        }
     }
 
     private void loadStudents(int pageIndex) {
@@ -86,7 +92,7 @@ public class SelectStudentToEnrollController extends Controller {
                 tbvStudents.getItems().setAll(students);
                 int totalPages = (int) Math.ceil((double) totalElements / PAGE_SIZE);
                 pagination.setPageCount(totalPages);
-                if (students.isEmpty()) {
+                if (students.isEmpty() && !isAdmin) {
                     new Message().showModal(Alert.AlertType.INFORMATION, "Load Students", getStage(), "There are no students enrolled in this career yet.");
                 }
             } else {

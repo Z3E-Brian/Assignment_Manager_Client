@@ -85,7 +85,8 @@ public class UserService {
 
     public Answer getStudentsByCareerIdAndPagination(Long careerId, int actualPage, int pageSize) throws Exception {
         setJwtToken();
-        HttpRequest request = createRequestBuilder(BASE_URL + "/studentsByCareer/" + careerId + "?page=" + actualPage + "&size=" + pageSize)
+        Long effectiveCareerId = (careerId == null) ? 0L : careerId;
+        HttpRequest request = createRequestBuilder(BASE_URL + "/studentsByCareer/" + effectiveCareerId + "?page=" + actualPage + "&size=" + pageSize)
                 .header("Authorization", "Bearer " + jwtToken)
                 .GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());

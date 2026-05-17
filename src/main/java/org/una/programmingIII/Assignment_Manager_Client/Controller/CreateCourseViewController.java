@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.*;
 import org.una.programmingIII.Assignment_Manager_Client.Dto.Input.CourseInput;
@@ -96,6 +97,11 @@ public class CreateCourseViewController extends Controller {
         setupValidator();
         bindCourse();
         manageUserPermissionsAndButtons();
+        cbxProfessor.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                cbxProfessor.show();
+            }
+        });
     }
 
     private void manageUserPermissionsAndButtons() {

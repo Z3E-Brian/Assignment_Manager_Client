@@ -78,6 +78,12 @@ public class CareerMaintenanceViewController extends Controller {
         loadDepartment();
         loadCareers();
         bind();
+        txfName.setOnAction(event -> handleSave());
+        txfDescription.setOnAction(event -> handleSave());
+    }
+
+    private void handleSave() {
+        onActionBtnSave(null);
     }
 
     private void validatePermissions() {
