@@ -9,7 +9,7 @@
       <Separator prefWidth="200.0" />
       <HBox maxHeight="20.0" styleClass="vbox-Dates" VBox.vgrow="ALWAYS">
          <children>
-            <Label text="Course Name">
+            <Label fx:id="lblCourseName" text="Course Name">
                <padding>
                   <Insets left="10.0" />
                </padding>
