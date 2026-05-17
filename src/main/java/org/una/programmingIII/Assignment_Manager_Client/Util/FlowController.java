@@ -79,17 +79,34 @@ public class FlowController {
 
     public void goMain() {
         try {
-            FXMLLoader loader = getLoader("MainView");
-            Controller controller = loader.getController();
-            controller.initialize();
+            double stageWidth = mainStage.getWidth();
+            double stageHeight = mainStage.getHeight();
 
+            FXMLLoader loader = getLoader("MainView");
+            Parent root = loader.getRoot();
             Scene scene = mainStage.getScene();
-            if (scene != null && scene.getRoot() instanceof BorderPane borderPane) {
+
+            if (scene == null) {
+                scene = new Scene(root);
+                MFXThemeManager.addOn(scene, Themes.DEFAULT, Themes.LEGACY);
+                mainStage.setScene(scene);
+            }
+
+            if (root instanceof BorderPane borderPane) {
                 VBox vBox = (VBox) borderPane.getCenter();
                 if (vBox != null) {
                     vBox.getChildren().clear();
+                    if (!vBox.getStyleClass().contains("vBox_Main")) {
+                        vBox.getStyleClass().add("vBox_Main");
+                    }
                 }
             }
+
+            if (stageWidth > 0 && stageHeight > 0) {
+                mainStage.setWidth(stageWidth);
+                mainStage.setHeight(stageHeight);
+            }
+            mainStage.show();
             mainStage.setTitle("Assignment Manager");
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
