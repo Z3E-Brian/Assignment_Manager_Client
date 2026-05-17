@@ -125,7 +125,7 @@ public class UploadTaskViewController extends Controller {
         Double randomGradle = (Double) (Math.random() * 100);
         findAnswerAI(randomGradle);
         submissionDto.setGrade(randomGradle);
-        submissionDto.setFeedback(answerAIDto.getFeedback());
+        submissionDto.setFeedback(answerAIDto != null ? answerAIDto.getFeedback() : "No feedback available");
         submissionDto.setReviewedById(1L);
     }
 

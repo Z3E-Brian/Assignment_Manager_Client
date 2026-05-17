@@ -33,6 +33,8 @@ public class CourseViewController extends Controller implements Initializable {
     private Accordion acDates;
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Label lblCourseName;
     boolean havePermission = true;
     LocalDate startDate;
     LocalDate endDate;
@@ -51,6 +53,9 @@ public class CourseViewController extends Controller implements Initializable {
         clearComponents();
         userSession = SessionManager.getInstance().getLoginResponse().getUser();
         courseDto = (CourseDto) AppContext.getInstance().get("course");
+        if (courseDto != null && lblCourseName != null) {
+            lblCourseName.setText(courseDto.getName());
+        }
         startDate = courseDto.getStartDate();
         endDate = courseDto.getEndDate();
         loanAssignments();
@@ -88,6 +93,7 @@ public class CourseViewController extends Controller implements Initializable {
         TitledPane weekPane = new TitledPane();
         VBox.setVgrow(weekPane, Priority.ALWAYS);
         weekPane.getStyleClass().add("titledPane");
+        weekPane.setAnimated(false);
 
         Label weekDate = new Label(titledData);
         weekDate.getStyleClass().add("label2");
@@ -110,7 +116,7 @@ public class CourseViewController extends Controller implements Initializable {
 
         if (assignments != null) {
             assignments.stream()
-                    .filter(assignment -> assignment.getAddress().equals(titledData))
+                    .filter(assignment -> titledData.equals(assignment.getAddress()))
                     .forEach(assignment -> {
                         if (content.getChildren().stream().noneMatch(node -> ((Label) ((HBox) node).getChildren().get(0)).getText().equals(assignment.getId().toString()))) {
                             HBox contentData = new HBox();
@@ -123,7 +129,7 @@ public class CourseViewController extends Controller implements Initializable {
         }
         if (courseContents != null) {
             courseContents.stream()
-                    .filter(courseContent -> courseContent.getAddress().equals(titledData))
+                    .filter(courseContent -> titledData.equals(courseContent.getAddress()))
                     .flatMap(courseContent -> courseContent.getFiles().stream())
                     .forEach(file -> {
                         if (content.getChildren().stream().noneMatch(node -> ((Label) ((HBox) node).getChildren().get(0)).getText().equals(file.getId().toString()))) {

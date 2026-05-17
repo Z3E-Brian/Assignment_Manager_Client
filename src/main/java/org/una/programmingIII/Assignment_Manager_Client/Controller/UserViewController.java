@@ -83,6 +83,10 @@ public class UserViewController extends Controller implements Initializable {
         clmAction.setCellFactory(col -> new TableCell<>() {
             private final MFXButton detailsButton = new MFXButton("Delete");
 
+            {
+                detailsButton.getStyleClass().add("mfx-btn-Delete");
+            }
+
             @Override
             protected void updateItem(MFXButton item, boolean empty) {
                 super.updateItem(item, empty);
